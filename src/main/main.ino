@@ -4,6 +4,7 @@
 #include <WiFi.h>
 #include "../localisationMng/scanning.h"
 #include "../localisationMng/predictionPhase.h"
+#include "../sdCardBackup.h"
 
 std::vector<Data> dataSet;
 const char* anchorSSIDs[TOTAL_APS] = {
@@ -23,27 +24,45 @@ void setup() {
     Serial.begin(115200);
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
-    delay(1000);
-
-    Serial.println("1 - Prediction Data Collection");
-
-    for (int i = 0; i < NUMBER_OF_LOCATIONS; ++i) {
-        LOCATIONS selectedLocation = promptLocationSelection();
-        Serial.println("Press Enter to start scanning...");
-
-        while (true) {
-            if (Serial.available()) {
-                char c = Serial.read();
-                if (c == '\n' || c == '\r') break;
-            }
-        }
-
-        Serial.println("Currently scanning location " + String((int)selectedLocation) + "\n");
-        performScan(selectedLocation);
+    if (!initSD()) {
+        Serial.println("Fatal: SD init failed");
+        while (true) delay(1000);
+    }
+    // 1) Check header format
+    if (!verifyCSVFormat()) {
+        Serial.printf(" %s header format invalid!\\n", SCAN_RESULTS_FILE);
+    } else {
+        Serial.printf(" %s header format valid\\n", SCAN_RESULTS_FILE);
     }
 
-    Serial.println("Data Collection Complete.");
-    delay(1000);
+    // For each location, only scan if not already done:
+    if (hasAllLocationRows()) {
+        Serial.println("All locations present. Skipping scans.");
+    } else {
+
+        Serial.println("1 - Prediction Data Collection");
+
+        for (int i = 0; i < NUMBER_OF_LOCATIONS; ++i) {
+            LOCATIONS selectedLocation = promptLocationSelection();
+            Serial.println("Press Enter to start scanning...");
+
+            while (true) {
+                if (Serial.available()) {
+                    char c = Serial.read();
+                    if (c == '\n' || c == '\r') break;
+                }
+            }
+
+            Serial.println("Currently scanning location " + String((int) selectedLocation) + "\n");
+            loadLocationDataset(selectedLocation);
+
+            performScan(selectedLocation);
+            saveLocationDataset(selectedLocation);
+        }
+
+        Serial.println("Data Collection Complete.");
+        delay(1000);
+    }
 }
 
 void loop() {

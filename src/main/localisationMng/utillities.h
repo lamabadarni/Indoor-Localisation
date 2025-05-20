@@ -17,6 +17,7 @@
 #define NUM_TOF_RESPONDERS (4)
 #define NUMBER_OF_LOCATIONS (17)  
 #define NUMBER_OF_SCANS (SCANS_PER_LOCATION * NUMBER_OF_LOCATIONS)
+#define SCAN_RESULTS_FILE     "/scan_results.csv"
 
 //Just for KNN use
 #define K (4)
