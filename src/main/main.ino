@@ -5,7 +5,31 @@
 #include "../localisationMng/scanning.h"
 #include "../localisationMng/predictionPhase.h"
 
+
+// Globals
+
+String sessionFile;  // defined as extern in utilities.h
+extern ScanConfig currentConfig;
 std::vector<Data> dataSet;
+
+String DataFile;
+String metaFile;
+String LocationAccuracyFile;
+
+// Constants
+SystemState currentSystemState = SystemState::STATIC_RSSI_TOF;
+
+ScanConfig   currentConfig = {
+    .IdRound        = "round_1",
+    .systemState    = currentSystemState,
+    .Count_Round     = 1,
+    .RoundTimestamp  = millis(),
+    .RSSINum       = ,
+    .TOFNum        = 0
+
+};
+
+
 const char* anchorSSIDs[TOTAL_APS] = {
         "234/236",
         "236",
@@ -20,30 +44,66 @@ const char* anchorSSIDs[TOTAL_APS] = {
 };
 
 void setup() {
-    Serial.begin(115200);
-    WiFi.mode(WIFI_STA);
-    WiFi.disconnect();
-    delay(1000);
+  Serial.begin(115200);
+  WiFi.mode(WIFI_STA);
+  WiFi.disconnect();
 
-    Serial.println("1 - Prediction Data Collection");
+  // 1) Init SD (interactive if enabled)
+  bool sdAvailable = initSDCard();            // sets sdAvailable
+ // if (sdAvailable) pruneOldCSVs(FILES_THRESHOLD);
+
+  // 2) Build per‐config filenames
+    bool reuse = false;
+    if (sdAvailable){
+      if(SD.exists(systemStateToString(currentSystemState))) {
+         // the purpose of reuse just to check if the meta data is relevant to curr config
+        loadAccuracy();
+        loadLocationDataset();
+        isBackupDataSetRelevant()
+        cleanUpCSVFile();
+        cleanUpDataSet();
+
+        createMetaFile();
+        createCSVFile();
+
+        Serial.println("No Backup data set relevant to current config");
+      
+    
+  }
+  // 3) If no SD, do fully interactive scan and exit setup
 
     for (int i = 0; i < NUMBER_OF_LOCATIONS; ++i) {
-        LOCATIONS selectedLocation = promptLocationSelection();
-        Serial.println("Press Enter to start scanning...");
+      LOCATIONS loc = promptLocationSelection();
+      Serial.println("Press Enter to start scanning...");
+      while (!Serial.available()) delay(50);
+      Serial.read();  // clear newline
+      Serial.printf(" Scanning location %d\n", (int)loc);
 
-        while (true) {
-            if (Serial.available()) {
-                char c = Serial.read();
-                if (c == '\n' || c == '\r') break;
+      performScan(sessionFile,loc, sdAvailable);
+      Serial.printf(" Completed %u scans for loc %d\n", LocationScanBuffer.size(), (int)loc);
+    }
+    Serial.printf("INTERACTIVE SCAN COMPLETE: total=%u\n", dataSet.size());
+    return;
+  
+  }
+
+}
+
+void confirmLocation(LOCATIONS loc) {
+    Serial.printf("Predicted location: %s\n", locationToString(loc));
+    Serial.println("Is this correct? (Y/N)");
+    while (true) {
+        if (Serial.available()) {
+            char c = Serial.read();
+            if (c == 'Y' || c == 'y') {
+                Serial.println("Location confirmed.");
+                break;
+            } else if (c == 'N' || c == 'n') {
+                Serial.println("Location not confirmed.");
+                break;
             }
         }
-
-        Serial.println("Currently scanning location " + String((int)selectedLocation) + "\n");
-        performScan(selectedLocation);
     }
-
-    Serial.println("Data Collection Complete.");
-    delay(1000);
 }
 
 void loop() {

@@ -24,8 +24,6 @@
 //Just for KNN use
 #define K (4)
 
-extern const char* anchorSSIDs[NUMBER_OF_ANCHORS];
-
 // =================== Enums ===================
 
 typedef enum Label {
