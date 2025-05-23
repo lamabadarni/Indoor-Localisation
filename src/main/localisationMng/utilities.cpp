@@ -1,10 +1,16 @@
 /*
-*  @author: Lama
  * @file utillities.cpp
  * @brief static functions implementation
  */
 
  #include "utilities.cpp"
+
+ //Enablements -- regarding to system running mode
+struct Enablements {
+    static bool enable_training_model_on_host_machine = false;
+    static SystemState currentSystemState             = SystemState::OFFLINE;
+    static bool enable_SD_Card_backup                 = false;
+};
 
 // Map specefic label to string 
  const char* locationToString(int number) {
@@ -120,6 +126,20 @@ const char* systemStateToString(int state) {
         case STATIC_DYNAMIC_RSSI_TOF: return "STATIC_DYNAMIC_RSSI_TOF";
         case OFFLINE: return "OFFLINE";
         default: return "UNKNOWN";
+    }
+}
+
+bool promptUserAccuracyApprove() {
+    Serial.println("Select option:");
+    Serial.println("0 - Accuracy Not Sufficient. Proceed more scans at current label");
+    Serial.println("1 - Accuracy Approved.");
+
+    while (true) {
+        if (Serial.available()) {
+            char c = Serial.read();
+            if (c == '0') return false;
+            if (c == '1') return true;
+        }
     }
 }
 

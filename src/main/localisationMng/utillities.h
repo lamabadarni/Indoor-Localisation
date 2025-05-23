@@ -9,19 +9,22 @@
 #include <vector>
 
 // =================== Constants ===================
-#define SCANS_PER_LOCATION (20)
-#define SAMPLES_PER_SCAN (3)
-#define SCAN_DELAY_MS (100)
-#define ALPHA (0.7f)
-#define NUMBER_OF_ANCHORS (10)
-#define NUM_TOF_RESPONDERS (4)
-#define NUMBER_OF_LOCATIONS (17)  
-#define NUMBER_OF_SCANS (SCANS_PER_LOCATION * NUMBER_OF_LOCATIONS)
+#define SCAN_BATCH_SIZE             (15)
+#define SCAN_SAMPLE_PER_BATCH       (3)
+#define SCAN_VALIDATION_SAMPLE_SIZE (5)
+#define VALIDATION_PASS_THRESHOLD   (3)
+#define MAX_SCAN_RETRY_ATTEMPTS     (5)
+#define SCAN_DELAY_MS               (100)
+#define ALPHA                       (0.7f)
+#define DEFAULT_RSSI_VALUE          (-100)
+#define NUMBER_OF_ANCHORS           (10)
+#define NUMBER_OF_RESPONDERS        (4)
+#define NUMBER_OF_LOCATIONS         (17)  
 
 //Just for KNN use
 #define K (4)
 
-extern const char* anchorSSIDs[TOTAL_APS];
+extern const char* anchorSSIDs[NUMBER_OF_ANCHORS];
 
 // =================== Enums ===================
 
@@ -56,47 +59,64 @@ typedef enum SystemState {
 } SystemState
  
 
-// =================== Data Structures ===================
+// =================== Structures ===================
 
-struct Data {
+struct RSSIData {
     int RSSIs[TOTAL_APS];
     float TOFs[NUM_TOF_RESPONDERS];
     LOCATIONS label;
 };
 
-//Enablements -- regarding to system running mode
-struct Enablements {
-    static bool enable_training_model_on_host_machine = false;
-    static SystemState currentSystemState             = SystemState::OFFLINE;
-    static bool enable_SD_Card_backup 
-}
+struct TOFData {
+    float TOFs[NUM_TOF_RESPONDERS];
+    LOCATIONS label;
+};
 
-// =================== Data Set Vector ===================
+// =================== Globals ===================
 extern std::vector<Data> dataSet;
-
+extern Label currentScanningLabel;
 
 // =================== Utilities Functions Decleration ===================
 
-/// Smoothing RSSI measurements
-int applyEMA(int prevRSSI, int newRSSI)
+/**
+ * @brief Applies Exponential Moving Average (EMA) filter to RSSI.
+ * @param prevRSSI Previous RSSI value
+ * @param newRSSI Newly measured RSSI value
+ * @return Smoothed RSSI
+ */
+int applyEMA(int prevRSSI, int newRSSI);
 
-/// @brief   User UI for choosing label 
-/// @return  string describes specific label 
+/**
+ * @brief Prompts user to select a location label.
+ * @return Label selected by the user
+ */
 char* promptLocationSelection();
 
-/// @brief  Map specefic label to string 
-/// @param  label described by integer
-/// @return String 
+/**
+ * @brief Maps a label enum to its string name.
+ * @param label Integer label
+ * @return String representation
+ */
 const char* labelToString(int label);
 
-/// @brief   User UI for choosing System State 
-/// @return  string describes specific label 
-SystemState promptSystemState()
+/**
+ * @brief Prompts user to select system mode.
+ * @return Selected SystemState enum
+ */
+SystemState promptSystemState();
 
-/// @brief  Map specefic label to string 
-/// @param  state described by integer
-/// @return String 
-const char* systemStateToString(int state)
+/**
+ * @brief Maps a SystemState enum to string.
+ * @param state Integer state
+ * @return String name
+ */
+const char* systemStateToString(int state);
+
+/**
+ * @brief Prompts user whether they approve the scan accuracy.
+ * @return true if approved, false otherwise
+ */
+bool promptUserAccuracyApprove();
 
 
 #endif // _UTILITIES_H_
