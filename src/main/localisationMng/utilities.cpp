@@ -3,7 +3,7 @@
  * @brief static functions implementation
  */
 
- #include "utilities.cpp"
+ #include "utilities.h"
 
  //Enablements -- regarding to system running mode
 struct Enablements {

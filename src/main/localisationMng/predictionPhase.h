@@ -45,6 +45,4 @@ void preparePoint(double RSSIs[NUMBER_OF_ANCHORS]);
 */
 bool isBackupDataSetRelevant(void);
 
-LOCATIONS validateScanningPhasePerLabel(std::vector<Data> scanResultSamepleForValidationPerLabel);
-
 #endif
