@@ -25,7 +25,7 @@ void performScan(LOCATIONS locationLabel) {
         }
 
         Data scanData;
-        scanData.location = locationLabel;
+        scanData.label = locationLabel;
         for (int j = 0; j < TOTAL_APS; ++j) {
             scanData.RSSIs[j] = accumulatedRSSIs[j];
         }
