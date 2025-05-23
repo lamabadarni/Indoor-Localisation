@@ -10,6 +10,7 @@ struct Enablements {
     static bool enable_training_model_on_host_machine = false;
     static SystemState currentSystemState             = SystemState::OFFLINE;
     static bool enable_SD_Card_backup                 = false;
+
 };
 
 // Map specefic label to string 
@@ -133,6 +134,20 @@ bool promptUserAccuracyApprove() {
     Serial.println("Select option:");
     Serial.println("0 - Accuracy Not Sufficient. Proceed more scans at current label");
     Serial.println("1 - Accuracy Approved.");
+
+    while (true) {
+        if (Serial.available()) {
+            char c = Serial.read();
+            if (c == '0') return false;
+            if (c == '1') return true;
+        }
+    }
+}
+
+bool promptUserSDCardInitializationApprove() {
+    Serial.println("Select option:");
+    Serial.println("0 - Retry initiating SD card.");
+    Serial.println("1 - Skip initiating SD card.");
 
     while (true) {
         if (Serial.available()) {

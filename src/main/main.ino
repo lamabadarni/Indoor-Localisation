@@ -10,7 +10,6 @@
 
 String sessionFile;  // defined as extern in utilities.h
 extern ScanConfig currentConfig;
-bool sdAvailable = false;
 std::vector<Data> dataSet;
 
 String DataFile;
@@ -25,7 +24,7 @@ ScanConfig   currentConfig = {
     .systemState    = currentSystemState,
     .Count_Round     = 1,
     .RoundTimestamp  = millis(),
-    .RSSINum       = 10,
+    .RSSINum       = ,
     .TOFNum        = 0
 
 };
@@ -44,62 +43,28 @@ const char* anchorSSIDs[TOTAL_APS] = {
         "offices"
 };
 
-void sdInitInteractive() {
-  if (enablements::enable_SDCard_backup) {
-    while (true) {
-      Serial.print("Init SD… ");
-      sdAvailable = initSD();
-      if (sdAvailable) {
-        Serial.println("OK ");
-        break;
-      }
-      Serial.println("FAIL");
-      Serial.println("(I) Retry  (C) Skip SD");
-      
-      while (!Serial.available()) delay(50);
-      char c = Serial.read(); Serial.read();
-
-      if (c == 'I' || c == 'i') continue;
-      if (c == 'C' || c == 'c') {
-        sdAvailable = false;
-        Serial.println("Skipping SD");
-        break;
-      }
-    }
-  } else {
-    sdAvailable = initSD();
-    if (!sdAvailable) Serial.println(" SD disabled");
-  }
-}
-
 void setup() {
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
 
   // 1) Init SD (interactive if enabled)
-  sdInitInteractive();            // sets sdAvailable
+  bool sdAvailable = initSDCard();            // sets sdAvailable
  // if (sdAvailable) pruneOldCSVs(FILES_THRESHOLD);
 
   // 2) Build per‐config filenames
-  String key = string(currentConfig.systemState);
-  DataFile = "/" + key +"Data"+ ".csv";
-  metaFile    = "/" + key +"Meta"+ ".meta";
-  LocationAccuracyFile = "/" + key +"LocationAccuracy"+ ".csv";
-    // 4) SD is available → decide reuse vs. fresh
     bool reuse = false;
-    if (sdAvailable ){
-      if(SD.exists(DataFile) && SD.exists(metaFile)) {
+    if (sdAvailable){
+      if(SD.exists(systemStateToString(currentSystemState))) {
          // the purpose of reuse just to check if the meta data is relevant to curr config
-        loadLocationDataset(DataFile, metaFile, currentConfig);
-        if(isBackupDataSetRelevant()) {
-            Serial.println("Loading backup data set");
-          return;
-        }
-      }
-        deleteOldScanFiles();
-        createMetaFile(metaFile, currentConfig);
-        createCSVFile(DataFile, currentConfig);
+        loadAccuracy();
+        loadLocationDataset();
+        isBackupDataSetRelevant()
+        cleanUpCSVFile();
+        cleanUpDataSet();
+
+        createMetaFile();
+        createCSVFile();
 
         Serial.println("No Backup data set relevant to current config");
       
@@ -120,7 +85,7 @@ void setup() {
     Serial.printf("INTERACTIVE SCAN COMPLETE: total=%u\n", dataSet.size());
     return;
   
-
+  }
 
 }
 

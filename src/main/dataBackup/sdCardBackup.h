@@ -6,21 +6,25 @@
 #include <vector>
 #include "scan_data_manager.h"  // for currentConfig
 
+const string RSSI_CSV_FILE_NAME = systemStateToString + "/RSSI_scan_data_.csv";
+const string TOF_CSV_FILE_NAME = systemStateToString + "/TOF_scan_data_.csv";
+const string META_FILE_NAME = systemStateToString + "/meta_.csv";
+const string LOCATION_ACCURACY_FILE_NAME = systemStateToString + "/location_accuracy_.csv";
 
 /**
  * @brief Initialize SD card on the given CS pin.
  */
-bool initSD(int csPin = 5);
+bool initSDCard(int csPin = 5);
 
 /**
  * @brief Load scan data from CSV into the global dataset.
  */
-bool loadLocationDataset(const char* csvPath, const char* metaPath, ScanConfig currentConfig);
+bool loadLocationDataset();
 
 /**
  * @brief Save a single scan row to the CSV file.
  */
-bool saveLocationDataset(const String &path, const ScanData &row, ScanConfig currentConfig);
+bool saveLocationDataset();
 
 /**
  * @brief Create a new CSV file with the appropriate header based on ScanConfig.
@@ -35,7 +39,7 @@ bool verifyCSVFormat(const char* csvPath, ScanConfig currentConfig);
 /**
  * @brief Convert a CSV-formatted string into a Data structure.
  */
-static Data fromCSV(const String &line, const char* metaPath);
+static Data fromCSV();
 
 /**
  * @brief Serialize a ScanData structure to a CSV-formatted string.

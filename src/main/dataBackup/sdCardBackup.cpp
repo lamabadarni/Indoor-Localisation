@@ -9,22 +9,63 @@
 #include "sdCardBackup.h"
 #include <SPI.h>
 
+static string csvPathToOpen = "";
 
-bool initSD(int csPin) {
-    if (!SD.begin(csPin)) {
-        Serial.println("⚠ SD init failed");
-        return false;
+bool initSDCard(int csPin) {
+  for(int i = 0; i < MAX_RETRIES; i++) {
+    if(tryToInitSD()) {
+      return true;
     }
-    Serial.println("✅ SD initialized");
+  }
+  Serial.println("SD initialization failed after multiple attempts.");
+  return false;
+}
+
+bool tryToInitSD() {
+    if (!SD.begin()) {
+        Serial.println("SD initialization failed!");
+        return promptUserSDCardInitializationApprove();
+    }
+    Serial.println("SD card initialized.");
     return true;
 }
-bool loadLocationDataset(const char* csvPath,const char* metaPath, ScanConfig currentConfig) {
-    dataSet.clear();
+
+bool loadLocationDataset() {
+
+     verifyCSVFormat() 
+    //switch case according to system state
+    switch(Enablements::currentSystemState) {
+
+        case(SystemState::STATIC_RSSI) {
+        File f = SD.open(csvPath, FILE_READ);
+        f.readStringUntil('\n');
+        while (f.available()) {
+        String line = f.readStringUntil('\n');
+        Data d = fromCSV(line,metaPath);
+        rssiDataSet.push_back(d);
+     }
+            break;
+     }
+        case(SystemState::STATIC_RSSI_TOF) {
+        File f = SD.open(csvPath, FILE_READ);
+         File f = SD.open(csvPath, FILE_READ);
+        f.readStringUntil('\n');
+        while (f.available()) {
+        String line = f.readStringUntil('\n');
+        Data d = fromCSV(line,metaPath);
+        dataSet.push_back(d);
+    }
+            break;;
+        }
+
+    } 
+    // save to csvPathToOpensv 
     File f = SD.open(csvPath, FILE_READ);
     if (!f) {
+      //add log file not found
         return false;
     }
-  if(verifyCSVFormat(csvPath,currentConfig) == false) {
+  if(verifyCSVFormat() == false) {
         return false;
     }
 
@@ -39,8 +80,11 @@ bool loadLocationDataset(const char* csvPath,const char* metaPath, ScanConfig cu
     return true;
 }
 
-bool verifyCSVFormat(const char* csvPath, ScanConfig currentConfig) {
 
+
+bool verifyCSVFormat() {
+
+  //make read since the file alrtready opened
       File f = SD.open(csvPath, FILE_READ);
     if (!f) return false;
 

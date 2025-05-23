@@ -20,6 +20,7 @@ bool startLabelScanningSession(Label label) {
         validScan = computePredictionMatches();
         if(validScan) {
             Serial.println("Scanning Phase: scan completed at: " + locationToString(currentScanningLabel));
+            ///add accuracy to CSV!!!!
             break;
         }
         Serial.println("Scanning Phase: previous scan accuracy were not sufficient, produce another scan");
@@ -77,7 +78,7 @@ int computeRSSIPredictionMatches() {
             for (int j = 0; j < TOTAL_APS; ++j) {
                 scanData.RSSIs[j] = rssiPointToPredict[j];
             }
-
+            //add to csv !!!!!
             dataSet.push_back(scanData);
         }
     }
@@ -123,6 +124,7 @@ void scanStaticRSSI() {
             scanData.RSSIs[j] = accumulatedRSSIs[j];
         }
         dataSet.push_back(scanData);
+        /// add to CSV!!!!
     }
 }
 
