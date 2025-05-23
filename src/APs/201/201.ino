@@ -9,7 +9,6 @@ void setup(void)
   WiFi.mode(WIFI_AP);
   // Start the AP with ssid and pasword
   WiFi.softAP(ssid, password);
-  // delay wait for AP setup
 }
 
 void loop(void) {}

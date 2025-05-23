@@ -14,7 +14,7 @@ static double euclidean(const double* a, const double* b, int size)
 }
 
 
-static LOCATIONS _predict(const vector<double> &distances, const vector<LOCATIONS> &labels)
+static Label _predict(const vector<double> &distances, const vector<Label> &labels)
 {
     // Find the minimum K distances using bubble sort
     for (int i = 0; i < K; ++i)
@@ -29,7 +29,7 @@ static LOCATIONS _predict(const vector<double> &distances, const vector<LOCATION
                 distances[j + 1] = tempDist;
 
                 // Swap corresponding labels
-                LOCATIONS tempLabel = labels[j];
+                Label tempLabel = labels[j];
                 labels[j] = labels[j + 1];
                 labels[j + 1] = tempLabel;
             }
@@ -37,7 +37,7 @@ static LOCATIONS _predict(const vector<double> &distances, const vector<LOCATION
     }
 
     // Count votes for the K closest labels
-    int closestLabel[NUMBER_OF_LOCATIONS] = {0};
+    int closestLabel[NUMBER_OF_LABELS] = {0};
 
     for (int i = 0; i < K; ++i)
     {
@@ -47,25 +47,25 @@ static LOCATIONS _predict(const vector<double> &distances, const vector<LOCATION
     // Find the label with the maximum votes
     int maxVotes = 0;
     // Default value
-    LOCATIONS labelWithMaxVotes = (LOCATIONS) 0;
+    Label labelWithMaxVotes = (Label) 0;
 
-    for (int i = 0; i < NUMBER_OF_LOCATIONS; ++i)
+    for (int i = 0; i < NUMBER_OF_LABELS; ++i)
     {
         if (closestLabel[i] > maxVotes)
         {
             maxVotes = closestLabel[i];
-            labelWithMaxVotes = (LOCATIONS)i;
+            labelWithMaxVotes = (Label)i;
         }
     }
 
     return labelWithMaxVotes;
 }
 
-LOCATIONS rssiPredict(double input[NUMBER_OF_ANCHORS])
+Label rssiPredict(double input[NUMBER_OF_ANCHORS])
 {
     int sizeOfDataSet = rssiDataSet.size();
     vector<double> distances(sizeOfDataSet, 0);
-    vector<LOCATIONS> labels(sizeOfDataSet, NOT_ACCURATE);
+    vector<Label> labels(sizeOfDataSet, NOT_ACCURATE);
 
     // Calculate distances and store corresponding labels
     for (int i = 0 ; i < sizeOfDataSet ; ++i) {
@@ -76,11 +76,11 @@ LOCATIONS rssiPredict(double input[NUMBER_OF_ANCHORS])
     return _predict(distances, labels);
 }
 
-LOCATIONS tofPredict(double input[NUMBER_OF_RESPONDERS])
+Label tofPredict(double input[NUMBER_OF_RESPONDERS])
 {
     int sizeOfDataSet = tofDataSet.size();
     vector<double> distances(sizeOfDataSet, 0);
-    vector<LOCATIONS> labels(sizeOfDataSet, NOT_ACCURATE);
+    vector<Label> labels(sizeOfDataSet, NOT_ACCURATE);
 
     // Calculate distances and store corresponding labels
     for (int i = 0 ; i < sizeOfDataSet ; ++i) {
@@ -100,36 +100,47 @@ void preparePoint(double RSSIs[NUMBER_OF_ANCHORS])
     }
 }
 
+static bool isBackupLocationValid[NUMBER_OF_LABELS] = {false};
+
+static bool isLocationDataValid(Label location)
+{
+    return isLocationDataValid[location];
+}
+
 bool isBackupDataSetRelevant(void)
 {
-    if (dataSet.empty() < K)
+    if (currentSystemState == SystemState::STATIC_RSSI_TOF && tofDataSet.size() < K ||
+        rssiDataSet.size() < 10 * K)
     {
         return false; // Not enough data for KNN
     }
 
+    unsigned int numOfLabelInRSSI[NUMBER_OF_LABELS] = {0};
+    unsigned int numOfLabelInTOF[NUMBER_OF_LABELS] = {0};
+
     int sizeOfDataSet = dataSet.size();
-    int numTrainSamples = (int)(sizeOfDataSet * TRAIN_TEST_SPLIT);
-    int numTestSamples = sizeOfDataSet - numTrainSamples;
 
-    // Split the dataset into training and testing sets
-    std::vector<Data> trainSet(dataSet.begin(), dataSet.begin() + numTrainSamples);
-    std::vector<Data> testSet(dataSet.begin() + numTrainSamples, dataSet.end());
-
-    // Calculate the accuracy of the backup dataset
-    int correctPredictions = 0;
-    for (const auto& sample : testSet)
+    for (const RSSIData &data : rssiDataSet)
     {
-        LOCATIONS predictedLabel = knnPredict(sample.RSSIs[i]);
-        if (predictedLabel == sample.label)
+        numOfLabelInRSSI[data.label]++;
+    }
+
+    for (const TOFData &data : tofDataSet)
+    {
+        numOfLabelInTOF[data.label]++;
+    }
+
+    for (int i = 0; i < NUMBER_OF_LABELS; ++i)
+    {
+        if (numOfLabelInRSSI[i] >= 3 * K && numOfLabelInTOF[i] >= 3 * K && isLocationDataValid(i))
         {
-            correctPredictions++;
+            isBackupLocationValid[i] = true;
+        }
+        else
+        {
+            Serial.println("Backup dataset is not relevant for location: " + labelToString(i));
         }
     }
 
-    double accuracy = static_cast<double>(correctPredictions) / numTestSamples;
-
     return accuracy >= BACKUB_ACCURACY_THRESHOLD;
-}
-
-LOCATIONS validateScanningPhasePerLabel(std::vector<Data> scanResultSamepleForValidationPerLabel) {
 }

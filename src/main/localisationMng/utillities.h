@@ -19,7 +19,7 @@
 #define DEFAULT_RSSI_VALUE          (-100)
 #define NUMBER_OF_ANCHORS           (10)
 #define NUMBER_OF_RESPONDERS        (4)
-#define NUMBER_OF_LOCATIONS         (17)  
+#define NUMBER_OF_LABELS         (17)  
 
 //Just for KNN use
 #define K (4)
@@ -116,5 +116,11 @@ const char* systemStateToString(int state);
  * @return true if approved, false otherwise
  */
 bool promptUserAccuracyApprove();
+
+/**
+ * @brief Checks if the backup dataset is relevant.
+ * @return true if relevant, false otherwise
+ */
+bool isLocationValid(LOCATION location);
 
 #endif // _UTILITIES_H_
