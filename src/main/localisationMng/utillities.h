@@ -28,7 +28,6 @@ extern const char* anchorSSIDs[NUMBER_OF_ANCHORS];
 
 // =================== Enums ===================
 
-
 typedef enum Label {
     NOT_ACCURATE          = 0,
     NEAR_ROOM_232         = 1,
@@ -48,7 +47,7 @@ typedef enum Label {
     MAIN_EXIT             = 15,
     BALCONY_ENTRANCE      = 16,
     OFFICES_HALL          = 17
-} Label ;
+} Label;
 
 typedef enum SystemState {
     STATIC_RSSI             = 0, 
@@ -56,14 +55,12 @@ typedef enum SystemState {
     STATIC_DYNAMIC_RSSI     = 2, 
     STATIC_DYNAMIC_RSSI_TOF = 3,
     OFFLINE                 = 4
-} SystemState
- 
+} SystemState;
 
 // =================== Structures ===================
 
 struct RSSIData {
     int RSSIs[TOTAL_APS];
-    float TOFs[NUM_TOF_RESPONDERS];
     LOCATIONS label;
 };
 
@@ -73,7 +70,9 @@ struct TOFData {
 };
 
 // =================== Globals ===================
-extern std::vector<Data> dataSet;
+
+extern std::vector<RSSIData> rssiDataSet;
+extern std::vector<TOFData> tofDataSet;
 extern Label currentScanningLabel;
 
 // =================== Utilities Functions Decleration ===================
@@ -117,6 +116,5 @@ const char* systemStateToString(int state);
  * @return true if approved, false otherwise
  */
 bool promptUserAccuracyApprove();
-
 
 #endif // _UTILITIES_H_

@@ -1,5 +1,8 @@
 #include "predictionPhase.h"
 
+#define BACKUB_ACCURACY_THRESHOLD (0.8)
+#define TRAIN_TEST_SPLIT (0.8)
+
 static double euclidean(const double* a, const double* b, int size)
 {
     int sum = 0;
@@ -10,18 +13,9 @@ static double euclidean(const double* a, const double* b, int size)
     return sqrt(sum);
 }
 
-LOCATIONS knnPredict(const double input[NUMBER_OF_ANCHORS])
+
+static LOCATIONS _predict(const vector<double> &distances, const vector<LOCATIONS> &labels)
 {
-    int sizeOfDataSet = dataSet.size();
-    vector<double> distances(sizeOfDataSet, 0);
-    vector<LOCATIONS> labels(sizeOfDataSet, NOT_ACCURATE);
-
-    // Calculate distances and store corresponding labels
-    for (int i = 0 ; i < sizeOfDataSet ; ++i) {
-        distances[i] = euclidean(dataSet[i].RSSIs, input, sizeOfDataSet);
-        labels[i] = dataSet[i].label;
-    }
-
     // Find the minimum K distances using bubble sort
     for (int i = 0; i < K; ++i)
     {
@@ -67,6 +61,35 @@ LOCATIONS knnPredict(const double input[NUMBER_OF_ANCHORS])
     return labelWithMaxVotes;
 }
 
+LOCATIONS rssiPredict(double input[NUMBER_OF_ANCHORS])
+{
+    int sizeOfDataSet = rssiDataSet.size();
+    vector<double> distances(sizeOfDataSet, 0);
+    vector<LOCATIONS> labels(sizeOfDataSet, NOT_ACCURATE);
+
+    // Calculate distances and store corresponding labels
+    for (int i = 0 ; i < sizeOfDataSet ; ++i) {
+        distances[i] = euclidean(rssiDataSet[i].RSSIs, input, sizeOfInput);
+        labels[i] = dataSet[i].label;
+    }
+
+    return _predict(distances, labels);
+}
+
+LOCATIONS tofPredict(double input[NUMBER_OF_RESPONDERS])
+{
+    int sizeOfDataSet = tofDataSet.size();
+    vector<double> distances(sizeOfDataSet, 0);
+    vector<LOCATIONS> labels(sizeOfDataSet, NOT_ACCURATE);
+
+    // Calculate distances and store corresponding labels
+    for (int i = 0 ; i < sizeOfDataSet ; ++i) {
+        distances[i] = euclidean(tofDataSet[i].TOFs, input, sizeOfInput);
+        labels[i] = dataSet[i].label;
+    }
+
+    return _predict(distances, labels);
+}
 
 void preparePoint(double RSSIs[NUMBER_OF_ANCHORS])
 {
@@ -75,6 +98,37 @@ void preparePoint(double RSSIs[NUMBER_OF_ANCHORS])
         // Normalize the RSSI values using min-max scaling
         RSSIs[i] = (RSSIs[i] + 100) / 100.0;
     }
+}
+
+bool isBackupDataSetRelevant(void)
+{
+    if (dataSet.empty() < K)
+    {
+        return false; // Not enough data for KNN
+    }
+
+    int sizeOfDataSet = dataSet.size();
+    int numTrainSamples = (int)(sizeOfDataSet * TRAIN_TEST_SPLIT);
+    int numTestSamples = sizeOfDataSet - numTrainSamples;
+
+    // Split the dataset into training and testing sets
+    std::vector<Data> trainSet(dataSet.begin(), dataSet.begin() + numTrainSamples);
+    std::vector<Data> testSet(dataSet.begin() + numTrainSamples, dataSet.end());
+
+    // Calculate the accuracy of the backup dataset
+    int correctPredictions = 0;
+    for (const auto& sample : testSet)
+    {
+        LOCATIONS predictedLabel = knnPredict(sample.RSSIs[i]);
+        if (predictedLabel == sample.label)
+        {
+            correctPredictions++;
+        }
+    }
+
+    double accuracy = static_cast<double>(correctPredictions) / numTestSamples;
+
+    return accuracy >= BACKUB_ACCURACY_THRESHOLD;
 }
 
 LOCATIONS validateScanningPhasePerLabel(std::vector<Data> scanResultSamepleForValidationPerLabel) {
