@@ -130,7 +130,7 @@ const char* systemStateToString(int state) {
 }
 
 bool promptUserAccuracyApprove() {
-    Serial.println("Select 1 option:");
+    Serial.println("Select option:");
     Serial.println("0 - Accuracy Not Sufficient. Proceed more scans at current label");
     Serial.println("1 - Accuracy Approved.");
 

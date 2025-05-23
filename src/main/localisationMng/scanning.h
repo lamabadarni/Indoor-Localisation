@@ -26,7 +26,7 @@ void collectMeasurements();
  * @brief Computes how many predictions match the scanning label.
  * @return Number of successful predictions.
  */
-int computePredictionMatches();
+int computeRSSIPredictionMatches();
 
 /**
  * @brief Validates prediction accuracy and asks for user approval.
@@ -52,5 +52,6 @@ void scanDynamicRSSI();
 void scanTOF();
 
 
+int* createRSSIScanToMakePredection();
 
 #endif //IOT_INDOOR_LOCALISATION_SCANNING_H

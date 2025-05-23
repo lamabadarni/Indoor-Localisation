@@ -61,15 +61,15 @@ typedef enum SystemState {
 
 // =================== Structures ===================
 
-struct Data {
+struct RSSIData {
     int RSSIs[TOTAL_APS];
     float TOFs[NUM_TOF_RESPONDERS];
     LOCATIONS label;
 };
 
-struct Point {
-    int RSSIs[TOTAL_APS];
+struct TOFData {
     float TOFs[NUM_TOF_RESPONDERS];
+    LOCATIONS label;
 };
 
 // =================== Globals ===================

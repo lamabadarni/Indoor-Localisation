@@ -1,21 +1,11 @@
 #include "scanning.h"
 
-static int staticRSSIBufferToPredict[SCAN_VALIDATION_SAMPLE_SIZE][NUMBER_OF_ANCHORS];
-static float tofBufferToPredict[SCAN_VALIDATION_SAMPLE_SIZE][NUMBER_OF_RESPONDERS]; 
 static int scanAccuracy = 0;
 
 
 static void resetRssiBuffer(int rssi[NUMBER_OF_ANCHORS]) {
     for(int i = 0; i < NUMBER_OF_ANCHORS; i++) {
         rssi[i] = DEFAULT_RSSI_VALUE;
-    }
-}
-
-static void resetPredectionBuffers() {
-    for(int i = 0; i < SCAN_VALIDATION_SAMPLE_SIZE; i++) {
-        for(int j = 0; j < NUMBER_OF_ANCHORS j++) {
-            staticRSSIBufferToPredict[i][j] = DEFAULT_RSSI_VALUE;
-        }
     }
 }
 
@@ -27,7 +17,7 @@ bool startLabelScanningSession(Label label) {
         Serial.println("Scanning Phase: perfroming scan attempt #" + String(retryCount + 1) + " for: " locationToString(currentScanningLabel));
         collectMeasurements();
         Serial.println("Scanning Phase: scan attempt #" + String(retryCount + 1) + " checking scan validity");
-        validScan = validateScanMeasurements();
+        validScan = computePredictionMatches();
         if(validScan) {
             Serial.println("Scanning Phase: scan completed at: " + locationToString(currentScanningLabel));
             break;
@@ -72,20 +62,27 @@ void collectMeasurements() {
     } 
 }
 
-int computePredictionMatches() {
+int computeRSSIPredictionMatches() {
     int predectionSuccess = 0;
-    Point point;
 
     for(int sampleToPredict = 0; sampleToPredict < SCAN_VALIDATION_SAMPLE_SIZE; sampleToPredict++) {
-        memcpy(point.RSSIs, staticRSSIBufferToPredict[i], sizeof(point.RSSIs));
-        memcpy(point.TOFs, tofBufferToPredict[i], sizeof(point.TOFs));
-        Label predictedLabel = predict(point);
+        int rssiPointToPredict[NUMBER_OF_ANCHORS] = createRSSIScanToMakePredection();
+        Label predictedLabel = rssiPredict(rssiPointToPredict);
         if(predictedLabel == currentScanningLabel) {
             predectionSuccess++;
+
+            //Add each scan to scan data if the predection succeeded
+            RSSIData scanData;
+            scanData.label = locationLabel;
+            for (int j = 0; j < TOTAL_APS; ++j) {
+                scanData.RSSIs[j] = rssiPointToPredict[j];
+            }
+
+            dataSet.push_back(scanData);
         }
     }
 
-    return validateScanAccuracy();
+    return validateScanAccuracy(predectionSuccess);
 }
 
 bool validateScanAccuracy(int predectionSuccess) {
@@ -96,14 +93,11 @@ bool validateScanAccuracy(int predectionSuccess) {
                        " predicted to be: " + String(predectionSuccess) + "%");
         return promptUserAccuracyApprove();
     }
-
     return false;
 }
 
 void scanStaticRSSI() {
-    //reset the scanning batch that will be used for predection
-    resetPredectionBuffers(nullptr);
-    //start scanning 
+    //start scanning - make 15 scan, each scan contain 3 samples and calculate EMA
     for (int scan = 0; scan < SCAN_BATCH_SIZE; ++scan) {
         int accumulatedRSSIs[TOTAL_APS];
         resetRssiBuffer(accumulatedRSSIs);
@@ -122,16 +116,33 @@ void scanStaticRSSI() {
             delay(SCAN_DELAY_MS);
         }
 
-        int lastFiveScans = SCAN_BATCH_SIZE - scan;
-        if(lastFiveScans <= 5) {
-            memcpy(staticRSSIBufferToPredict[lastFiveScans - 1], accumulatedRSSIs, sizeof(point.RSSIs));
-        }
-
-        Data scanData;
+        //Add each scan to data set
+        RSSIData scanData;
         scanData.label = locationLabel;
         for (int j = 0; j < TOTAL_APS; ++j) {
             scanData.RSSIs[j] = accumulatedRSSIs[j];
         }
         dataSet.push_back(scanData);
     }
+}
+
+int* createRSSIScanToMakePredection() {
+    int accumulatedRSSIs[TOTAL_APS];
+    resetRssiBuffer(accumulatedRSSIs);
+    for(int sample = 0; sample < SAMPLE_PER_SCAN_BATCH; ++sample) {
+        int n = WiFi.scanNetworks();
+        for (int j = 0; j < n; ++j) {
+            String ssid = WiFi.SSID(j);
+            int rssi = WiFi.RSSI(j);
+            for (int k = 0; k < TOTAL_APS; ++k) {
+                if (ssid.equals(anchorSSIDs[k])) {
+                    accumulatedRSSIs[k] = applyEMA(accumulatedRSSIs[k], rssi);
+                }
+            }
+        }
+        WiFi.scanDelete();
+        delay(SCAN_DELAY_MS);
+    }
+
+    return accumulatedRSSIs;
 }
