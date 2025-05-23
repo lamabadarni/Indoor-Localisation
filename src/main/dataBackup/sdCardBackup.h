@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include "utillities.h" // For Data struct, LOCATIONS, TOTAL_APS, anchorSSIDs, dataSet
 #include <vector>
-
+#include "scan_data_manager.h"  // for currentConfig
 
 
 
@@ -14,11 +14,15 @@ bool initSD(int csPin = 5);
 /** True if SCAN_RESULTS_FILE exists and contains ≥1 row for every location */
 bool hasAllLocationRows();
 
-bool loadLocationDataset(LOCATIONS loc);
 
-bool saveLocationDataset(LOCATIONS loc);
+// Loads only the rows matching loc into outRows
+bool loadLocationDataset(const char* path,LOCATIONS loc, std::vector<ScanData>& outRows);
 
-bool verifyCSVFormat();
+// Verifies that the first line of csvPath matches the header implied
+// by currentSystemState and currentConfig.anchorMacs
+bool verifyCSVFormat(const char* csvPath);
 
+
+bool saveLocationDataset(const String &path, const ScanData &row);
 
 #endif // SD_CARD_H

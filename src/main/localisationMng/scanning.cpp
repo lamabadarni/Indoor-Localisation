@@ -34,7 +34,9 @@ int applyEMA(int prevRSSI, int newRSSI) {
     return (int)(ALPHA * prevRSSI + (1 - ALPHA) * newRSSI);
 }
 
-void performScan(LOCATIONS locationLabel) {
+void performScan(LOCATIONS locationLabel,std::vector<Data>& CurrScans) {
+
+
     for (int i = 0; i < SCANS_PER_LOCATION; ++i) {
         int accumulatedRSSIs[TOTAL_APS];
         Serial.println("starting iteration " + String(i) + " at location " + locationToString((int)locationLabel) "\n");
@@ -66,6 +68,8 @@ void performScan(LOCATIONS locationLabel) {
 
         preparePoint(scanData.RSSIs);
         dataSet.push_back(scanData);
+        CurrScans.push_back(scanData);
+        
     }
 
 
@@ -129,4 +133,5 @@ char* promptLocationSelection() {
     }
     return locationToString(loc);
 }
+
 
