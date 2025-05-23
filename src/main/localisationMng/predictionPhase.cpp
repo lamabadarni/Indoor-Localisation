@@ -17,8 +17,8 @@ LOCATIONS knnPredict(const double input[NUMBER_OF_ANCHORS])
     vector<LOCATIONS> locations(sizeOfDataSet, NOT_ACCURATE);
 
     // Calculate distances and store corresponding location labels
-    for (int i = 0 ; i < NUMBER_OF_SCANS ; ++i) {
-        distances[i] = euclidean(dataSet[i].RSSIs, input, NUMBER_OF_ANCHORS);
+    for (int i = 0 ; i < sizeOfDataSet ; ++i) {
+        distances[i] = euclidean(dataSet[i].RSSIs, input, sizeOfDataSet);
         locations[i] = dataSet[i].location;
     }
 
@@ -75,6 +75,7 @@ void preparePoint(double RSSIs[NUMBER_OF_ANCHORS])
         // Normalize the RSSI values using min-max scaling
         RSSIs[i] = (RSSIs[i] + 100) / 100.0;
     }
+}
 
 LOCATIONS validateScanningPhasePerLabel(std::vector<Data> scanResultSamepleForValidationPerLabel) {
 }
