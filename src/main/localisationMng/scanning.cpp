@@ -102,11 +102,11 @@ bool validateScanAccuracy(int predectionSuccess) {
 
 void scanStaticRSSI() {
     //reset the scanning batch that will be used for predection
-    resetStaticRssiBuffer(nullptr);
+    resetPredectionBuffers(nullptr);
     //start scanning 
     for (int scan = 0; scan < SCAN_BATCH_SIZE; ++scan) {
         int accumulatedRSSIs[TOTAL_APS];
-        resetStaticRssiBuffer(accumulatedRSSIs);
+        resetRssiBuffer(accumulatedRSSIs);
         for(int sample = 0; sample < SAMPLE_PER_SCAN_BATCH; ++sample) {
             int n = WiFi.scanNetworks();
             for (int j = 0; j < n; ++j) {
@@ -120,6 +120,11 @@ void scanStaticRSSI() {
             }
             WiFi.scanDelete();
             delay(SCAN_DELAY_MS);
+        }
+
+        int lastFiveScans = SCAN_BATCH_SIZE - scan;
+        if(lastFiveScans <= 5) {
+            memcpy(staticRSSIBufferToPredict[lastFiveScans - 1], accumulatedRSSIs, sizeof(point.RSSIs));
         }
 
         Data scanData;
