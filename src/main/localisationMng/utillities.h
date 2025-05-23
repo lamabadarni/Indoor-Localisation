@@ -61,7 +61,7 @@ typedef enum SystemState {
 struct Data {
     int RSSIs[TOTAL_APS];
     float TOFs[NUM_TOF_RESPONDERS];
-    LOCATIONS location;
+    LOCATIONS label;
 };
 
 //Enablements -- regarding to system running mode
