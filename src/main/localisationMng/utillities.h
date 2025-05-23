@@ -23,24 +23,10 @@
 
 extern const char* anchorSSIDs[TOTAL_APS];
 
-typedef enum SystemState {
-    STATIC_RSSI             = 0, 
-    STATIC_RSSI_TOF         = 1,
-    STATIC_DYNAMIC_RSSI     = 2, 
-    STATIC_DYNAMIC_RSSI_TOF = 3,
-    OFFLINE                 = 4
-} SystemState
-
-//Enablements -- regarding to system running mode
-struct enablements {
-    static bool enable_training_model_on_host_machine = false;
-    static SystemState currentSystemState             = SystemState::OFFLINE;
-    static bool enable_SD_Card_backup 
-}
 // =================== Enums ===================
 
 
-typedef enum LOCATIONS {
+typedef enum Label {
     NOT_ACCURATE          = 0,
     NEAR_ROOM_232         = 1,
     NEAR_ROOM_234         = 2,
@@ -59,7 +45,15 @@ typedef enum LOCATIONS {
     MAIN_EXIT             = 15,
     BALCONY_ENTRANCE      = 16,
     OFFICES_HALL          = 17
-} LOCATIONS ;
+} Label ;
+
+typedef enum SystemState {
+    STATIC_RSSI             = 0, 
+    STATIC_RSSI_TOF         = 1,
+    STATIC_DYNAMIC_RSSI     = 2, 
+    STATIC_DYNAMIC_RSSI_TOF = 3,
+    OFFLINE                 = 4
+} SystemState
  
 
 // =================== Data Structures ===================
@@ -70,7 +64,39 @@ struct Data {
     LOCATIONS location;
 };
 
+//Enablements -- regarding to system running mode
+struct Enablements {
+    static bool enable_training_model_on_host_machine = false;
+    static SystemState currentSystemState             = SystemState::OFFLINE;
+    static bool enable_SD_Card_backup 
+}
+
 // =================== Data Set Vector ===================
 extern std::vector<Data> dataSet;
+
+
+// =================== Utilities Functions Decleration ===================
+
+/// Smoothing RSSI measurements
+int applyEMA(int prevRSSI, int newRSSI)
+
+/// @brief   User UI for choosing label 
+/// @return  string describes specific label 
+char* promptLocationSelection();
+
+/// @brief  Map specefic label to string 
+/// @param  label described by integer
+/// @return String 
+const char* labelToString(int label);
+
+/// @brief   User UI for choosing System State 
+/// @return  string describes specific label 
+SystemState promptSystemState()
+
+/// @brief  Map specefic label to string 
+/// @param  state described by integer
+/// @return String 
+const char* systemStateToString(int state)
+
 
 #endif // _UTILITIES_H_
