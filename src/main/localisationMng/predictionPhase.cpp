@@ -14,12 +14,12 @@ LOCATIONS knnPredict(const double input[NUMBER_OF_ANCHORS])
 {
     int sizeOfDataSet = dataSet.size();
     vector<double> distances(sizeOfDataSet, 0);
-    vector<LOCATIONS> locations(sizeOfDataSet, NOT_ACCURATE);
+    vector<LOCATIONS> labels(sizeOfDataSet, NOT_ACCURATE);
 
-    // Calculate distances and store corresponding location labels
+    // Calculate distances and store corresponding labels
     for (int i = 0 ; i < sizeOfDataSet ; ++i) {
         distances[i] = euclidean(dataSet[i].RSSIs, input, sizeOfDataSet);
-        locations[i] = dataSet[i].location;
+        labels[i] = dataSet[i].label;
     }
 
     // Find the minimum K distances using bubble sort
@@ -34,37 +34,37 @@ LOCATIONS knnPredict(const double input[NUMBER_OF_ANCHORS])
                 distances[j] = distances[j + 1];
                 distances[j + 1] = tempDist;
 
-                // Swap corresponding location labels
-                LOCATIONS tempLocation = locations[j];
-                locations[j] = locations[j + 1];
-                locations[j + 1] = tempLocation;
+                // Swap corresponding labels
+                LOCATIONS tempLabel = labels[j];
+                labels[j] = labels[j + 1];
+                labels[j + 1] = tempLabel;
             }
         }
     }
 
-    // Count votes for the K closest locations
-    int closestLocation[NUMBER_OF_LOCATIONS] = {0};
+    // Count votes for the K closest labels
+    int closestLabel[NUMBER_OF_LOCATIONS] = {0};
 
     for (int i = 0; i < K; ++i)
     {
-        closestLocation[locations[sizeOfDataSet - i - 1]]++;
+        closestLabel[labels[sizeOfDataSet - i - 1]]++;
     }
 
-    // Find the location with the maximum votes
+    // Find the label with the maximum votes
     int maxVotes = 0;
     // Default value
-    LOCATIONS locationWithMaxVotes = (LOCATIONS) 0;
+    LOCATIONS labelWithMaxVotes = (LOCATIONS) 0;
 
     for (int i = 0; i < NUMBER_OF_LOCATIONS; ++i)
     {
-        if (closestLocation[i] > maxVotes)
+        if (closestLabel[i] > maxVotes)
         {
-            maxVotes = closestLocation[i];
-            locationWithMaxVotes = (LOCATIONS)i;
+            maxVotes = closestLabel[i];
+            labelWithMaxVotes = (LOCATIONS)i;
         }
     }
 
-    return locationWithMaxVotes;
+    return labelWithMaxVotes;
 }
 
 
