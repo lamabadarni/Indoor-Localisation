@@ -17,6 +17,7 @@ bool Enablements::verify_rssi_anchor_mapping            = false;
 SystemState currentSystemState                          = OFFLINE;
 SystemMode  currentSystemMode                           = MODE_FULL_SESSION;
 
+bool reuseFromSD[NUMBER_OF_LABELS] = {false};
 
 // ====================== Label Conversion ======================
 

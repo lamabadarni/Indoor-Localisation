@@ -6,7 +6,7 @@
 #include "../localisationMng/predictionPhase.h"
 
 
-// Globals
+// Globals 
 
 String sessionFile;  // defined as extern in utilities.h
 extern ScanConfig currentConfig;
@@ -143,7 +143,7 @@ void loop() {
 
 
 
------------------ new main --------------------
+// ----------------- new main --------------------
 
 
 void setup() {
