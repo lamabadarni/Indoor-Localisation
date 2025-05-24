@@ -96,7 +96,10 @@ const char* modeToString(SystemMode mode) {
 }
 // ======================Static fun  ======================
 static void deleteDirectory(const String &dirPath);
-
+String metaPath = getSDBaseDir() + META_FILENAME;
+String rssiPath = getSDBaseDir() + RSSI_FILENAME;
+String tofPath = getSDBaseDir() + TOF_FILENAME;
+String accPath = getSDBaseDir() + ACCURACY_FILENAME;
 
 // ====================== Utility Functions ======================
 
@@ -185,7 +188,6 @@ bool resetStorage() {
     Serial.println("Created directory: " + baseDir);
 
     // 3) Meta file (always)
-    String metaPath = baseDir + "/meta_.csv";
     if (!createMetaFile(metaPath)) {
         Serial.println("Failed to create meta file.");
         return false;
@@ -193,7 +195,6 @@ bool resetStorage() {
 
     // 4) RSSI CSV (always)
     {
-        String rssiPath = baseDir + "/rssi_scan_data_.csv";
         File f = SD.open(rssiPath, FILE_WRITE);
         if (!f) {
             Serial.println("Failed to create RSSI CSV.");
@@ -208,7 +209,6 @@ bool resetStorage() {
 
     // 5) Accuracy CSV (always)
     {
-        String accPath = baseDir + "/location_accuracy_.csv";
         File f = SD.open(accPath, FILE_WRITE);
         if (!f) {
             Serial.println("Failed to create accuracy CSV.");
@@ -221,7 +221,6 @@ bool resetStorage() {
     // 6) TOF CSV (only in TOF modes)
     if (currentConfig.systemState == STATIC_RSSI_TOF ||
         currentConfig.systemState == STATIC_DYNAMIC_RSSI_TOF) {
-        String tofPath = baseDir + "/tof_scan_data_.csv";
         File f = SD.open(tofPath, FILE_WRITE);
         if (!f) {
             Serial.println("Failed to create TOF CSV.");
