@@ -23,12 +23,6 @@ bool startLabelScanningSession();
 void collectMeasurements();
 
 /**
- * @brief Computes how many predictions match the scanning label.
- * @return Number of successful predictions.
- */
-int computeRSSIPredictionMatches();
-
-/**
  * @brief Validates prediction accuracy and asks for user approval.
  * @param matches Number of correct predictions.
  * @return true if user approves the scan, false otherwise.
@@ -51,7 +45,5 @@ void scanDynamicRSSI();
  */
 void scanTOF();
 
-
-int* createRSSIScanToMakePredection();
 
 #endif //IOT_INDOOR_LOCALISATION_SCANNING_H

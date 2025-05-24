@@ -1,150 +1,155 @@
 #include "scanning.h"
+#include "rssiScanner.h"
+#include "tofScanner.h"
+#include "userUI.h"
 
 static int scanAccuracy = 0;
 
-
-static void resetRssiBuffer(int rssi[NUMBER_OF_ANCHORS]) {
-    for(int i = 0; i < NUMBER_OF_ANCHORS; i++) {
-        rssi[i] = DEFAULT_RSSI_VALUE;
-    }
-}
-
+/**
+ * @brief Starts a scanning session with retries and validation.
+ *        Collects measurements and checks prediction accuracy.
+ */
 bool startLabelScanningSession(Label label) {
-    int retryCount       = 0;
-    bool validScan       = false;
+    int retryCount = 0;
+    bool validScan = false;
+    currentScanningLabel = label;
 
-    while(retryCount < MAX_RETRIES) {
-        Serial.println("Scanning Phase: perfroming scan attempt #" + String(retryCount + 1) + " for: " locationToString(currentScanningLabel));
+    while (retryCount < MAX_RETRIES) {
+        Serial.printf("Scanning Phase: performing scan attempt #%d for: %s\n", retryCount + 1, labelToString(label));
+
         collectMeasurements();
-        Serial.println("Scanning Phase: scan attempt #" + String(retryCount + 1) + " checking scan validity");
-        validScan = computePredictionMatches();
-        if(validScan) {
-            Serial.println("Scanning Phase: scan completed at: " + locationToString(currentScanningLabel));
-            ///add accuracy to CSV!!!!
+
+        Serial.println("Scanning Phase: validating scan accuracy...");
+        validScan = validateScanAccuracy();
+        if (validScan) {
+            Serial.printf("Scanning Phase: scan completed successfully at: %s\n", labelToString(label));
             break;
         }
-        Serial.println("Scanning Phase: previous scan accuracy were not sufficient, produce another scan");
+
+        Serial.println("Scanning Phase: accuracy insufficient, retrying scan...");
+        retryCount++;
     }
 
-    //If we've reached max retries and scan still unvalid
-    if(!validScan) {
-        Serial.println("Scanning Phase: scan failed!");
+    if (!validScan) {
+        Serial.println("Scanning Phase: scan failed after max retries.");
         return false;
     }
 
-    Serial.println("Scanning Phase: scan success :) Scan accuracy: " String(scanAccuracy) + "%");
+    Serial.printf("Scanning Phase: final accepted scan at %s with accuracy: %d%%\n", labelToString(label), scanAccuracy);
     return true;
 }
 
+/**
+ * @brief Collects measurements based on current system state.
+ *        Dispatches to appropriate scanner modules.
+ */
 void collectMeasurements() {
-    Serial.println("Scanning Phase: start scanning ...");
-    switch(Enablements::currentSystemState) {
-        case(SystemState::STATIC_RSSI) {
-            scanStaticRSSI();
-            break;
-        }
-        case(SystemState::STATIC_RSSI_TOF) {
-            scanStaticRSSI();
-            scanTOF();
-            break;;
-        }
-        case(SystemState::STATIC_DYNAMIC_RSSI) {
-            scanStaticRSSI();
-            scanDynamicRSSI();
-            break;
-        }
+    Serial.println("Scanning Phase: collecting measurements...");
 
-        case(SystemState::STATIC_DYNAMIC_RSSI_TOF) {
-            scanStaticRSSI();
-            scanTOF();
-            scanDynamicRSSI();
+    switch (Enablements::currentSystemState) {
+        case STATIC_RSSI:
+            performRSSIScan();
             break;
-        }
-    } 
+
+        case STATIC_RSSI_TOF:
+            performRSSIScan();
+            performTOFScan();
+            break;
+
+        case STATIC_DYNAMIC_RSSI:
+            performRSSIScan();
+            scanDynamicRSSI();  // Placeholder for future feature
+            break;
+
+        case STATIC_DYNAMIC_RSSI_TOF:
+            performRSSIScan();
+            scanDynamicRSSI();  // Placeholder for future feature
+            performTOFScan();
+            break;
+
+        default:
+            Serial.println("Scanning Phase: Unsupported system state.");
+            break;
+    }
 }
 
-int computeRSSIPredictionMatches() {
-    int predectionSuccess = 0;
+/**
+ * @brief Validates the scan results by checking how many predictions match the label.
+ *        Uses both RSSI and TOF modules if enabled. If failed, offers fallback.
+ */
+bool validateScanAccuracy() {
+    int matchesRSSI = 0;
+    int matchesTOF = 0;
+    bool combinedOK = false;
 
-    for(int sampleToPredict = 0; sampleToPredict < SCAN_VALIDATION_SAMPLE_SIZE; sampleToPredict++) {
-        int rssiPointToPredict[NUMBER_OF_ANCHORS] = createRSSIScanToMakePredection();
-        Label predictedLabel = rssiPredict(rssiPointToPredict);
-        if(predictedLabel == currentScanningLabel) {
-            predectionSuccess++;
+    // Run RSSI and/or TOF predictions depending on system state
+    switch (Enablements::currentSystemState) {
+        case STATIC_RSSI:
+            matchesRSSI = computeRSSIPredictionMatches();
+            break;
 
-            //Add each scan to scan data if the predection succeeded
-            RSSIData scanData;
-            scanData.label = locationLabel;
-            for (int j = 0; j < TOTAL_APS; ++j) {
-                scanData.RSSIs[j] = rssiPointToPredict[j];
-            }
-            //add to csv !!!!!
-            dataSet.push_back(scanData);
-        }
+        case STATIC_RSSI_TOF:
+            matchesRSSI = computeRSSIPredictionMatches();
+            matchesTOF = computeTOFPredictionMatches();
+            break;
+
+        case STATIC_DYNAMIC_RSSI:
+            matchesRSSI = computeRSSIPredictionMatches();
+            break;
+
+        case STATIC_DYNAMIC_RSSI_TOF:
+            matchesRSSI = computeRSSIPredictionMatches();
+            matchesTOF = computeTOFPredictionMatches();
+            break;
+
+        default:
+            break;
     }
 
-    return validateScanAccuracy(predectionSuccess);
-}
+    int totalMatches = matchesRSSI + matchesTOF;
+    int totalAttempts = (matchesTOF > 0) ? 2 * SCAN_VALIDATION_SAMPLE_SIZE : SCAN_VALIDATION_SAMPLE_SIZE;
+    scanAccuracy = (100 * totalMatches) / totalAttempts;
 
-bool validateScanAccuracy(int predectionSuccess) {
-    //Ask user approval for scan accuracy
-    if(predectionSuccess >= VALIDATION_PASS_THRESHOLD) {
-        scanAccuracy = (predectionSuccess/SCAN_VALIDATION_SAMPLE_SIZE)*100;
-        Serial.println("Scanning Phase: scan accuracy at:" + locationToString(currentScanningLabel) + 
-                       " predicted to be: " + String(predectionSuccess) + "%");
-        return promptUserAccuracyApprove();
+    Serial.printf("Scanning Phase: combined accuracy = %d%% (%d/%d correct predictions)\n",
+                  scanAccuracy, totalMatches, totalAttempts);
+
+    combinedOK = (totalMatches >= VALIDATION_PASS_THRESHOLD);
+
+    if (combinedOK && promptUserAccuracyApprove()) return true;
+
+    // Combined validation failed — fallback prompt
+    int choice = promptRetryValidationWithSingleMethod();
+
+    if (choice == 1) {
+        Serial.println("Retrying validation with RSSI only...");
+        matchesRSSI = computeRSSIPredictionMatches();
+        scanAccuracy = (100 * matchesRSSI) / SCAN_VALIDATION_SAMPLE_SIZE;
+        Serial.printf("[RSSI] Retry accuracy = %d%%\n", scanAccuracy);
+        return (matchesRSSI >= VALIDATION_PASS_THRESHOLD) && promptUserAccuracyApprove();
     }
+
+    if (choice == 2) {
+        Serial.println("Retrying validation with TOF only...");
+        matchesTOF = computeTOFPredictionMatches();
+        scanAccuracy = (100 * matchesTOF) / SCAN_VALIDATION_SAMPLE_SIZE;
+        Serial.printf("[TOF] Retry accuracy = %d%%\n", scanAccuracy);
+        return (matchesTOF >= VALIDATION_PASS_THRESHOLD) && promptUserAccuracyApprove();
+    }
+
+    Serial.println("User aborted validation.");
     return false;
 }
 
-void scanStaticRSSI() {
-    //start scanning - make 15 scan, each scan contain 3 samples and calculate EMA
-    for (int scan = 0; scan < SCAN_BATCH_SIZE; ++scan) {
-        int accumulatedRSSIs[TOTAL_APS];
-        resetRssiBuffer(accumulatedRSSIs);
-        for(int sample = 0; sample < SAMPLE_PER_SCAN_BATCH; ++sample) {
-            int n = WiFi.scanNetworks();
-            for (int j = 0; j < n; ++j) {
-                String ssid = WiFi.SSID(j);
-                int rssi = WiFi.RSSI(j);
-                for (int k = 0; k < TOTAL_APS; ++k) {
-                    if (ssid.equals(anchorSSIDs[k])) {
-                        accumulatedRSSIs[k] = applyEMA(accumulatedRSSIs[k], rssi);
-                    }
-                }
-            }
-            WiFi.scanDelete();
-            delay(SCAN_DELAY_MS);
-        }
-
-        //Add each scan to data set
-        RSSIData scanData;
-        scanData.label = locationLabel;
-        for (int j = 0; j < TOTAL_APS; ++j) {
-            scanData.RSSIs[j] = accumulatedRSSIs[j];
-        }
-        dataSet.push_back(scanData);
-        /// add to CSV!!!!
-    }
+/**
+ * @brief Placeholder for dynamic RSSI scanning logic (future feature).
+ */
+void scanDynamicRSSI() {
+    Serial.println("Dynamic RSSI scanning is not implemented yet.");
 }
 
-int* createRSSIScanToMakePredection() {
-    int accumulatedRSSIs[TOTAL_APS];
-    resetRssiBuffer(accumulatedRSSIs);
-    for(int sample = 0; sample < SAMPLE_PER_SCAN_BATCH; ++sample) {
-        int n = WiFi.scanNetworks();
-        for (int j = 0; j < n; ++j) {
-            String ssid = WiFi.SSID(j);
-            int rssi = WiFi.RSSI(j);
-            for (int k = 0; k < TOTAL_APS; ++k) {
-                if (ssid.equals(anchorSSIDs[k])) {
-                    accumulatedRSSIs[k] = applyEMA(accumulatedRSSIs[k], rssi);
-                }
-            }
-        }
-        WiFi.scanDelete();
-        delay(SCAN_DELAY_MS);
-    }
-
-    return accumulatedRSSIs;
+/**
+ * @brief Calls TOF scanning module (for logical symmetry).
+ */
+void scanTOF() {
+    performTOFScan();
 }

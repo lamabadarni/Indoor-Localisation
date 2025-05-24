@@ -134,3 +134,48 @@ void loop() {
     LOCATIONS predictedLoc = static_cast<LOCATIONS>(knnPredict(point));
     confirmLocation(predictedLoc);
 }
+
+
+
+
+
+
+
+
+
+----------------- new main --------------------
+
+
+void setup() {
+    Serial.begin(115200);
+    delay(2000);
+    Serial.println("Indoor Localization System Starting...");
+    
+    // Step 1: Mode & Feature Setup
+    SystemMode mode = promptSystemMode();
+    setupEnablementsFromUser();
+
+    // Step 2: Run mode-specific logic
+    switch (mode) {
+        case MODE_RSSI_MODEL_DIAGNOSTIC:
+            verifyRSSIScanCoverage();
+            break;
+
+        case MODE_TOF_DIAGNOSTIC:
+            verifyTOFScanCoverage();
+            break;
+
+        case MODE_TRAINING_ONLY:
+        case MODE_FULL_SESSION:
+            runTrainingSessionLoop();
+            break;
+
+        case MODE_PREDICTION_ONLY:
+            runLivePredictionMode();
+            break;
+
+    }
+
+}
+
+        

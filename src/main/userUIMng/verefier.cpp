@@ -1,12 +1,15 @@
 /**
  * @file verifier.cpp
- * @brief Implementation of scanning functions for verifying RSSI anchor coverage.
+ * @brief Implementation of scanning functions for verifying RSSI and TOF anchor coverage.
  */
 
 #include <WiFi.h>
 #include "utillities.h"
 #include "userUI.h"
 #include "verifier.h"
+#include "tofScanner.h"
+
+// ================= RSSI =================
 
 RSSICoverageResult scanRSSICoverage(Label label) {
     RSSICoverageResult result = {0};
@@ -43,7 +46,7 @@ RSSICoverageResult scanRSSICoverage(Label label) {
 bool verifyRSSIScanCoverage() {
     while (true) {
         Serial.println("Verify RSSI scan coverage");
-        Label label = promptLocationSelection();
+        Label label = promptLocationLabel();
         RSSICoverageResult result = scanRSSICoverage(label);
 
         Serial.println("----- RSSI Coverage Report -----");
@@ -63,6 +66,78 @@ bool verifyRSSIScanCoverage() {
 
             if (promptAbortForImprovement()) {
                 Serial.println("Aborting RSSI coverage verification.");
+                return false;
+            }
+        }
+
+        if (!promptVerifyScanCoverageAtAnotherLabel()) {
+            break;
+        }
+    }
+
+    return true;
+}
+
+// ================= TOF =================
+
+TOFCoverageResult scanTOFCoverage(Label label) {
+    TOFCoverageResult result = {0};
+    result.label = label;
+
+    float distances[NUMBER_OF_RESPONDERS] = {0.0f};
+    int totalCm = 0;
+
+    currentScanningLabel = label;
+    createTOFScanToMakePrediction(distances);
+
+    for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
+        if (distances[i] >= 0.0f) {
+            result.responderVisibility[i] = true;
+            result.responderDistance[i] = (int)distances[i];
+            totalCm += result.responderDistance[i];
+            result.visibleResponders++;
+        } else {
+            result.responderVisibility[i] = false;
+            result.responderDistance[i] = INVALID_DISTANCE_CM;
+        }
+    }
+
+    result.averageDistance = (result.visibleResponders > 0)
+                             ? (totalCm / result.visibleResponders)
+                             : INVALID_DISTANCE_CM;
+
+    return result;
+}
+
+bool verifyTOFScanCoverage() {
+    while (true) {
+        Serial.println("Verify TOF responder coverage");
+        Label label = promptLocationLabel();
+        TOFCoverageResult result = scanTOFCoverage(label);
+
+        Serial.println("----- TOF Coverage Report -----");
+        Serial.print("Location: "); Serial.println(labelToString(result.label));
+        Serial.print("Visible Responders: "); Serial.println(result.visibleResponders);
+        Serial.print("Average Distance: "); Serial.println(result.averageDistance);
+
+        for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
+            Serial.printf("  Responder %d: %d cm [%s]\n", i,
+                result.responderDistance[i],
+                result.responderVisibility[i] ? "visible" : "not visible");
+        }
+
+        bool approved = promptRSSICoverageUserFeedback(); // reuse prompt
+
+        if (!approved) {
+            if (result.visibleResponders < MIN_RESPONDERS_VISIBLE) {
+                Serial.println("Advice: Add more responders or reposition to ensure redundancy.");
+            }
+            if (result.averageDistance > MAX_AVERAGE_TOF_DISTANCE_CM || result.averageDistance == INVALID_DISTANCE_CM) {
+                Serial.println("Advice: Reduce distance between scanner and responders.");
+            }
+
+            if (promptAbortForImprovement()) {
+                Serial.println("Aborting TOF coverage verification.");
                 return false;
             }
         }
