@@ -1,3 +1,9 @@
+/**
+ * @file scanning.cpp
+ * @brief Manages full scanning sessions across labels, handles retries, validation, and measurement dispatching.
+ * @author Lama Badarni
+ */
+
 #include "scanning.h"
 #include "rssiScanner.h"
 #include "tofScanner.h"
@@ -8,95 +14,91 @@ void runScanningPhase() {
     Serial.println("=============== Scanning Phase Started ===============");
 
     for (int i = 0; i < NUMBER_OF_LABELS; i++) {
-        Label label = promptLocationLabel();
-        currentScanningLabel = label;
+        currentLabel = promptLocationLabel();
 
         Serial.println();
-        Serial.println("Selected Label: " + String(labelToString(label)));
-        Serial.println(">> Press Enter to start scanning...");
+        Serial.println("[SCAN] Selected Label: " + String(labelToString(currentLabel)));
+        Serial.println("[SCAN] >> Press Enter to start scanning...");
         while (!Serial.available()) delay(50);
-        Serial.read();  // consume newline
+        Serial.read();
 
-        Serial.println("Scanning Phase: Starting scan at " + String(labelToString(label)));
-        startLabelScanningSession(label);
+        Serial.println("[SCAN] Starting scan at: " + String(labelToString(currentLabel)));
+        startLabelScanningSession();
     }
 
     Serial.println();
     Serial.println("=============== Scanning Phase Completed ===============");
 }
 
-bool startLabelScanningSession(Label label) {
+bool startLabelScanningSession() {
     int retryCount = 0;
     bool validScan = false;
-    currentScanningLabel = label;
 
     while (retryCount < MAX_RETRIES) {
-        Serial.println("Scanning Phase: performing scan attempt #" + String(retryCount + 1) +
-                       " for: " + String(labelToString(label)));
+        Serial.println("[SCAN] Attempt #" + String(retryCount + 1) + " for: " + String(labelToString(currentLabel)));
 
         collectMeasurements();
 
-        Serial.println("Scanning Phase: validating scan accuracy...");
+        Serial.println("[SCAN] Validating scan accuracy...");
         validScan = validateScanAccuracy();
         if (validScan) {
-            Serial.println("Scanning Phase: scan completed successfully at: " + String(labelToString(label)));
+            Serial.println("[SCAN] Scan successful at: " + String(labelToString(currentLabel)));
             break;
         }
 
-        Serial.println("Scanning Phase: accuracy insufficient, retrying scan...");
+        Serial.println("[SCAN] Accuracy insufficient, retrying...");
         retryCount++;
     }
 
     if (!validScan) {
-        Serial.println("Scanning Phase: scan failed after max retries at: " + String(labelToString(label)));
+        Serial.println("[SCAN] Scan failed after max retries at: " + String(labelToString(currentLabel)));
         return false;
     }
 
-    Serial.printf("Scanning Phase: final accepted scan at %s with accuracy: %d%%\n", labelToString(label), scanAccuracy);
-    // Save the scan data to SD card
+    Serial.println("[SCAN] Final accepted scan at: " + String(labelToString(currentLabel)) + ", Accuracy: " + String(accuracy) + "%");
 
     AccuracyData record;
-    record.location  = label;
-    record.accuracy  = scanAccuracy;
+    record.location = currentLabel;
+    record.accuracy = accuracy;
 
-   accuracyDatas.push_back(record);
+    accuracyDatas.push_back(record);
     if (!saveAccuracyData(record)) {
-        Serial.println("Failed to save accuracy data.");
+        Serial.println("[SCAN] Failed to save accuracy data.");
     }
-    
+
     return true;
 }
 
 void collectMeasurements() {
-    Serial.println("Scanning Phase: collecting measurements...");
+    Serial.println("[SCAN] Collecting measurements...");
 
     switch (Enablements::currentSystemState) {
         case STATIC_RSSI:
-            Serial.println("Measurement Mode: STATIC_RSSI");
+            Serial.println("[SCAN] Mode: STATIC_RSSI");
             performRSSIScan();
             break;
 
         case STATIC_RSSI_TOF:
-            Serial.println("Measurement Mode: STATIC_RSSI_TOF");
+            Serial.println("[SCAN] Mode: STATIC_RSSI_TOF");
             performRSSIScan();
             performTOFScan();
             break;
 
         case STATIC_DYNAMIC_RSSI:
-            Serial.println("Measurement Mode: STATIC_DYNAMIC_RSSI");
+            Serial.println("[SCAN] Mode: STATIC_DYNAMIC_RSSI");
             performRSSIScan();
             scanDynamicRSSI();
             break;
 
         case STATIC_DYNAMIC_RSSI_TOF:
-            Serial.println("Measurement Mode: STATIC_DYNAMIC_RSSI_TOF");
+            Serial.println("[SCAN] Mode: STATIC_DYNAMIC_RSSI_TOF");
             performRSSIScan();
             scanDynamicRSSI();
             performTOFScan();
             break;
 
         default:
-            Serial.println("Scanning Phase: Unsupported system state.");
+            Serial.println("[SCAN] Unsupported system state.");
             break;
     }
 }
@@ -110,5 +112,5 @@ void scanTOF() {
 }
 
 void scanDynamicRSSI() {
-    Serial.println("Scanning Phase: Dynamic RSSI scanning is not implemented yet.");
+   Serial.println("[SCAN] Dynamic RSSI scanning not implemented.");
 }

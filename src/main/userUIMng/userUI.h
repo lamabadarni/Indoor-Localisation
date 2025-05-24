@@ -1,12 +1,18 @@
 /**
  * @file userUI.h
- * @brief UI prompts for user-driven configuration of system modes, enablements, and active scan targets.
+ * @brief UI prompts for user-driven configuration of system modes, enablements, and scan validation flow.
  *
- * This module handles all serial-based user interaction for selecting:
- * - System mode (training, prediction, diagnostics, etc.)
- * - Runtime enablement flags
- * - Scan labels, approval prompts, and abort conditions
+ * Declares the interface for all user-interactive prompts, including:
+ * - Mode/state selection
+ * - Location label selection
+ * - Accuracy approval, scan coverage evaluation
+ * - Preference between RSSI and TOF predictions
+ * 
+ * These functions support the interactive setup and validation process of the localization system.
+ * 
+ * @author Lama Badarni
  */
+
 
 #ifndef USER_UI_H
 #define USER_UI_H

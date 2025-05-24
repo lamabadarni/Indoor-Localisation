@@ -1,3 +1,14 @@
+/**
+ * @file predictionPhase.h
+ * @brief Prediction system interface for computing locations using RSSI and TOF kNN models.
+ *
+ * Declares methods to run predictions and collect scan input using global buffers.
+ * Used in both real-time location estimation and validation scenarios.
+ * 
+ * @author Ward Iroq
+ */
+
+
 #ifndef _IOT_INDOOR_LOCALISATION_PREDICTION_PHASE_H_
 #define _IOT_INDOOR_LOCALISATION_PREDICTION_PHASE_H_
 
@@ -15,13 +26,13 @@ void runPredictionPhase(void);
     * @brief Predicts the location using the kNN algorithm based on input RSSI values.
     * @return: predicted location
 */
-Label rssiPredict(int input[NUMBER_OF_ANCHORS]);
+Label rssiPredict();
 
 /*
     * @brief Predicts the location using the kNN algorithm based on input TOF values.
     * @return: predicted location
 */
-Label tofPredict(double input[NUMBER_OF_RESPONDERS]);
+Label tofPredict();
 
 
 #endif // IOT_INDOOR_LOCALISATION_PREDICTION_PHASE_H

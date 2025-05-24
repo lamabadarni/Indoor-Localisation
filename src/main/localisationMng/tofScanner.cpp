@@ -14,8 +14,9 @@ static void tofReportHandler(void* arg, esp_event_base_t event_base, int32_t eve
     if (report->status == FTM_STATUS_SUCCESS) {
         //Convert distance from millimeters to centimeters.
         double cm = report->distance_mm / 10.0;
+        accumulatedTOFs[i] = cm;
     } else {
-        accumulatedTOFs[idx] = TOF_DEFAULT_DISTANCE_CM;
+        accumulatedTOFs[i] = TOF_DEFAULT_DISTANCE_CM;
     }
 
     scanComplete = true;
@@ -41,7 +42,7 @@ void performTOFScan() {
 
             esp_err_t err = esp_wifi_ftm_initiate_session(responderMacs[i], &cfg);
             if (err != ESP_OK) {
-                Serial.printf("[TOF] Session failed for responder %d (%s)\n", i, esp_err_to_name(err));
+                Serial.println("[TOF] Session failed for responder " + String(i) + " (" + String(esp_err_to_name(err)) + ")");
                 continue;
             }
 
@@ -50,18 +51,19 @@ void performTOFScan() {
                 delay(10);
             }
 
-            data.TOFs[i] = accumulatedTOFs[i];
+            scanData.TOFs[i] = accumulatedTOFs[i];
         }
+        tofDataSet.push_back(scanData);
+        saveTOFScan(scanData);
 
-        tofDataSet.push_back(data);
-       saveTOFScan(data);
 
-
-        Serial.printf("[TOF] Scan %d for label %s: ", s + 1, labelToString(currentLabel));
+        Serial.println("[TOF] Scan " + String(scan + 1) + " for label " + String(labelToString(currentLabel)) + ":");
+        String output = "";
         for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
-            Serial.printf("%.1f  ", data.TOFs[i]);
+            output += String(scanData.TOFs[i], 1) + "  ";
         }
-        Serial.println();
+        
+        Serial.println(output);
     }
 
     esp_event_handler_unregister(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler);
@@ -81,7 +83,7 @@ void createTOFScanToMakePrediction() {
 
         esp_err_t err = esp_wifi_ftm_initiate_session(responderMacs[i], &cfg);
         if (err != ESP_OK) {
-            Serial.printf("[TOF] FTM failed during prediction for responder %d (%s)\n", i, esp_err_to_name(err));
+            Serial.println("[TOF] FTM failed during prediction for responder " + String(i) + " (" + String(esp_err_to_name(err)) + ")");
             continue;
         }
 
@@ -108,16 +110,16 @@ int computeTOFPredictionMatches() {
             TOFData data;
             data.label = currentLabel;
             for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
-                data.TOFs[i] = scan[i];
+                data.TOFs[i] = accumulatedTOFs[i];
             }
             tofDataSet.push_back(data);
-                   saveTOFScan(data);
+            saveTOFScan(data);
 
         }
 
-        Serial.printf("[TOF VALIDATION] #%d: Predicted %s | Actual %s\n",
-                      v + 1, labelToString(predicted), labelToString(currentLabel));
-    }
+        Serial.println("[TOF VALIDATION] #" + String(v + 1) + ": Predicted " + String(labelToString(predicted)) + 
+                       " | Actual " + String(labelToString(currentLabel)));
 
+    }
     return matches;
 }

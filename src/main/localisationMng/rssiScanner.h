@@ -1,10 +1,15 @@
 /**
  * @file rssiScanner.h
- * @brief Interface for performing RSSI-based scanning, prediction, and data collection.
+ * @brief Interface for RSSI-based scanning, prediction input construction, and validation data collection.
+ *
+ * Supports batch collection using exponential moving average (EMA) smoothing,
+ * and generates data entries used in kNN prediction and offline training.
  * 
- * Functions support both batch-based training scan collection and single-sample prediction.
- * Used in localization workflows where RSSI is measured from known static Wi-Fi anchors.
+ * Used in both static scanning and validation scenarios.
+ * 
+ * @author Lama Badarni
  */
+
 
 #ifndef RSSI_SCANNER_H
 #define RSSI_SCANNER_H

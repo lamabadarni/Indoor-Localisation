@@ -8,7 +8,6 @@
 #define _UTILITIES_H_
 
 #include <vector>
-#include <map>
 
 // ====================== Constants ======================
 
@@ -48,6 +47,38 @@
 #define K_TOF                       (2)
 #define MIN_VALID_DATA_SET_SIZE     (K_RSSI * 10) 
 #define MIN_DATA_PER_LABEL_SIZE     (K_RSSI * 3) 
+
+// == SD Card Consts ==
+#define MAX_RETRIES_TO_INIT_SD_CARD (2)
+
+// ====================== Globals ======================
+
+extern SystemMode               currentSystemMode;
+extern SystemState              currentSystemState;
+extern Label                    currentLabel;
+extern ScanConfig               currentConfig;
+
+extern std::vector<RSSIData>     rssiDataSet;
+extern std::vector<TOFData>      tofDataSet;
+
+extern std::vector<AccuracyData> accuracyDatas;
+extern bool                      reuseFromSD[NUMBER_OF_LABELS];
+extern double                    accuracy;
+extern int                       accumulatedRSSIs[NUMBER_OF_ANCHORS];
+extern double                    accumulatedTOFs[NUMBER_OF_RESPONDERS];
+
+extern const char*               anchorSSIDs[NUMBER_OF_ANCHORS];
+extern const uint8_t             responderMacs[NUMBER_OF_RESPONDERS][TOF_NUMBER_OF_MAC_BYTES];
+
+// ====================== Enablements ======================
+
+struct Enablements {
+    static bool enable_training_model_on_host_machine;
+    static bool enable_SD_Card_backup;
+    static bool run_validation_phase;
+    static bool verify_responder_mac_mapping;
+    static bool verify_rssi_anchor_mapping;
+};
 
 
 // ====================== Enums ======================
@@ -109,12 +140,12 @@ struct TOFCoverageResult {
 };
 
 struct RSSIData {
-    int RSSIs[NUMBER_OF_ANCHORS];  // Define TOTAL_APS if needed
+    int RSSIs[NUMBER_OF_ANCHORS];  
     Label label;
 };
 
 struct TOFData {
-    double TOFs[NUMBER_OF_RESPONDERS]; // Define if needed
+    double TOFs[NUMBER_OF_RESPONDERS];
     Label label;
 };
 
@@ -129,38 +160,6 @@ struct ScanConfig {
     int RSSINum;
     int TOFNum;
 };
-// ====================== Globals ======================
-
-extern SystemMode            currentSystemMode;
-extern SystemState           currentSystemState;
-extern Label                 currentScanningLabel;
-extern ScanConfig            currentConfig;
-
-extern std::vector<RSSIData> rssiDataSet;
-extern std::vector<TOFData>  tofDataSet;
-extern std::vector<AccuracyData> accuracyDatas;
-extern bool                      reuseFromSD[NUMBER_OF_LABELS];
-extern double                    accuracy;
-extern int                       accumulatedRSSIs[NUMBER_OF_ANCHORS];
-extern double                    accumulatedTOFs[NUMBER_OF_RESPONDERS];
-
-
-extern const char*           anchorSSIDs[NUMBER_OF_ANCHORS];
-extern const uint8_t         responderMacs[NUMBER_OF_RESPONDERS][TOF_NUMBER_OF_MAC_BYTES];
-extern bool shouldReuseBackup;
-
-
-
-// ====================== Enablements ======================
-
-struct Enablements {
-    static bool enable_training_model_on_host_machine;
-    static bool enable_SD_Card_backup;
-    static bool run_validation_phase;
-    static bool verify_responder_mac_mapping;
-    static bool verify_rssi_anchor_mapping;
-};
-
 
 // ====================== Utility Functions ======================
 

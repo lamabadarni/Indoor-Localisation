@@ -1,3 +1,9 @@
+/**
+ * @file predictionPhase.cpp
+ * @brief Executes real-time predictions using KNN over RSSI and TOF datasets with user trust resolution for conflicting results.
+ * @author Ward Iroq
+ */
+
 #include "predictionPhase.h"
 #include "rssiScanner.h"
 #include "tofScanner.h"
@@ -10,62 +16,69 @@ void runPredictionPhase(void) {
     Serial.println("\n=============== Prediction Phase Started ===============");
 
     if (currentSystemState == OFFLINE) {
-        Serial.println("Prediction Phase: System state is OFFLINE. Cannot proceed.");
+        Serial.println("[PREDICT] System state is OFFLINE. Cannot proceed.");
         return;
     }
-
-    Serial.println("Prediction Phase: System state = " + String(systemStateToString(currentSystemState)));
+    
+    Serial.println("[PREDICT] System state = " + String(systemStateToString(currentSystemState)));
 
     while(true) {
-
-    Serial.println(">> Press Enter to start predecting...");
+        Serial.println("[PREDICT] >> Press Enter to start predicting...");
         while (!Serial.available()) delay(50);
         Serial.read();  // consume newline
-
-    Label finalPrediction = NOT_ACCURATE;
-
-    bool hasTOF = currentSystemState == STATIC_RSSI_TOF || currentSystemState == STATIC_DYNAMIC_RSSI_TOF;
-
-    Serial.println("Prediction Phase: Collecting RSSI scan...");
-    createRSSIScanToMakePrediction();
-
-    if(hasTOF) {
-        Serial.println("Prediction Phase: Collecting TOF scan...");
-        createTOFScanToMakePrediction();
-    }
-
-    Label rssiLabel = rssiPredict();
-    Label tofLabel  = tofPredict();
-
-    if (hasTOF && rssiLabel != tofLabel) {
-        Serial.println("Prediction Phase: RSSI and TOF predictions differ:");
-        Serial.println("  RSSI Prediction: " + String(labelToString(tofLabel)));
-        Serial.println("  TOF  Prediction: " + String(labelToString(tofLabel)));
-
-        int userChoice = promptUserPreferredPrediction();
-
-        if (userChoice == 1) {
-            Serial.println("UserUI: User chose RSSI prediction.");
-             RSSIData scanData;
-             scanData.label = rssiLabel;
-             for (int j = 0; j < NUMBER_OF_ANCHORS; ++j) {
-                scanData.RSSIs[j] = accumulatedRSSIs[j];
-             }
-             rssiDataSet.push_back(scanData);
-        } 
-        else if (userChoice == 2) {
-            Serial.println("UserUI: User chose RSSI prediction.");
-             TOFData scanData;
-             scanData.label = tofLabel;
-             for (int j = 0; j < NUMBER_OF_RESPONDERS; ++j) {
-                scanData.TOFs[j] = accumulatedTOFs[j];
-             }
-             rssiDataSet.push_back(scanData);
+        
+        bool hasTOF = currentSystemState == STATIC_RSSI_TOF || currentSystemState == STATIC_DYNAMIC_RSSI_TOF;
+        
+        Serial.println("[PREDICT] Collecting RSSI scan...");
+        createRSSIScanToMakePrediction();
+        
+        if(hasTOF) {
+            Serial.println("[PREDICT] Collecting TOF scan...");
+            createTOFScanToMakePrediction();
         }
-    } else {
-        Serial.println("Prediction Phase: Final prediction = " + String(labelToString(rssiLabel)));
+        
+        Label rssiLabel = rssiPredict();
+        Label tofLabel  = tofPredict();
+        
+        if (hasTOF && rssiLabel != tofLabel) {
+            Serial.println("[PREDICT] RSSI and TOF predictions differ:");
+            Serial.println("[PREDICT]   RSSI Prediction: " + String(labelToString(rssiLabel)));
+            Serial.println("[PREDICT]   TOF  Prediction: " + String(labelToString(tofLabel)));
+
+            int userChoice = promptUserPreferredPrediction();
+            
+            if (userChoice == 1) {
+                Serial.println("[PREDICT] User chose RSSI prediction.");
+                RSSIData scanData;
+                scanData.label = rssiLabel;
+                for (int j = 0; j < NUMBER_OF_ANCHORS; ++j) {
+                    scanData.RSSIs[j] = accumulatedRSSIs[j];
+                }
+                rssiDataSet.push_back(scanData);
+            } 
+            
+            else if (userChoice == 2) {
+                Serial.println("[PREDICT] User chose TOF prediction.");
+                TOFData scanData;
+                scanData.label = tofLabel;
+                for (int j = 0; j < NUMBER_OF_RESPONDERS; ++j) {
+                    scanData.TOFs[j] = accumulatedTOFs[j];
+                }
+                tofDataSet.push_back(scanData);
+            }
+        } 
+        else {
+            Serial.println("[PREDICT] Final prediction = " + String(labelToString(rssiLabel)));
+        }
+        
+        Serial.println("[PREDICT] Do you want to continue predicting? (y/n)");
+        while (!Serial.available()) delay(50);
+        char response = Serial.read();
+        if (response != 'y' && response != 'Y') {
+            Serial.println("[PREDICT] User chose to exit prediction loop.");
+            break;
+        }
     }
-}
 }
 
 static double euclidean(const double* a, const double* b, int size) {
