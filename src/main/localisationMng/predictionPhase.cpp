@@ -1,11 +1,75 @@
 #include "predictionPhase.h"
+#include "rssiScanner.h"
+#include "tofScanner.h"
+#include "utillities.h"
 
 #define BACKUB_ACCURACY_THRESHOLD (0.8)
 #define TRAIN_TEST_SPLIT (0.8)
 
-static double euclidean(const double* a, const double* b, int size)
-{
-    int sum = 0;
+void runPredictionPhase(void) {
+    Serial.println("\n=============== Prediction Phase Started ===============");
+
+    if (currentSystemState == OFFLINE) {
+        Serial.println("Prediction Phase: System state is OFFLINE. Cannot proceed.");
+        return;
+    }
+
+    Serial.println("Prediction Phase: System state = " + String(systemStateToString(currentSystemState)));
+
+    while(true) {
+
+    Serial.println(">> Press Enter to start predecting...");
+        while (!Serial.available()) delay(50);
+        Serial.read();  // consume newline
+
+    Label finalPrediction = NOT_ACCURATE;
+
+    bool hasTOF = currentSystemState == STATIC_RSSI_TOF || currentSystemState == STATIC_DYNAMIC_RSSI_TOF;
+
+    Serial.println("Prediction Phase: Collecting RSSI scan...");
+    createRSSIScanToMakePrediction();
+
+    if(hasTOF) {
+        Serial.println("Prediction Phase: Collecting TOF scan...");
+        createTOFScanToMakePrediction();
+    }
+
+    Label rssiLabel = rssiPredict();
+    Label tofLabel  = tofPredict();
+
+    if (hasTOF && rssiLabel != tofLabel) {
+        Serial.println("Prediction Phase: RSSI and TOF predictions differ:");
+        Serial.println("  RSSI Prediction: " + String(labelToString(tofLabel)));
+        Serial.println("  TOF  Prediction: " + String(labelToString(tofLabel)));
+
+        int userChoice = promptUserPreferredPrediction();
+
+        if (userChoice == 1) {
+            Serial.println("UserUI: User chose RSSI prediction.");
+             RSSIData scanData;
+             scanData.label = rssiLabel;
+             for (int j = 0; j < NUMBER_OF_ANCHORS; ++j) {
+                scanData.RSSIs[j] = accumulatedRSSIs[j];
+             }
+             rssiDataSet.push_back(scanData);
+        } 
+        else if (userChoice == 2) {
+            Serial.println("UserUI: User chose RSSI prediction.");
+             TOFData scanData;
+             scanData.label = tofLabel;
+             for (int j = 0; j < NUMBER_OF_RESPONDERS; ++j) {
+                scanData.TOFs[j] = accumulatedTOFs[j];
+             }
+             rssiDataSet.push_back(scanData);
+        }
+    } else {
+        Serial.println("Prediction Phase: Final prediction = " + String(labelToString(rssiLabel)));
+    }
+}
+}
+
+static double euclidean(const double* a, const double* b, int size) {
+    double sum = 0;
     for (int i = 0; i < size; ++i)
     {
       sum += (a[i] - b[i]) * (a[i] - b[i]);
@@ -14,8 +78,7 @@ static double euclidean(const double* a, const double* b, int size)
 }
 
 
-static void preparePointRSSI(int RSSIs[NUMBER_OF_ANCHORS], double toBeNormalised[NUMBER_OF_ANCHORS])
-{
+static void preparePointRSSI(int RSSIs[NUMBER_OF_ANCHORS], double toBeNormalised[NUMBER_OF_ANCHORS]) {
     // Normalize the RSSI values using min-max scaling
     for (int i = 0; i < NUMBER_OF_ANCHORS; ++i)
     {
@@ -23,8 +86,7 @@ static void preparePointRSSI(int RSSIs[NUMBER_OF_ANCHORS], double toBeNormalised
     }
 }
 
-static void preparePointTOF(double TOF[NUMBER_OF_RESPONDERS], double toBeNormalised[NUMBER_OF_RESPONDERS])
-{
+static void preparePointTOF(double TOF[NUMBER_OF_RESPONDERS], double toBeNormalised[NUMBER_OF_RESPONDERS]) {
     // Normalize the TOF values using min-max scaling
     for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i)
     {
@@ -32,10 +94,11 @@ static void preparePointTOF(double TOF[NUMBER_OF_RESPONDERS], double toBeNormali
     }
 }
 
-static Label _predict(const vector<double> &distances, const vector<Label> &labels)
-{
+static Label _predict(vector<double> &distances, vector<Label> &labels, int k) {
+    int sizeOfDataSet = distances.size();
+
     // Find the minimum K distances using bubble sort
-    for (int i = 0; i < K; ++i)
+    for (int i = 0; i < k; ++i)
     {
         for (int j = 0; j < sizeOfDataSet - i - 1; ++j)
         {
@@ -79,143 +142,40 @@ static Label _predict(const vector<double> &distances, const vector<Label> &labe
     return labelWithMaxVotes;
 }
 
-Label rssiPredict(int input[NUMBER_OF_ANCHORS])
-{
+Label rssiPredict() {
     int sizeOfDataSet = rssiDataSet.size();
     double normalisedInput[NUMBER_OF_ANCHORS];
     vector<double> distances(sizeOfDataSet, 0);
     vector<Label> labels(sizeOfDataSet, NOT_ACCURATE);
 
+    preparePointRSSI(accumulatedRSSIs, normalisedInput);
     // Calculate distances and store corresponding labels
     for (int i = 0 ; i < sizeOfDataSet ; ++i) {
-        preparePointRSSI(rssiDataSet[i].RSSIs, normalisedInput);
-        distances[i] = euclidean(normalisedInput, input, sizeOfInput);
-        labels[i] = dataSet[i].label;
+        double normalisedPoint[NUMBER_OF_ANCHORS];
+
+        preparePointRSSI(rssiDataSet[i].RSSIs, normalisedPoint);
+        distances[i] = euclidean(normalisedPoint, normalisedInput, NUMBER_OF_ANCHORS);
+        labels[i] = rssiDataSet[i].label;
     }
 
-    return _predict(distances, labels);
+    return _predict(distances, labels, K_RSSI);
 }
 
-Label tofPredict(double input[NUMBER_OF_RESPONDERS])
-{
+Label tofPredict() {
     int sizeOfDataSet = tofDataSet.size();
     double normalisedInput[NUMBER_OF_RESPONDERS];
     vector<double> distances(sizeOfDataSet, 0);
     vector<Label> labels(sizeOfDataSet, NOT_ACCURATE);
 
+    preparePointTOF(accumulatedTOFs, normalisedInput);
     // Calculate distances and store corresponding labels
     for (int i = 0 ; i < sizeOfDataSet ; ++i) {
-        preparePointTOF(tofDataSet[i].TOFs, normalisedInput);
-        distances[i] = euclidean(normalisedInput, input, sizeOfInput);
-        labels[i] = dataSet[i].label;
+        double normalisedPoint[NUMBER_OF_RESPONDERS];
+
+        preparePointTOF(tofDataSet[i].TOFs, normalisedPoint);
+        distances[i] = euclidean(normalisedPoint, normalisedInput, NUMBER_OF_RESPONDERS);
+        labels[i] = tofDataSet[i].label;
     }
 
-    return _predict(distances, labels);
-}
-
-bool isBackupDataSetRelevant(void)
-{
-    if (currentSystemState == SystemState::STATIC_RSSI_TOF && tofDataSet.size() < 10 * K ||
-        rssiDataSet.size() < 10 * K)
-    {
-        return false; // Not enough data for KNN
-    }
-
-    unsigned int numOfLabelInRSSI[NUMBER_OF_LABELS] = {0};
-    unsigned int numOfLabelInTOF[NUMBER_OF_LABELS] = {0};
-    bool isDataSetValid = false;
-    int sizeOfDataSet = dataSet.size();
-
-    for (const RSSIData &data : rssiDataSet)
-    {
-        numOfLabelInRSSI[data.label]++;
-    }
-
-    for (const TOFData &data : tofDataSet)
-    {
-        numOfLabelInTOF[data.label]++;
-    }
-
-    for (int i = 0; i < NUMBER_OF_LABELS; ++i)
-    {
-        currentScanningLabel = (Label)i;
-        if (numOfLabelInRSSI[i] >= 3 * K && numOfLabelInTOF[i] >= 3 * K && validateScanAccuracy())
-        {
-            reuseFromSD[i] = true;
-            isDataSetValid = true;
-        }
-        else
-        {
-            Serial.println("Backup dataset is not relevant for location: " + labelToString(i));
-        }
-    }
-
-    return isDataSetValid;
-}
-
-/**
- * @brief Validates the scan results by checking how many predictions match the label.
- *        Uses both RSSI and TOF modules if enabled. If failed, offers fallback.
- */
-bool validateScanAccuracy() {
-    int matchesRSSI = 0;
-    int matchesTOF = 0;
-    bool combinedOK = false;
-
-    // Run RSSI and/or TOF predictions depending on system state
-    switch (Enablements::currentSystemState) {
-        case STATIC_RSSI:
-            matchesRSSI = computeRSSIPredictionMatches();
-            break;
-
-        case STATIC_RSSI_TOF:
-            matchesRSSI = computeRSSIPredictionMatches();
-            matchesTOF = computeTOFPredictionMatches();
-            break;
-
-        case STATIC_DYNAMIC_RSSI:
-            matchesRSSI = computeRSSIPredictionMatches();
-            break;
-
-        case STATIC_DYNAMIC_RSSI_TOF:
-            matchesRSSI = computeRSSIPredictionMatches();
-            matchesTOF = computeTOFPredictionMatches();
-            break;
-
-        default:
-            break;
-    }
-
-    int totalMatches = matchesRSSI + matchesTOF;
-    int totalAttempts = (matchesTOF > 0) ? 2 * SCAN_VALIDATION_SAMPLE_SIZE : SCAN_VALIDATION_SAMPLE_SIZE;
-    scanAccuracy = (100 * totalMatches) / totalAttempts;
-
-    Serial.printf("Scanning Phase: combined accuracy = %d%% (%d/%d correct predictions)\n",
-                  scanAccuracy, totalMatches, totalAttempts);
-
-    combinedOK = (totalMatches >= VALIDATION_PASS_THRESHOLD);
-
-    if (combinedOK && promptUserAccuracyApprove()) return true;
-
-    // Combined validation failed — fallback prompt
-    int choice = promptRetryValidationWithSingleMethod();
-
-    if (choice == 1) {
-        Serial.println("Retrying validation with RSSI only...");
-        matchesRSSI = computeRSSIPredictionMatches();
-        scanAccuracy = (100 * matchesRSSI) / SCAN_VALIDATION_SAMPLE_SIZE;
-        Serial.printf("[RSSI] Retry accuracy = %d%%\n", scanAccuracy);
-        return (matchesRSSI >= VALIDATION_PASS_THRESHOLD) && promptUserAccuracyApprove();
-    }
-
-    if (choice == 2) {
-        Serial.println("Retrying validation with TOF only...");
-        matchesTOF = computeTOFPredictionMatches();
-        scanAccuracy = (100 * matchesTOF) / SCAN_VALIDATION_SAMPLE_SIZE;
-        Serial.printf("[TOF] Retry accuracy = %d%%\n", scanAccuracy);
-        return (matchesTOF >= VALIDATION_PASS_THRESHOLD) && promptUserAccuracyApprove();
-    }
-
-    Serial.println("User aborted validation.");
-    return false;
+    return _predict(distances, labels, K_TOF);
 }

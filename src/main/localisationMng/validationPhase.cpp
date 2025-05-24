@@ -5,103 +5,168 @@
 #include "rssiScanner.h"
 #include "tofScanner.h"
 
-#define VALIDATION_MAX_ATTEMPTS 3
-
-static bool validatedLabels[NUMBER_OF_LABELS] = {false};
-
-struct ValidationFailure {
-    Label label;
-    const char* reason;
-};
-
-static std::vector<ValidationFailure> failedValidations;
-
-bool isLocationDataValid(Label location) {
-    return validatedLabels[location];
-}
+static bool validatedLabels[NUMBER_OF_LABELS];
 
 void runValidationPhase() {
-    Serial.println("=== Validation Phase Started ===");
+    Serial.println();
+    Serial.println("=============== Validation Phase Started ===============");
 
-    while (true) {
-        Serial.println("\n[Validation] Walk to any label...");
-        delay(3000);
+    for (int i = 0; i < NUMBER_OF_LABELS; i++) {
+        Label label = promptLocationSelection();
+        currentScanningLabel = label;
 
-        bool approved = false;
-        Label predicted = NOT_ACCURATE;
+        Serial.println();
+        Serial.println("Selected Label: " + String(labelToString(label)));
+        Serial.println(">> Press Enter to start validation...");
+        while (!Serial.available()) delay(50);
+        Serial.read();  // consume newline
 
-        for (int attempt = 1; attempt <= VALIDATION_MAX_ATTEMPTS; ++attempt) {
-            double rssiInput[NUMBER_OF_ANCHORS] = {0};
-            double  tofInput[NUMBER_OF_RESPONDERS] = {0};
-
-            if (currentSystemState == STATIC_RSSI || currentSystemState == STATIC_DYNAMIC_RSSI ||
-                currentSystemState == STATIC_RSSI_TOF || currentSystemState == STATIC_DYNAMIC_RSSI_TOF) {
-                int* rssi = createRSSIScanToMakePrediction();
-                for (int i = 0; i < NUMBER_OF_ANCHORS; ++i)
-                    rssiInput[i] = rssi[i];
-                preparePoint(rssiInput);
-            }
-
-            if (currentSystemState == STATIC_RSSI_TOF || currentSystemState == STATIC_DYNAMIC_RSSI_TOF) {
-                createTOFScanToMakePrediction(tofInput);
-            }
-
-            predicted = (currentSystemState == STATIC_RSSI || currentSystemState == STATIC_DYNAMIC_RSSI)
-                        ? rssiPredict(rssiInput)
-                        : tofPredict(tofInput);
-
-            Serial.printf("[Attempt %d] Predicted label: %s\n", attempt, labelToString(predicted));
-            int userChoice = promptValidationApprovalOrSkip();
-
-            if (userChoice == 1) {
-                validatedLabels[predicted] = true;
-                Serial.println("Validation confirmed.");
-                approved = true;
-                break;
-            } else if (userChoice == 9) {
-                printValidationWarning(predicted, "User manually skipped");
-                failedValidations.push_back({predicted, "User skipped manually"});
-                approved = false;
-                break;
-            } else {
-                Serial.println(" Rejected. Retrying...");
-            }
-        }
-
-        if (!approved) {
-            if (std::none_of(failedValidations.begin(), failedValidations.end(),
-                             [predicted](const ValidationFailure& f) { return f.label == predicted; })) {
-                printValidationWarning(predicted, "Repeated incorrect predictions or unstable signal");
-                failedValidations.push_back({predicted, "Unstable prediction or environment"});
-            }
-        }
-
-        if (!promptVerifyScanCoverageAtAnotherLabel()) {
-            break;
-        }
+        Serial.println("Validation Phase: Starting validation at " + String(labelToString(label)));
+        startLabelValidationSession();
     }
 
-    printFinalValidationSummary(validatedLabels, failedValidations);
-    Serial.println("=== Validation Phase Completed ===");
+    Serial.println();
+    Serial.println("=============== Validation Phase Completed ===============");
+
+    printFinalValidationSummary(); 
 }
 
-void printValidationWarning(Label label, const char* reason) {
-    Serial.println(" Validation Warning:");
-    Serial.printf("Label %s failed validation. Reason: %s\n", labelToString(label), reason);
+void startLabelValidationSession() {
+    int retryCount = 1;
+    bool approved = false;
+
+    while (retryCount <= MAX_RETRIES) {
+        Serial.println("Validation Phase: Attempt " + String(retryCount) + " at " + String(labelToString(currentScanningLabel)));
+        approved = validateScanAccuracy();
+
+        if (approved) {
+            Serial.println("Validation Phase: scan completed successfully at: " + String(labelToString(currentScanningLabel)));
+            validatedLabels[currentScanningLabel] = true;
+            return;
+        }
+
+        Serial.println("Validation Phase: accuracy insufficient, retrying scan... (" + String(retryCount) + "/" + String(MAX_RETRIES) + ")");
+        retryCount++;
+    }
+
+    Serial.println("Validation Phase: failed after max retries at: " + String(labelToString(currentScanningLabel)));
+    validatedLabels[currentScanningLabel] = false;
 }
 
-void printFinalValidationSummary(const bool validatedLabels[], const std::vector<ValidationFailure>& failures) {
-    Serial.println("\n======= VALIDATION SUMMARY =======");
+void printFinalValidationSummary() {
+    Serial.println();
+    Serial.println("=============== Validation Summary ===============");
     for (int i = 0; i < NUMBER_OF_LABELS; ++i) {
-        Serial.printf("Label %d - %s: %s\n", i, labelToString(i), validatedLabels[i] ? " VALIDATED" : " NOT VALIDATED");
+        String result = validatedLabels[i] ? "VALIDATED" : "NOT VALIDATED";
+        Serial.println("Label " + String(i) + " - " + String(labelToString(i)) + ": " + result);
     }
 
     if (!failures.empty()) {
-        Serial.println("\n FAILED VALIDATIONS:");
-        for (const auto& f : failures) {
-            Serial.printf("Label %s → %s\n", labelToString(f.label), f.reason);
+        Serial.println();
+        Serial.println("-------- Failed Label Details --------");
+        for (const auto& failure : failures) {
+            Serial.println("Label " + String(labelToString(failure.label)) + " → Reason: " + failure.reason.c_str());
         }
     }
 
-    Serial.println("==================================\n");
+    Serial.println("==================================================");
+    Serial.println();
+}
+
+bool validateScanAccuracy() {
+    int matchesRSSI = -1;
+    int matchesTOF = -1;
+
+    Serial.println("Validation Phase: Running predictions...");
+
+    switch (currentSystemState) {
+        case STATIC_RSSI:
+            Serial.println("Validation Mode: STATIC_RSSI");
+            matchesRSSI = computeRSSIPredictionMatches();
+            break;
+        case STATIC_RSSI_TOF:
+            Serial.println("Validation Mode: STATIC_RSSI_TOF");
+            matchesRSSI = computeRSSIPredictionMatches();
+            matchesTOF  = 0;
+            matchesTOF  = computeTOFPredictionMatches();
+            break;
+        case STATIC_DYNAMIC_RSSI:
+            Serial.println("Validation Mode: STATIC_DYNAMIC_RSSI");
+            matchesRSSI = computeRSSIPredictionMatches();
+            break;
+        case STATIC_DYNAMIC_RSSI_TOF:
+            Serial.println("Validation Mode: STATIC_DYNAMIC_RSSI_TOF");
+            matchesRSSI = computeRSSIPredictionMatches();
+            matchesTOF  = 0;
+            matchesTOF  = computeTOFPredictionMatches();
+            break;
+        default:
+            Serial.println("Validation Phase: Unknown system state.");
+            return false;
+    }
+
+    int totalMatches = matchesRSSI + matchesTOF;
+    int totalAttempts = (matchesTOF > -1) ? 2 * NUM_OF_VALIDATION_SCANS : NUM_OF_VALIDATION_SCANS;
+    accuracy = (100 * totalMatches) / totalAttempts;
+
+    Serial.println("Validation Phase: Accuracy = " + String(accuracy) +
+                   "% (" + String(totalMatches) + "/" + String(totalAttempts) + " correct)");
+
+    bool valid = (accuracy >= VALIDATION_PASS_THRESHOLD);
+    return valid && promptUserAccuracyApprove();
+}
+
+bool isBackupDataSetRelevant(void) {
+    Serial.println("Validation Check: Starting backup dataset relevance validation...");
+
+    // Basic dataset size check for KNN feasibility
+    if ((currentSystemState == STATIC_RSSI_TOF || currentSystemState == STATIC_DYNAMIC_RSSI_TOF) &&
+         tofDataSet.size() < 0.5 * MIN_VALID_DATA_SET_SIZE) {
+        Serial.println("Validation Check: TOF dataset too small for combined state.");
+        return false;
+    }
+
+    if (rssiDataSet.size() < MIN_VALID_DATA_SET_SIZE) {
+        Serial.println("Validation Check: RSSI dataset too small.");
+        return false;
+    }
+
+    unsigned int numOfLabelInRSSI[NUMBER_OF_LABELS] = {0};
+    unsigned int numOfLabelInTOF[NUMBER_OF_LABELS] = {0};
+
+    bool isDataSetValid = false;
+    int sizeOfDataSet = dataSet.size();
+
+    for (const RSSIData &data : rssiDataSet) {
+        numOfLabelInRSSI[data.label]++;
+    }
+
+    for (const TOFData &data : tofDataSet) {
+        numOfLabelInTOF[data.label]++;
+    }
+
+    for (int i = 0; i < NUMBER_OF_LABELS; ++i) {
+
+        Serial.println("Validation Check: Label " + String(i) + " - " + labelToString(i));
+        Serial.println("  RSSI samples: " + String(numOfLabelInRSSI[i]));
+        Serial.println("  TOF samples : " + String(numOfLabelInTOF[i]));
+
+        currentLabel = (Label)i;
+        if (numOfLabelInRSSI[i] >= MIN_DATA_PER_LABEL_SIZE&& numOfLabelInTOF[i] >= 0.5 * MIN_DATA_PER_LABEL_SIZE && validateScanAccuracy()) {
+            reuseFromSD[i] = true;
+            isDataSetValid = true;
+            Serial.println("Valid scan data — will reuse backup for: " + String(labelToString(i)));
+        }
+        else {
+            Serial.println("Backup dataset not sufficient for: " + String(labelToString(i)));        }
+    }
+
+    if (isDataSetValid) {
+        Serial.println("Validation Check: At least one label has valid backup data.");
+    } else {
+        Serial.println("Validation Check: No label has sufficient backup data.");
+    }
+
+    return isDataSetValid;
+    
 }
