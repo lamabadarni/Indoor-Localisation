@@ -25,7 +25,7 @@
 
 #define TOF_NUMBER_OF_MAC_BYTES     (6)
 #define TOF_SCAN_BATCH_SIZE         (5)
-#define TOF_MAX_VALID_CM            (500.0f)  // Adjustable max valid TOF reading
+#define TOF_MAX_VALID_CM            (500.0)  // Adjustable max valid TOF reading
 #define TOF_DEFAULT_DISTANCE_CM     (-1)
 #define NUMBER_OF_RESPONDERS        (4)
 
@@ -102,7 +102,7 @@ struct RSSIData {
 };
 
 struct TOFData {
-    float TOFs[NUMBER_OF_RESPONDERS]; // Define if needed
+    double TOFs[NUMBER_OF_RESPONDERS]; // Define if needed
     Label label;
 };
 

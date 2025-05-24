@@ -84,7 +84,7 @@ TOFCoverageResult scanTOFCoverage(Label label) {
     TOFCoverageResult result = {0};
     result.label = label;
 
-    float distances[NUMBER_OF_RESPONDERS] = {0.0f};
+    double distances[NUMBER_OF_RESPONDERS] = {0.0f};
     int totalCm = 0;
 
     currentScanningLabel = label;
