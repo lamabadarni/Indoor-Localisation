@@ -15,7 +15,9 @@ void runScanningPhase() {
 
     for (int i = 0; i < NUMBER_OF_LABELS; i++) {
         currentLabel = promptLocationLabel();
-
+        if(reuseFromSD[currentLabel]) {
+            continue;
+        }
         Serial.println();
         Serial.println("[SCAN] Selected Label: " + String(labelToString(currentLabel)));
         Serial.println("[SCAN] >> Press Enter to start scanning...");

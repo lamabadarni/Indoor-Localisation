@@ -50,6 +50,11 @@
 
 // == SD Card Consts ==
 #define MAX_RETRIES_TO_INIT_SD_CARD (2)
+static constexpr char META_FILENAME[]        = "meta_.csv";
+static constexpr char RSSI_FILENAME[]        = "rssi_scan_data_.csv";
+static constexpr char TOF_FILENAME[]         = "tof_scan_data_.csv";
+static constexpr char ACCURACY_FILENAME[]    = "location_accuracy_.csv";
+static constexpr char TMP_SUFFIX[]           = ".tmp";
 
 // ====================== Globals ======================
 

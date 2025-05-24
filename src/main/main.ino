@@ -3,7 +3,7 @@
 #include "scanning.h"
 #include "predictionPhase.h"
 #include "validationPhase.h"
-#include "verifier.h"
+#include "./userUIMng/verefire.h"
 #include "sdCardBackup.h"
 
 
@@ -17,11 +17,61 @@ void setup() {
     currentSystemMode = promptSystemMode();
     setupEnablementsFromUser();
 
+    handleSDAndEnablements();
+    
     Serial.println("=============== System Ready ===============");
 }
 
 void loop() {
+    Serial.println("[MAIN] Starting execution based on selected mode...");
+    switch(currentSystemMode) {
+        case MODE_RSSI_MODEL_DIAGNOSTIC:
+        Serial.println("[MAIN] MODE_RSSI_MODEL_DIAGNOSTIC: Running RSSI diagnostics.");
+        verifyRSSIScanCoverage();
+        break;
+
+        case MODE_TOF_DIAGNOSTIC:
+        Serial.println("[MAIN] MODE_TOF_DIAGNOSTIC: Running TOF diagnostics.");
+        verifyTOFScanCoverage();
+        break;
+
+        case MODE_TRAINING_ONLY:
+        Serial.println("[MAIN] MODE_TRAINING_ONLY: Running scanning phase only.");
+        runScanningPhase();
+        if (Enablements::run_validation_phase) {
+            Serial.println("[MAIN] Validation phase is enabled. Starting validation.");
+            runValidationPhase();
+        }
+        else {
+            Serial.println("[MAIN] Validation phase is disabled. Skipping.");
+        }
+        break;
+
+        case MODE_PREDICTION_ONLY:
+        Serial.println("[MAIN] MODE_PREDICTION_ONLY: Running prediction phase.");
+        runPredictionPhase();
+        break;
+
+        case MODE_FULL_SESSION:
+        Serial.println("[MAIN] MODE_FULL_SESSION: Running scan, prediction, and optional validation.");
+        runScanningPhase();
+        if (Enablements::run_validation_phase) {
+            Serial.println("[MAIN] Validation phase is enabled. Starting validation.");
+            runValidationPhase();
+        }
+        else {
+            Serial.println("[MAIN] Validation phase is disabled. Skipping.");
+        }
+        runPredictionPhase();
+        break;
+
+        default:
+        Serial.println("[MAIN] Unknown mode. Restart device.");
+        break;
+    }
     
+    Serial.println("[MAIN] Session complete. Enter 'r' to restart or reset device.");
+    while (true);
 }
 
 void handleSDAndEnablements() {
@@ -53,6 +103,7 @@ void handlePredictionOnlySDLogic() {
             while (true);
         }
         retries++;
+        delay(150);
     }
 
     if (!loadLocationDataset()) {
@@ -60,6 +111,7 @@ void handlePredictionOnlySDLogic() {
         while (true);
     }
 
+    ///check that all location are valid
     if (!isBackupDataSetRelevant()) {
         Serial.println("[SD] FATAL: Backup data is invalid for prediction.");
         while (true);
@@ -84,6 +136,8 @@ void handleTrainingOrFullSDLogic() {
             return;
         }
         retries++;
+
+        delay(150);
     }
 
     if (!sdAvailable) {
@@ -104,6 +158,7 @@ void handleTrainingOrFullSDLogic() {
         if (promptUserAccuracyApprove()) {
             if (updateCSV()) {
                 Serial.println("[SD] Using backup dataset.");
+                return;
             } else {
                 Serial.println("[SD] updateCSV failed. Proceeding to rescan.");
             }

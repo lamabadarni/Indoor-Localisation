@@ -1,19 +1,15 @@
-// sd_card.cpp
+
 
 #include "sdCardBackup.h"
 #include "utilities.h"
 #include <SD.h>
 #include <SPI.h>
 #include <Arduino.h>
-// File: sdCardBackup.cpp
-#include "sdCardBackup.h"
-#include <SPI.h>
 
 static String CurrCsvPathToOpen = "";
 static String metaPathToOpen = "";
 static String accuracyPathToOpen = "";
-
-
+String tmp = ".tmp";
 //------------------------------------------------------------------------------
 // Forward declarations for local (static) functions
 //------------------------------------------------------------------------------
@@ -29,14 +25,6 @@ static bool tryToInitSD(int csPin);
 //==================================================================
 
 bool initSDCard(int csPin) {
-    for (int i = 0; i < MAX_RETRIES; ++i) {
-        if (tryToInitSD(csPin)) return true;
-    }
-    Serial.println("SD initialization failed after " + String(MAX_RETRIES) + " attempts.");
-    return false;
-}
-
-bool tryToInitSD(int csPin) {
     if (!SD.begin(csPin)) {
         Serial.println("SD init failed. Prompting user...");
         return promptUserSDCardInitializationApprove();
@@ -73,7 +61,7 @@ bool deleteInvalidLocations(const String& filePath) {
         return false;
     }
 
-    String tmpPath = filePath + ".tmp";
+    String tmpPath = filePath + tmp;
     File inputFile = SD.open(filePath, FILE_READ);
     File outputFile = SD.open(tmpPath, FILE_WRITE);
     if (!inputFile || !outputFile) {
@@ -134,7 +122,7 @@ void fromCSVRssiToVector( String line){
      }
 
      for(int i=0 ; i<NUMBER_OF_ANCHORS;i++){
-     row.TOF[i]=splitedString[i].toInt();
+     row.RSSIs[i]=splitedString[i].toInt();
      }
      row.label=splitedString[NUMBER_OF_ANCHORS].toInt();
      rssiDataSet.push_back(row);
@@ -152,21 +140,17 @@ void fromCSVTofToVector( String line){
      row.TOF[i]=splitedString[i].toDouble();
      }
      row.label=splitedString[NUMBER_OF_RESPONDERS].toInt();
-     rssiDataSet.push_back(row);
+     tofDataSet.push_back(row);
 }
 
-void splitByComma(String data , char comma){
-splitedString.clear();
-int index=0
-while(true){
-    int sepIndex=data.indexOf(comma)
-    if(sepIndex==-1){
-        splitedString.push_back(sepIndex);
+static void splitByComma(String data, char comma) {
+    splitedString.clear();
+    int sepIndex;
+    while ((sepIndex = data.indexOf(comma)) != -1) {
+        splitedString.push_back(data.substring(0, sepIndex));
+        data = data.substring(sepIndex + 1);
     }
-    data=substring(0,sepIndex);
-    splitedString.push_back(data);
-    data=substring(sepIndex+1);
-   }
+    splitedString.push_back(data); // last segment
 }
 
 

@@ -143,6 +143,20 @@ bool isBackupDataSetRelevant(void) {
 
         currentLabel = (Label)i;
         if (numOfLabelInRSSI[i] >= MIN_DATA_PER_LABEL_SIZE && numOfLabelInTOF[i] >= 0.5 * MIN_DATA_PER_LABEL_SIZE) {
+            currentLabel = (Label)i;
+            Serial.println("[VALIDATE] --------------------------------------------");
+            Serial.println("[VALIDATE] Please go to label: " + String(labelToString(currentLabel)) + "Press Enter to start validation...");
+            while (!Serial.available()) delay(50);
+            Serial.read();  // consume newline
+        
+            Serial.println("[VALIDATE] Checking if backup data is sufficient...");
+            bool valid = validateScanAccuracy();
+            
+            if(!valid) {
+                Serial.println("[VALIDATE] Backup dataset not sufficient for: " + String(labelToString((Label)i)));
+                continue;
+            }
+
             reuseFromSD[i] = true;
             isDataSetValid = true;
             Serial.println("[VALIDATE] Valid scan data — will reuse backup for: " + String(labelToString((Label)i)));
