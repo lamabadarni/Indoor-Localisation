@@ -88,4 +88,10 @@ bool promptUserSDCardInitializationApprove();
  */
 void verifySystemConfiguration();
 
+/**
+ * @brief Prompt user to retry validation using only RSSI or only TOF.
+ * @return 0 = abort, 1 = retry with RSSI, 2 = retry with TOF.
+ */
+int promptRetryValidationWithSingleMethod();
+
 #endif // USER_UI_H

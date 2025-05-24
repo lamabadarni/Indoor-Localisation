@@ -13,6 +13,8 @@
 
 #define MIN_ANCHORS_VISIBLE         (3)
 #define MIN_AVERAGE_RSSI_DBM        (-75)
+#define TOF_MIN_RESPONDERS_VISIBLE  (2)
+#define TOF_MAX_AVERAGE_DISTANCE_CM (400)
 
 #define RSSI_SCAN_BATCH_SIZE        (15)
 #define RSSI_SCAN_SAMPLE_PER_BATCH  (3)
@@ -22,6 +24,8 @@
 
 #define TOF_NUMBER_OF_MAC_BYTES     (6)
 #define TOF_SCAN_BATCH_SIZE         (5)
+#define TOF_MAX_VALID_CM            (500.0f)  // Adjustable max valid TOF reading
+#define TOF_DEFAULT_DISTANCE_CM     (-1)
 #define NUMBER_OF_RESPONDERS        (4)
 
 #define SCAN_VALIDATION_SAMPLE_SIZE (5)

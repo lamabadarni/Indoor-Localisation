@@ -180,3 +180,20 @@ bool promptAbortForImprovement() {
     return input == 1;
 }
 
+int promptRetryValidationWithSingleMethod() {
+    Serial.println("Combined validation not sufficient.");
+    Serial.println("Would you like to retry validation using only one method?");
+    Serial.println("1 - Retry with RSSI only");
+    Serial.println("2 - Retry with TOF only");
+    Serial.println("0 - Abort");
+
+    while (Serial.available() == 0);
+    int input = Serial.parseInt();
+
+    if (input == 1 || input == 2 || input == 0)
+        return input;
+    
+    return 0; // Default to abort if input is invalid
+}
+
+
