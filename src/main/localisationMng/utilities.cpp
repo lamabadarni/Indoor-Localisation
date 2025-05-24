@@ -31,7 +31,6 @@ const char* anchorSSIDs[NUMBER_OF_ANCHORS] = {
 
 ScanConfig currentConfig = {
     .systemState      = currentSystemState,
-    .RoundTimestamp   = 0,
     .RSSINum          = NUMBER_OF_ANCHORS,
     .TOFNum           = NUMBER_OF_RESPONDERS
 };
@@ -95,6 +94,8 @@ const char* modeToString(SystemMode mode) {
         default:                         return "Unknown Mode";
     }
 }
+// ======================Static fun  ======================
+static void deleteDirectory(const String &dirPath);
 
 
 // ====================== Utility Functions ======================
@@ -139,64 +140,76 @@ bool getShouldReuseForLabel(Label label) {
     return reuseFromSD[label];
 }
 
-// Helper: delete a directory and all files within it, then remove the empty directory
+
 static void deleteDirectory(const String &dirPath) {
     if (!SD.exists(dirPath)) return;
+
     File dir = SD.open(dirPath);
-    while (true) {
-        File entry = dir.openNextFile();
-        if (!entry) break;
-        String name = entry.name();
-        SD.remove(name);
+    while (File entry = dir.openNextFile()) {
+        String entryName = entry.name();
         entry.close();
+
+        String fullPath = dirPath + "/" + entryName;
+        if (SD.exists(fullPath) && SD.open(fullPath).isDirectory()) {
+            // sub-directory
+            deleteDirectory(fullPath);
+            SD.rmdir(fullPath);
+        } else {
+            // file
+            SD.remove(fullPath);
+        }
     }
     dir.close();
+
+    // finally remove the now-empty directory
     SD.rmdir(dirPath);
     Serial.println("Deleted directory: " + dirPath);
 }
 
 /**
- * @brief Wipe out the entire SD subdirectory for the current state, then
- *        re-create it and lay down fresh CSV files with only headers.
+ * @brief Wipe and re-create the state directory, then create only the correct files.
  * @return true on success, false on any SD error.
  */
 bool resetStorage() {
-    String baseDir = getSDBaseDir();
+    // Build the directory name, e.g. "/STATIC_RSSI_TOF"
+    String baseDir = "/" + String(systemStateToString(currentSystemState)) + "/";
 
-    // 1) delete old
+    // 1) Delete existing state folder (and contents)
     deleteDirectory(baseDir);
 
-    // 2) recreate directory
+    // 2) Recreate the empty folder
     if (!SD.mkdir(baseDir)) {
-        Serial.println("Failed to create directory: " + baseDir);
+        Serial.println("Failed to mkdir: " + baseDir);
         return false;
     }
     Serial.println("Created directory: " + baseDir);
 
-    // 3) create meta file
-    if (!createMetaFile(getMetaFilePath(), currentConfig)) {
+    // 3) Meta file (always)
+    String metaPath = baseDir + "/meta_.csv";
+    if (!createMetaFile(metaPath)) {
         Serial.println("Failed to create meta file.");
         return false;
     }
 
-    // 4) create RSSI CSV with header
+    // 4) RSSI CSV (always)
     {
-        File f = SD.open(getRSSIFilePath(), FILE_WRITE);
+        String rssiPath = baseDir + "/rssi_scan_data_.csv";
+        File f = SD.open(rssiPath, FILE_WRITE);
         if (!f) {
             Serial.println("Failed to create RSSI CSV.");
             return false;
         }
-        // RSSI columns
         for (int i = 1; i <= NUMBER_OF_ANCHORS; ++i) {
             f.print(String(i) + "_rssi,");
         }
-        f.println("Location,Timestamp");
+        f.println("Location");
         f.close();
     }
 
-    // 5) create accuracy CSV with header
+    // 5) Accuracy CSV (always)
     {
-        File f = SD.open(getAccuracyFilePath(), FILE_WRITE);
+        String accPath = baseDir + "/location_accuracy_.csv";
+        File f = SD.open(accPath, FILE_WRITE);
         if (!f) {
             Serial.println("Failed to create accuracy CSV.");
             return false;
@@ -205,10 +218,11 @@ bool resetStorage() {
         f.close();
     }
 
-    // 6) if TOF mode, create TOF CSV as well
-    if (Enablements::currentSystemState == SystemState::STATIC_RSSI_TOF ||
-        Enablements::currentSystemState == SystemState::STATIC_DYNAMIC_RSSI_TOF) {
-        File f = SD.open(getTOFFilePath(), FILE_WRITE);
+    // 6) TOF CSV (only in TOF modes)
+    if (currentConfig.systemState == STATIC_RSSI_TOF ||
+        currentConfig.systemState == STATIC_DYNAMIC_RSSI_TOF) {
+        String tofPath = baseDir + "/tof_scan_data_.csv";
+        File f = SD.open(tofPath, FILE_WRITE);
         if (!f) {
             Serial.println("Failed to create TOF CSV.");
             return false;
@@ -216,7 +230,7 @@ bool resetStorage() {
         for (int j = 1; j <= NUMBER_OF_RESPONDERS; ++j) {
             f.print(String(j) + "_tof,");
         }
-        f.println("Location,Timestamp");
+        f.println("Location");
         f.close();
     }
 

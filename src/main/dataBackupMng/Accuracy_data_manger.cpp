@@ -14,7 +14,7 @@ bool saveAllAccuracyRecords() {
 
     // Data rows
     for (const AccuracyData& rec : accuracyDatas) {
-        f.print((int)rec.location);
+        f.print(String((int)rec.location));
         f.print(',');
         f.print(rec.accuracy, 3);
     }
@@ -70,7 +70,7 @@ bool saveAccuracyData(const AccuracyData &row) {
         f.println("Location,Accuracy");
     }
 
-    f.print((int)row.location);
+    f.print((String(int)row.location));
     f.print(',');
     f.print(row.accuracy, 3);
     f.print(',');

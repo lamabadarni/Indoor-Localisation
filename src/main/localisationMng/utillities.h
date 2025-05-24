@@ -80,6 +80,7 @@ struct Enablements {
     static bool verify_rssi_anchor_mapping;
 };
 
+#define csPin                      (5) // Chip Select pin for SD card
 
 // ====================== Enums ======================
 
@@ -156,7 +157,6 @@ struct AccuracyData {
 
 struct ScanConfig {
     SystemState systemState;
-    uint32_t RoundTimestamp;
     int RSSINum;
     int TOFNum;
 };
@@ -178,4 +178,35 @@ const char* labelToString(int label);
  */
 const char* systemStateToString(int state);
 
+/**
+ * @brief Prompt user to approve scan accuracy.
+ */
+bool promptUserAccuracyApprove();
+
+/**
+ * @brief Get the base directory on the SD card for the current system state.
+ */
+String getSDBaseDir();
+
+/**
+ * @brief Get the full path to the meta file based on current system state.
+ */
+String getMetaFilePath();
+
+/**
+ * @brief Get the full path to the RSSI scan data file.
+ */
+String getRSSIFilePath();
+
+/**
+ * @brief Get the full path to the TOF scan data file.
+ */
+String getTOFFilePath();
+
+/**
+ * @brief Get the full path to the location accuracy file.
+ */
+String getAccuracyFilePath();
+
+bool resetStorage();
 #endif // _UTILITIES_H_
