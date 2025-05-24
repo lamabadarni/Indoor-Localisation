@@ -29,12 +29,6 @@ const char* anchorSSIDs[NUMBER_OF_ANCHORS] = {
         "offices"
 };
 
-SystemState currentSystemState                          = OFFLINE;
-SystemMode  currentSystemMode                           = MODE_FULL_SESSION;
-bool shouldReuseBackup = false;
-
-
-
 ScanConfig currentConfig = {
     .systemState      = currentSystemState,
     .RoundTimestamp   = 0,
@@ -42,8 +36,10 @@ ScanConfig currentConfig = {
     .TOFNum           = NUMBER_OF_RESPONDERS
 };
 
+SystemState currentSystemState                          = OFFLINE;
+SystemMode  currentSystemMode                           = MODE_FULL_SESSION;
 bool reuseFromSD[NUMBER_OF_LABELS]                      = {false};
-double scanAccuracy                                     = -1
+double scanAccuracy                                     = -1;
 
 // ====================== Label Conversion ======================
 

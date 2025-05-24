@@ -1,3 +1,9 @@
+/**
+ * @file tofScanner.cpp
+ * @brief Handles Time-of-Flight measurement sessions, callback-based distance handling, and prediction dataset collection.
+ * @author Lama Badarni
+ */
+
 #ifndef TOF_SCANNER_H
 #define TOF_SCANNER_H
 

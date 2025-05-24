@@ -2,11 +2,16 @@
  * @file verifier.h
  * @brief Diagnostic scanning utilities for evaluating RSSI and TOF coverage across labels.
  *
- * This module provides tools to:
- * - Scan anchor visibility and signal strength (RSSI)
- * - Scan TOF responder reachability
- * - Prompt user for feedback and optionally abort flow
+ * Provides functions to:
+ * - Scan anchor visibility and RSSI levels
+ * - Scan responder distance and visibility
+ * - Run interactive feedback loops to guide placement tuning
+ * 
+ * Used for deployment diagnostics and anchor/responder optimization.
+ * 
+ * @author Lama Badarni
  */
+
 
 #ifndef VERIFIER_H
 #define VERIFIER_H
@@ -17,14 +22,13 @@
 
 /**
  * @brief Perform RSSI scan for a given label.
- * @param label Target label.
  * @return Result struct with per-anchor RSSI data.
  */
-RSSICoverageResult scanRSSICoverage(Label label);
+RSSICoverageResult scanRSSICoverage();
 
 /**
- * @brief Perform interactive diagnostic loop for verifying RSSI anchor coverage.
- * @return true if the user completed all labels successfully; false if user aborted early.
+ * @brief Verifies anchor coverage via user feedback loop for RSSI.
+ * @return true if user completed all checks, false if aborted.
  */
 bool verifyRSSIScanCoverage();
 
@@ -32,15 +36,14 @@ bool verifyRSSIScanCoverage();
 // ====================== TOF Verification ======================
 
 /**
- * @brief Perform TOF scan for a given label.
- * @param label Target label.
- * @return Result struct with per-responder distance (in cm).
+ * @brief Measures TOF distance for each responder from the current label.
+ * @return TOFCoverageResult with distances and visibility per responder.
  */
-TOFCoverageResult scanTOFCoverage(Label label);
+TOFCoverageResult scanTOFCoverage();
 
 /**
- * @brief Perform interactive diagnostic loop for verifying TOF responder coverage.
- * @return true if the user completed all labels successfully; false if user aborted early.
+ * @brief Verifies TOF responder visibility with user feedback.
+ * @return true if user approves coverage at all tested labels.
  */
 bool verifyTOFScanCoverage();
 

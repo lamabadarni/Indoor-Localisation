@@ -1,6 +1,7 @@
 /**
  * @file verifier.cpp
  * @brief Implementation of scanning functions for verifying RSSI and TOF anchor coverage.
+ * @author Lama Badarni
  */
 
 #include <WiFi.h>
@@ -11,13 +12,13 @@
 
 // ================= RSSI =================
 
-RSSICoverageResult scanRSSICoverage(Label label) {
+RSSICoverageResult scanRSSICoverage() {
     RSSICoverageResult result = {0};
-    result.label = label;
+    result.label = currentLabel;
 
     WiFi.disconnect(true);
     delay(100);
-    int n = WiFi.scanNetworks(false, true);  // Passive scan
+    int n = WiFi.scanNetworks(false, true);
 
     int rssiSum = 0;
 
@@ -45,27 +46,27 @@ RSSICoverageResult scanRSSICoverage(Label label) {
 
 bool verifyRSSIScanCoverage() {
     while (true) {
-        Serial.println("Verify RSSI scan coverage");
-        Label label = promptLocationLabel();
-        RSSICoverageResult result = scanRSSICoverage(label);
+        Serial.println("[VERIFY] Verifying RSSI scan coverage");
+        currentLabel = promptLocationLabel();
+        RSSICoverageResult result = scanRSSICoverage(currentLabel);
 
-        Serial.println("----- RSSI Coverage Report -----");
-        Serial.print("Location: "); Serial.println(labelToString(result.label));
-        Serial.print("Visible Anchors: "); Serial.println(result.visibleAnchors);
-        Serial.print("Average RSSI: "); Serial.println(result.averageRSSI);
+        Serial.println("[VERIFY] ----- RSSI Coverage Report -----");
+        Serial.print("[VERIFY] Location: "); Serial.println(labelToString(currentLabel));
+        Serial.print("[VERIFY] Visible Anchors: "); Serial.println(result.visibleAnchors);
+        Serial.print("[VERIFY] Average RSSI: "); Serial.println(result.averageRSSI);
 
         bool approved = promptRSSICoverageUserFeedback();
 
         if (!approved) {
             if (result.visibleAnchors < MIN_ANCHORS_VISIBLE) {
-                Serial.println("Advice: Increase anchor density in this location.");
+                Serial.println("[VERIFY] Advice: Increase anchor density in this location.");
             }
             if (result.averageRSSI < MIN_AVERAGE_RSSI_DBM) {
-                Serial.println("Advice: Move anchors closer or reduce interference.");
+                Serial.println("[VERIFY] Advice: Move anchors closer or reduce interference.");
             }
 
             if (promptAbortForImprovement()) {
-                Serial.println("Aborting RSSI coverage verification.");
+                Serial.println("[VERIFY] Aborting RSSI coverage verification.");
                 return false;
             }
         }
@@ -80,19 +81,18 @@ bool verifyRSSIScanCoverage() {
 
 // ================= TOF =================
 
-TOFCoverageResult scanTOFCoverage(Label label) {
+TOFCoverageResult scanTOFCoverage() {
     TOFCoverageResult result = {0};
-    result.label = label;
+    result.label = currentLabel;
 
     int totalCm = 0;
 
-    currentScanningLabel = label;
     createTOFScanToMakePrediction();
 
     for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
         if (accumulatedTOFs[i] >= 0) {
             result.responderVisibility[i] = true;
-            result.responderDistance[i] = (int)distances[i];
+            result.responderDistance[i] = static_cast<int>(accumulatedTOFs[i]);
             totalCm += result.responderDistance[i];
             result.visibleResponders++;
         } else {
@@ -110,33 +110,33 @@ TOFCoverageResult scanTOFCoverage(Label label) {
 
 bool verifyTOFScanCoverage() {
     while (true) {
-        Serial.println("Verify TOF responder coverage");
-        Label label = promptLocationLabel();
-        TOFCoverageResult result = scanTOFCoverage(label);
+        Serial.println("[VERIFY] Verifying TOF responder coverage");
+        currentLabel = promptLocationLabel();
+        TOFCoverageResult result = scanTOFCoverage();
 
-        Serial.println("----- TOF Coverage Report -----");
-        Serial.print("Location: "); Serial.println(labelToString(result.label));
-        Serial.print("Visible Responders: "); Serial.println(result.visibleResponders);
-        Serial.print("Average Distance: "); Serial.println(result.averageDistance);
+        Serial.println("[VERIFY] ----- TOF Coverage Report -----");
+        Serial.print("[VERIFY] Location: "); Serial.println(labelToString(currentLabel));
+        Serial.print("[VERIFY] Visible Responders: "); Serial.println(result.visibleResponders);
+        Serial.print("[VERIFY] Average Distance: "); Serial.println(result.averageDistance);
 
         for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
-            Serial.printf("  Responder %d: %d cm [%s]\n", i,
-                result.responderDistance[i],
-                result.responderVisibility[i] ? "visible" : "not visible");
+            Serial.println("[VERIFY]   Responder " + String(i) + ": " + String(result.responderDistance[i]) +
+                           " cm [" + (result.responderVisibility[i] ? "visible" : "not visible") + "]");
         }
 
-        bool approved = promptRSSICoverageUserFeedback(); // reuse prompt
+        bool approved = promptRSSICoverageUserFeedback();
 
         if (!approved) {
             if (result.visibleResponders < TOF_MIN_RESPONDERS_VISIBLE) {
-                Serial.println("Advice: Add more responders or reposition to ensure redundancy.");
+                Serial.println("[VERIFY] Advice: Add more responders or reposition to ensure redundancy.");
             }
-            if (result.averageDistance > TOF_MAX_AVERAGE_DISTANCE_CM || result.averageDistance == TOF_DEFAULT_DISTANCE_CM) {
-                Serial.println("Advice: Reduce distance between scanner and responders.");
+            if (result.averageDistance > TOF_MAX_AVERAGE_DISTANCE_CM ||
+                result.averageDistance == TOF_DEFAULT_DISTANCE_CM) {
+                Serial.println("[VERIFY] Advice: Reduce distance between scanner and responders.");
             }
 
             if (promptAbortForImprovement()) {
-                Serial.println("Aborting TOF coverage verification.");
+                Serial.println("[VERIFY] Aborting TOF coverage verification.");
                 return false;
             }
         }

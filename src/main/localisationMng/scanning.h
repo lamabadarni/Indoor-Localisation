@@ -1,6 +1,13 @@
-//
-// Created by Lama Badarni on 13/05/2025.
-//
+/**
+ * @file tofScanner.h
+ * @brief TOF (Time-of-Flight) scanning interface for collecting responder distances and validation input.
+ *
+ * Handles asynchronous distance measurements using WiFi FTM sessions and organizes prediction-ready input arrays.
+ * Supports both prediction phase scans and multi-attempt validation rounds.
+ * 
+ * @author Lama Badarni
+ */
+
 
 #ifndef IOT_INDOOR_LOCALISATION_SCANNING_H
 #define IOT_INDOOR_LOCALISATION_SCANNING_H

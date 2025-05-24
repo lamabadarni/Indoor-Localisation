@@ -1,3 +1,13 @@
+/**
+ * @file validationPhase.h
+ * @brief Provides tools to evaluate model accuracy per label using predictions and user approval.
+ *
+ * Runs interactive multi-round validation for each label and prints final summaries.
+ * Also provides logic to assess whether saved datasets are relevant for reuse.
+ * 
+ * @author Lama Badarni
+ */
+
 #ifndef IOT_INDOOR_LOCALISATION_VALIDATION_PHASE_H
 #define IOT_INDOOR_LOCALISATION_VALIDATION_PHASE_H
 
