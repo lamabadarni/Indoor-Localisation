@@ -8,6 +8,7 @@
 #define _UTILITIES_H_
 
 #include <vector>
+#include <map>
 
 // ====================== Constants ======================
 
@@ -97,12 +98,12 @@ struct TOFCoverageResult {
 
 struct RSSIData {
     int RSSIs[NUMBER_OF_ANCHORS];  // Define TOTAL_APS if needed
-    LOCATIONS label;
+    Label label;
 };
 
 struct TOFData {
     float TOFs[NUMBER_OF_RESPONDERS]; // Define if needed
-    LOCATIONS label;
+    Label label;
 };
 
 
@@ -114,6 +115,7 @@ extern Label                 currentScanningLabel;
 
 extern std::vector<RSSIData> rssiDataSet;
 extern std::vector<TOFData>  tofDataSet;
+extern std::map<Label, bool> reuseFromSD;
 
 extern const char*           anchorSSIDs[NUMBER_OF_ANCHORS];
 extern const uint8_t         responderMacs[NUMBER_OF_RESPONDERS][TOF_NUMBER_OF_MAC_BYTES];
