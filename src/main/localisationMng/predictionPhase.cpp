@@ -14,21 +14,21 @@ static double euclidean(const double* a, const double* b, int size)
 }
 
 
-static void preparePointRSSI(double RSSIs[NUMBER_OF_ANCHORS])
+static void preparePointRSSI(int RSSIs[NUMBER_OF_ANCHORS], double toBeNormalised[NUMBER_OF_ANCHORS])
 {
+    // Normalize the RSSI values using min-max scaling
     for (int i = 0; i < NUMBER_OF_ANCHORS; ++i)
     {
-        // Normalize the RSSI values using min-max scaling
-        RSSIs[i] = (RSSIs[i] + 100) / 100.0;
+        toBeNormalised[i] = ((double)(RSSIs[i] + 100)) / 100.0;
     }
 }
 
-static void preparePointTOF(double TOF[NUMBER_OF_RESPONDERS])
+static void preparePointTOF(double TOF[NUMBER_OF_RESPONDERS], double toBeNormalised[NUMBER_OF_RESPONDERS])
 {
+    // Normalize the TOF values using min-max scaling
     for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i)
     {
-        // Normalize the TOF values using min-max scaling
-        TOF[i] = TOF[i] / 2000;
+        toBeNormalised[i] = TOF[i] / 2000;
     }
 }
 
@@ -79,15 +79,17 @@ static Label _predict(const vector<double> &distances, const vector<Label> &labe
     return labelWithMaxVotes;
 }
 
-Label rssiPredict(double input[NUMBER_OF_ANCHORS])
+Label rssiPredict(int input[NUMBER_OF_ANCHORS])
 {
     int sizeOfDataSet = rssiDataSet.size();
+    double normalisedInput[NUMBER_OF_ANCHORS];
     vector<double> distances(sizeOfDataSet, 0);
     vector<Label> labels(sizeOfDataSet, NOT_ACCURATE);
 
     // Calculate distances and store corresponding labels
     for (int i = 0 ; i < sizeOfDataSet ; ++i) {
-        distances[i] = euclidean(preparePoint(rssiDataSet[i].RSSIs), input, sizeOfInput);
+        preparePointRSSI(rssiDataSet[i].RSSIs, normalisedInput);
+        distances[i] = euclidean(normalisedInput, input, sizeOfInput);
         labels[i] = dataSet[i].label;
     }
 
@@ -97,12 +99,14 @@ Label rssiPredict(double input[NUMBER_OF_ANCHORS])
 Label tofPredict(double input[NUMBER_OF_RESPONDERS])
 {
     int sizeOfDataSet = tofDataSet.size();
+    double normalisedInput[NUMBER_OF_RESPONDERS];
     vector<double> distances(sizeOfDataSet, 0);
     vector<Label> labels(sizeOfDataSet, NOT_ACCURATE);
 
     // Calculate distances and store corresponding labels
     for (int i = 0 ; i < sizeOfDataSet ; ++i) {
-        distances[i] = euclidean(tofDataSet[i].TOFs, input, sizeOfInput);
+        preparePointTOF(tofDataSet[i].TOFs, normalisedInput);
+        distances[i] = euclidean(normalisedInput, input, sizeOfInput);
         labels[i] = dataSet[i].label;
     }
 

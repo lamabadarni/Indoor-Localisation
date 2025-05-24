@@ -32,7 +32,7 @@ void runValidationPhase() {
 
         for (int attempt = 1; attempt <= VALIDATION_MAX_ATTEMPTS; ++attempt) {
             double rssiInput[NUMBER_OF_ANCHORS] = {0};
-            float  tofInput[NUMBER_OF_RESPONDERS] = {0};
+            double  tofInput[NUMBER_OF_RESPONDERS] = {0};
 
             if (currentSystemState == STATIC_RSSI || currentSystemState == STATIC_DYNAMIC_RSSI ||
                 currentSystemState == STATIC_RSSI_TOF || currentSystemState == STATIC_DYNAMIC_RSSI_TOF) {

@@ -1,6 +1,6 @@
 #include "scanning.h"
 
-static float lastTOFScan[NUMBER_OF_RESPONDERS];
+static double lastTOFScan[NUMBER_OF_RESPONDERS];
 static bool scanComplete = false;
 
 //Handler function used as call back function when responder sends back to initiator
@@ -14,16 +14,10 @@ static void tofReportHandler(void* arg, esp_event_base_t event_base, int32_t eve
 
     if (report->status == FTM_STATUS_SUCCESS) {
         //Convert distance from millimeters to centimeters.
-        float cm = report->distance_mm / 10.0f;
-
-        //remove reflections, multipath errors, or noise spikes.
-        if (cm >= 0.0f && cm <= TOF_MAX_VALID_CM) {
-            lastTOFScan[idx] = cm;
-        } else {
-            lastTOFScan[idx] = -1.0f;
-        }
+        double cm = report->distance_mm / 10.0;
     } else {
-        lastTOFScan[idx] = -1.0f;
+        // If failed, set a default value (e.g., 1500 cm)
+        lastTOFScan[idx] = 1500.0;
     }
 
     scanComplete = true;
@@ -46,7 +40,8 @@ void performTOFScan() {
             };
 
             scanComplete = false;
-            lastTOFScan[i] = -1.0f;
+            // in case of failure, set a default value
+            lastTOFScan[i] = 1500.0;
 
             esp_err_t err = esp_wifi_ftm_initiate_session(responderMacs[i], &cfg);
             if (err != ESP_OK) {
@@ -75,7 +70,7 @@ void performTOFScan() {
     esp_event_handler_unregister(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler);
 }
 
-void createTOFScanToMakePrediction(float out[NUMBER_OF_RESPONDERS]) {
+void createTOFScanToMakePrediction(double out[NUMBER_OF_RESPONDERS]) {
     esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler, NULL);
 
     for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
@@ -85,7 +80,8 @@ void createTOFScanToMakePrediction(float out[NUMBER_OF_RESPONDERS]) {
         };
 
         scanComplete = false;
-        lastTOFScan[i] = -1.0f;
+        // in case of failure, set a default value
+        lastTOFScan[i] = 1500.0;
 
         esp_err_t err = esp_wifi_ftm_initiate_session(responderMacs[i], &cfg);
         if (err != ESP_OK) {
@@ -109,7 +105,7 @@ int computeTOFPredictionMatches() {
     int matches = 0;
 
     for (int v = 0; v < SCAN_VALIDATION_SAMPLE_SIZE; ++v) {
-        float scan[NUMBER_OF_RESPONDERS];
+        double scan[NUMBER_OF_RESPONDERS];
         createTOFScanToMakePrediction(scan);
         Label predicted = tofPredict(scan);
 

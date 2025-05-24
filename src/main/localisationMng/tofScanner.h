@@ -19,8 +19,8 @@ int computeTOFPredictionMatches();
 
 /**
  * @brief Creates a single TOF sample to be used for prediction.
- *        Returns a filled float[NUMBER_OF_RESPONDERS].
+ *        Returns a filled double[NUMBER_OF_RESPONDERS].
  */
-void createTOFScanToMakePrediction(float out[NUMBER_OF_RESPONDERS]);
+void createTOFScanToMakePrediction(double out[NUMBER_OF_RESPONDERS]);
 
 #endif // TOF_SCANNER_H

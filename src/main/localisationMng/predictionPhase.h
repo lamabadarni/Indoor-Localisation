@@ -21,7 +21,7 @@
     * @param input: sample array of RSSI values
     * @return: predicted location
 */
-LOCATIONS rssiPredict(double input[NUMBER_OF_ANCHORS]);
+LOCATIONS rssiPredict(int input[NUMBER_OF_ANCHORS]);
 
 /*
     * @brief Predicts the location using the kNN algorithm based on input TOF values.
