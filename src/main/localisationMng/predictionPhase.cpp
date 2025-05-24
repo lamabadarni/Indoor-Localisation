@@ -109,7 +109,7 @@ static bool isLocationDataValid(Label location)
 
 bool isBackupDataSetRelevant(void)
 {
-    if (currentSystemState == SystemState::STATIC_RSSI_TOF && tofDataSet.size() < K ||
+    if (currentSystemState == SystemState::STATIC_RSSI_TOF && tofDataSet.size() < 10 * K ||
         rssiDataSet.size() < 10 * K)
     {
         return false; // Not enough data for KNN

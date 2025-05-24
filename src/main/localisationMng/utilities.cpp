@@ -80,3 +80,17 @@ int applyEMA(int prevRSSI, int newRSSI) {
     if (prevRSSI == RSSI_DEFAULT_VALUE) return newRSSI;
     return (int)(ALPHA * prevRSSI + (1.0f - ALPHA) * newRSSI);
 }
+
+void resetReuseFromSDForLabel() {
+    for(int i = 0; i < NUMBER_OF_LABELS; i++) {
+        reuseFromSD[Label(i)] = false;
+    }
+}
+
+void setReuseFromSDForLabel(Label label) {
+    reuseFromSD[label] = true;
+}
+
+bool getShouldReuseForLabel(Label label) {
+    return reuseFromSD[label];
+}
