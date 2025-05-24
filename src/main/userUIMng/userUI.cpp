@@ -180,6 +180,7 @@ bool promptAbortForImprovement() {
     return input == 1;
 }
 
+//not used currently
 int promptRetryValidationWithSingleMethod() {
     Serial.println("Combined validation not sufficient.");
     Serial.println("Would you like to retry validation using only one method?");

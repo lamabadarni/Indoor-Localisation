@@ -30,7 +30,7 @@
 #define NUMBER_OF_RESPONDERS        (4)
 
 #define SCAN_VALIDATION_SAMPLE_SIZE (5)
-#define VALIDATION_PASS_THRESHOLD   (3)
+#define VALIDATION_PASS_THRESHOLD   (0.6)
 #define MAX_RETRIES                 (5)
 
 #define ALPHA                       (0.7f)

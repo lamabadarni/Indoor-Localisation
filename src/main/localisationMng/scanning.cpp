@@ -12,7 +12,7 @@ static int scanAccuracy = 0;
 bool startLabelScanningSession(Label label) {
     int retryCount = 0;
     bool validScan = false;
-    currentScanningLabel = label;
+    currentLabel = label;
 
     while (retryCount < MAX_RETRIES) {
         Serial.printf("Scanning Phase: performing scan attempt #%d for: %s\n", retryCount + 1, labelToString(label));
@@ -84,16 +84,14 @@ void collectMeasurements() {
     }
 }
 
-/**
- * @brief Placeholder for dynamic RSSI scanning logic (future feature).
- */
-void scanDynamicRSSI() {
-    Serial.println("Dynamic RSSI scanning is not implemented yet.");
+void scanStaticRSSI() {
+    performRSSIScan();
 }
 
-/**
- * @brief Calls TOF scanning module (for logical symmetry).
- */
 void scanTOF() {
     performTOFScan();
+}
+
+void scanDynamicRSSI() {
+    Serial.println("Dynamic RSSI scanning is not implemented yet.");
 }

@@ -16,13 +16,11 @@ struct ValidationFailure {
 
 static std::vector<ValidationFailure> failedValidations;
 
-bool isLocationDataValid(Label location) {
-    return validatedLabels[location];
-}
 
-void runValidationPhase() {
+void startLabelValidationSession() {
     Serial.println("=== Validation Phase Started ===");
 
+<<<<<<< HEAD
     while (true) {
         Serial.println("\n[Validation] Walk to any label...");
         delay(3000);
@@ -77,17 +75,26 @@ void runValidationPhase() {
         }
 
         if (!promptVerifyScanCoverageAtAnotherLabel()) {
+=======
+    bool approved = false;
+    while (int retryCount = 1; attempt <= VALIDATION_MAX_ATTEMPTS;) {
+        Serial.println("validating scan accuracy...");
+        approved = validateScanAccuracy();
+        if (validScan) {
+            Serial.printf("Validation Phase: scan completed successfully at: %s\n", labelToString(label));
+>>>>>>> 53f8e7f (change validation function)
             break;
         }
+            
+        Serial.println("Validation Phase: accuracy insufficient, retrying scan...");
+        retryCount++;
+    }
+    if (!approved) {
+        Serial.printf("Unstable prediction or environment, validation phase failed for label: %s\n", labelToString(label));
     }
 
-    printFinalValidationSummary(validatedLabels, failedValidations);
-    Serial.println("=== Validation Phase Completed ===");
-}
-
-void printValidationWarning(Label label, const char* reason) {
-    Serial.println(" Validation Warning:");
-    Serial.printf("Label %s failed validation. Reason: %s\n", labelToString(label), reason);
+     printFinalValidationSummary(validatedLabels, failedValidations);
+     Serial.println("=== Validation Phase Completed ===");
 }
 
 void printFinalValidationSummary(const bool validatedLabels[], const std::vector<ValidationFailure>& failures) {
@@ -105,3 +112,53 @@ void printFinalValidationSummary(const bool validatedLabels[], const std::vector
 
     Serial.println("==================================\n");
 }
+
+/**
+ * @brief Validates the scan results by checking how many predictions match the label.
+ *        Uses both RSSI and TOF modules if enabled. If failed, offers fallback.
+ */
+bool validateScanAccuracy() {
+    int matchesRSSI = 0;
+    int matchesTOF = 0;
+    bool combinedOK = false;
+
+    // Run RSSI and/or TOF predictions depending on system state
+    switch (Enablements::currentSystemState) {
+        case STATIC_RSSI:
+            matchesRSSI = computeRSSIPredictionMatches();
+            Serial.printf("validating according to static rssi");
+            break;
+
+        case STATIC_RSSI_TOF:
+            matchesRSSI = computeRSSIPredictionMatches();
+            matchesTOF = computeTOFPredictionMatches();
+            Serial.printf("validating according to static rssi, tof");
+            break;
+
+        case STATIC_DYNAMIC_RSSI:
+            matchesRSSI = computeRSSIPredictionMatches();
+            Serial.printf("validating according to static rssi, dynamic rssi");
+            break;
+
+        case STATIC_DYNAMIC_RSSI_TOF:
+            matchesRSSI = computeRSSIPredictionMatches();
+            matchesTOF = computeTOFPredictionMatches();
+            Serial.printf("validating according to static rssi, dynamic rssi, tof");
+            break;
+
+        default:
+            break;
+    }
+
+    int totalMatches = matchesRSSI + matchesTOF;
+    int totalAttempts = (matchesTOF > 0) ? 2 * SCAN_VALIDATION_SAMPLE_SIZE : SCAN_VALIDATION_SAMPLE_SIZE;
+    scanAccuracy = (100 * totalMatches) / totalAttempts;
+
+    Serial.printf("accuracy = %d%% (%d/%d correct predictions)\n",
+                  scanAccuracy, totalMatches, totalAttempts);
+
+    combinedOK = (scanAccuracy >= VALIDATION_PASS_THRESHOLD);
+
+    return combinedOK && promptUserAccuracyApprove();
+}
+

@@ -14,6 +14,8 @@ bool Enablements::run_validation_phase                  = false;
 bool Enablements::verify_responder_mac_mapping          = false;
 bool Enablements::verify_rssi_anchor_mapping            = false;
 
+// ======================   Globals    ======================
+
 SystemState currentSystemState                          = OFFLINE;
 SystemMode  currentSystemMode                           = MODE_FULL_SESSION;
 bool shouldReuseBackup = false;
@@ -27,7 +29,8 @@ ScanConfig currentConfig = {
     .TOFNum           = NUMBER_OF_RESPONDERS
 };
 
-bool reuseFromSD[NUMBER_OF_LABELS] = {false};
+bool reuseFromSD[NUMBER_OF_LABELS]                      = {false};
+int scanAccuracy                                        = -1
 
 // ====================== Label Conversion ======================
 
