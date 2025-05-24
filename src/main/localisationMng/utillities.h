@@ -12,30 +12,42 @@
 
 // ====================== Constants ======================
 
+#define NUMBER_OF_LABELS            (17)
+
+// == Coverage ==
 #define MIN_ANCHORS_VISIBLE         (3)
 #define MIN_AVERAGE_RSSI_DBM        (-75)
 #define TOF_MIN_RESPONDERS_VISIBLE  (2)
-#define TOF_MAX_AVERAGE_DISTANCE_CM (400)
+#define TOF_MAX_AVERAGE_DISTANCE_CM (600)
 
+// == RSSI Scanner ==
 #define RSSI_SCAN_BATCH_SIZE        (15)
 #define RSSI_SCAN_SAMPLE_PER_BATCH  (3)
 #define RSSI_DEFAULT_VALUE          (-100)
 #define RSSI_SCAN_DELAY_MS          (100)
 #define NUMBER_OF_ANCHORS           (10)
 
+// == TOF Scanner ==
 #define TOF_NUMBER_OF_MAC_BYTES     (6)
 #define TOF_SCAN_BATCH_SIZE         (5)
 #define TOF_MAX_VALID_CM            (500.0)  // Adjustable max valid TOF reading
-#define TOF_DEFAULT_DISTANCE_CM     (-1)
+#define TOF_DEFAULT_DISTANCE_CM     (1500.0)
 #define NUMBER_OF_RESPONDERS        (4)
 
-#define SCAN_VALIDATION_SAMPLE_SIZE (5)
+// == Validation consts == 
+#define NUM_OF_VALIDATION_SCANS     (5)
+#define VALIDATION_MAX_ATTEMPTS     (3)
 #define VALIDATION_PASS_THRESHOLD   (0.6)
+
+// == User UI ==
 #define MAX_RETRIES                 (5)
 
+// == Predection consts ==
 #define ALPHA                       (0.7f)
-#define NUMBER_OF_LABELS            (17)
-#define K                           (4) // KNN usage
+#define K_RSSI                      (4) 
+#define K_TOF                       (2)
+#define MIN_VALID_DATA_SET_SIZE     (K_RSSI * 10) 
+#define MIN_DATA_PER_LABEL_SIZE     (K_RSSI * 3) 
 
 
 // ====================== Enums ======================
@@ -127,8 +139,11 @@ extern ScanConfig            currentConfig;
 extern std::vector<RSSIData> rssiDataSet;
 extern std::vector<TOFData>  tofDataSet;
 extern std::vector<AccuracyData> accuracyDatas;
-extern std::map<Label, bool> reuseFromSD;
-extern bool reuseFromSD[NUMBER_OF_LABELS];
+extern bool                      reuseFromSD[NUMBER_OF_LABELS];
+extern double                    accuracy;
+extern int                       accumulatedRSSIs[NUMBER_OF_ANCHORS];
+extern double                    accumulatedTOFs[NUMBER_OF_RESPONDERS];
+
 
 extern const char*           anchorSSIDs[NUMBER_OF_ANCHORS];
 extern const uint8_t         responderMacs[NUMBER_OF_RESPONDERS][TOF_NUMBER_OF_MAC_BYTES];
@@ -155,61 +170,13 @@ struct Enablements {
 int applyEMA(int prevRSSI, int newRSSI);
 
 /**
- * @brief Prompt user to select a location label.
- */
-char* promptLocationSelection();
-
-/**
  * @brief Convert label enum to string.
  */
 const char* labelToString(int label);
-
-/**
- * @brief Prompt user to select system state.
- */
-SystemState promptSystemState();
 
 /**
  * @brief Convert system state enum to string.
  */
 const char* systemStateToString(int state);
 
-/**
- * @brief Prompt user to approve scan accuracy.
- */
-bool promptUserAccuracyApprove();
-
-/**
- * @brief Check whether the stored data is valid for a location.
- */
-bool isLocationValid(LOCATION location);
-
-/**
- * @brief Get the base directory on the SD card for the current system state.
- */
-String getSDBaseDir();
-
-/**
- * @brief Get the full path to the meta file based on current system state.
- */
-String getMetaFilePath();
-
-/**
- * @brief Get the full path to the RSSI scan data file.
- */
-String getRSSIFilePath();
-
-/**
- * @brief Get the full path to the TOF scan data file.
- */
-String getTOFFilePath();
-
-/**
- * @brief Get the full path to the location accuracy file.
- */
-String getAccuracyFilePath();
-
-static void deleteDirectory(const String &dirPath);
-
-bool resetStorage();
 #endif // _UTILITIES_H_

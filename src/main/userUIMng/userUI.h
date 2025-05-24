@@ -41,12 +41,6 @@ SystemState promptSystemState();
  */
 Label promptLocationLabel();
 
-/**
- * @brief Prompt user to select a location for diagnostic purposes (as string).
- * @return Pointer to the selected location name string.
- */
-char* promptLocationSelection();
-
 
 // ====================== User Decision Prompts ======================
 
@@ -99,6 +93,12 @@ int promptRetryValidationWithSingleMethod();
  * @return 0 = incorrect, 1 = correct, 9 = skip
  */
 int promptValidationApprovalOrSkip();
+
+/**
+ * @brief Ask user which prediction they trust when RSSI and TOF disagree.
+ * @return 1 = trust RSSI, 2 = trust TOF, 0 = fallback to RSSI.
+ */
+int promptUserPreferredPrediction();
 
 
 #endif // USER_UI_H

@@ -20,8 +20,8 @@ int computeTOFPredictionMatches();
 
 /**
  * @brief Creates a single TOF sample to be used for prediction.
- *        Returns a filled double[NUMBER_OF_RESPONDERS].
+ *        and fills accumlatedTOFs global with sampled TOF
  */
-void createTOFScanToMakePrediction(double out[NUMBER_OF_RESPONDERS]);
+void createTOFScanToMakePrediction();
 
 #endif // TOF_SCANNER_H
