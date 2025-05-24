@@ -59,6 +59,8 @@ void performTOFScan() {
 
         //Should Save to CSV !!!!!
         tofDataSet.push_back(data);
+       saveTOFScan(data);
+
 
         Serial.printf("[TOF] Scan %d for label %s: ", s + 1, labelToString(currentScanningLabel));
         for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
@@ -118,6 +120,8 @@ int computeTOFPredictionMatches() {
                 data.TOFs[i] = scan[i];
             }
             tofDataSet.push_back(data);
+                   saveTOFScan(data);
+
         }
 
         Serial.printf("[TOF VALIDATION] #%d: Predicted %s | Actual %s\n",

@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "utillities.h"
+#include "sdCardBackup.h"
 
 /**
  * @brief Performs a batch of raw TOF scans (1 per responder × N scans).

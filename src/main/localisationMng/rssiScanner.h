@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include "utillities.h"
+#include "sdCardBackup.h"
 
 /**
  * @brief Starts a scanning session at a given label with retries and validation.

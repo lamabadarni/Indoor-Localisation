@@ -1,53 +1,67 @@
-#ifndef SD_CARD_UTILS_H
-#define SD_CARD_UTILS_H
+#ifndef SD_CARD_BACKUP_H
+#define SD_CARD_BACKUP_H
 
 #include <Arduino.h>
-#include "utilities.h" // For Data struct, LOCATIONS, TOTAL_APS, anchorSSIDs, dataSet
 #include <vector>
-#include "scan_data_manager.h"  // for currentConfig
-
-const string RSSI_CSV_FILE_NAME = systemStateToString + "/RSSI_scan_data_.csv";
-const string TOF_CSV_FILE_NAME = systemStateToString + "/TOF_scan_data_.csv";
-const string META_FILE_NAME = systemStateToString + "/meta_.csv";
-const string LOCATION_ACCURACY_FILE_NAME = systemStateToString + "/location_accuracy_.csv";
+#include "utilities.h"
+#include "scan_data_manager.h"
 
 /**
- * @brief Initialize SD card on the given CS pin.
+ * @brief Initialize the SD card (retries internally).
+ * @param csPin   SPI CS pin (default 5).
+ * @return true if SD.begin() succeeded.
  */
 bool initSDCard(int csPin = 5);
 
 /**
- * @brief Load scan data from CSV into the global dataset.
+ * @brief Load the scan CSV (or TOF+RSSI) into memory.
  */
 bool loadLocationDataset();
 
 /**
- * @brief Save a single scan row to the CSV file.
+ * @brief Delete and filter in-place based on validLocationsMap.
  */
-bool saveLocationDataset();
+bool updateCSV();
 
 /**
- * @brief Create a new CSV file with the appropriate header based on ScanConfig.
+ * @brief Create a fresh CSV with the header for this ScanConfig.
  */
 bool createCSVFile(const String &filename, ScanConfig currentConfig);
 
 /**
- * @brief Validate that the CSV file header matches the expected structure.
+ * @brief Helper to parse one CSV line (rssi+loc+ts).
  */
-bool verifyCSVFormat(const char* csvPath, ScanConfig currentConfig);
+static RSSIData fromCSVRssi(const String &line);
 
 /**
- * @brief Convert a CSV-formatted string into a Data structure.
+ * @brief Helper to parse one CSV line (rssi+loc+ts).
  */
-static Data fromCSV();
+static TOFData fromCSVTof(const String &line);
+
 
 /**
- * @brief Serialize a ScanData structure to a CSV-formatted string.
+ * @brief Serialize a ScanData to a CSV line.
  */
-String toCSV(const ScanData &row, ScanConfig currentConfig);
+String toCSVRssi(const RSSIData &row);
 
 /**
- * @brief Delete old CSV and .meta scan files from the SD card.
+ * @brief Serialize a ScanData to a CSV line.
+ */
+String toCSVTof(const TOFData &row);
+
+/**
+ * @brief Remove old scan files and their .meta counterparts.
  */
 void deleteOldScanFiles();
-#endif // SD_CARD_UTILS_H
+
+/**
+ * @brief Append one RSSI row (with header if new).
+ */
+bool saveRSSIScan(const RSSIData &row);
+
+/**
+ * @brief Append one TOF row (with header if new).
+ */
+bool saveTOFScan(const TOFData &row);
+
+#endif // SD_CARD_BACKUP_H
