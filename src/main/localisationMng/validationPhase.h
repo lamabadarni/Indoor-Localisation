@@ -1,13 +1,36 @@
-/*
-    * @file validationPhase.h
-    * @brief Header file for the validation phase of the localization manager.
-    * @details This file contains function declarations for validating the localization data.
-    * @author Ward Iraqi
-    * @date 2025-5-24
-*/
-
 #ifndef IOT_INDOOR_LOCALISATION_VALIDATION_PHASE_H
 #define IOT_INDOOR_LOCALISATION_VALIDATION_PHASE_H
+
+#include "utillities.h"
+#include <vector>
+
+/**
+ * @brief Struct for logging failed validations and reasons.
+ */
+struct ValidationFailure {
+    Label label;
+    const char* reason;
+};
+
+/**
+ * @brief Starts the full interactive validation session.
+ */
+void runValidationPhase();
+
+/**
+ * @brief Checks whether a specific label has been validated.
+ */
+bool isLocationDataValid(Label location);
+
+/**
+ * @brief Internal: print validation warning with reason.
+ */
+void printValidationWarning(Label label, const char* reason);
+
+/**
+ * @brief Internal: print final summary with all validation statuses.
+ */
+void printFinalValidationSummary(const bool validatedLabels[], const std::vector<ValidationFailure>& failures);
 
 /*
     * @brief Validates the location data.
