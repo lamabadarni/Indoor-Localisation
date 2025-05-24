@@ -1,20 +1,26 @@
-/*
- * @file utillities.cpp
- * @brief static functions implementation
+/**
+ * @file utilities.cpp
+ * @brief Implementation of global enablements, utility functions, and configuration mappings 
+ *        used throughout the indoor localization system.
  */
 
- #include "utilities.h"
+#include "utillities.h"
 
- //Enablements -- regarding to system running mode
-struct Enablements {
-    static bool enable_training_model_on_host_machine = false;
-    static SystemState currentSystemState             = SystemState::OFFLINE;
-    static bool enable_SD_Card_backup                 = false;
+// ====================== Enablements ======================
 
-};
+bool Enablements::enable_training_model_on_host_machine = false;
+bool Enablements::enable_SD_Card_backup                 = false;
+bool Enablements::run_validation_phase                  = false;
+bool Enablements::verify_responder_mac_mapping          = false;
+bool Enablements::verify_rssi_anchor_mapping            = false;
 
-// Map specefic label to string 
- const char* locationToString(int number) {
+SystemState currentSystemState                          = OFFLINE;
+SystemMode  currentSystemMode                           = MODE_FULL_SESSION;
+
+
+// ====================== Label Conversion ======================
+
+const char* locationToString(int loc) {
     static const char* locationNames[] = {
         "NOT_ACCURATE",
         "NEAR_ROOM_232",
@@ -36,131 +42,41 @@ struct Enablements {
         "OFFICES_HALL"
     };
 
-    if (loc < 0 || loc >= sizeof(locationNames) / sizeof(locationNames[0])) {
+    if (loc < 0 || loc >= (sizeof(locationNames) / sizeof(locationNames[0]))) {
         return "UNKNOWN_LOCATION";
     }
     return locationNames[loc];
 }
 
- 
-// User UI for choosing label
-char* promptLocationSelection() {
-    Serial.println("Select Location:");
-    for (int i = 1; i <= NUMBER_OF_LOCATIONS; ++i) {
-        Serial.print(i);
-        Serial.print(" - ");
-        Serial.println(i); 
-    }
 
-    int loc = -1;
-    while (loc < 0 || loc >= NUMBER_OF_LOCATIONS) {
-        if (Serial.available()) {
-            char c = Serial.read();
-            if (c >= '0' && c <= '9') loc = c - '0';
-            if (c == '1') {
-                if(Serial.peek() == '0') {
-                    Serial.read();
-                    loc = 10;
-                }
-
-                if(Serial.peek() == '1') {
-                    Serial.read();
-                    loc = 11;
-                }
-
-                if(Serial.peek() == '2') {
-                    Serial.read();
-                    loc = 12;
-                }
-
-                if(Serial.peek() == '3') {
-                    Serial.read();
-                    loc = 13;
-                }
-
-                if(Serial.peek() == '4') {
-                    Serial.read();
-                    loc = 14;
-                }
-
-                if(Serial.peek() == '5') {
-                    Serial.read();
-                    loc = 15;
-                }
-
-                if(Serial.peek() == '6') {
-                    Serial.read();
-                    loc = 16;
-                }
-
-                if(Serial.peek() == '7') {
-                    Serial.read();
-                    loc = 17;
-                }
-            }
-        }
-    }
-    return locationToString(loc);
-}
-
-SystemState promptSystemState() {
-    Serial.println("Select System State:");
-    Serial.println("0 - STATIC_RSSI");
-    Serial.println("1 - STATIC_RSSI_TOF");
-    Serial.println("2 - STATIC_DYNAMIC_RSSI");
-    Serial.println("3 - STATIC_DYNAMIC_RSSI_TOF");
-    Serial.println("4 - OFFLINE");
-
-    while (true) {
-        if (Serial.available()) {
-            char c = Serial.read();
-            if (c >= '0' && c <= '4') return (SystemState)(c - '0');
-        }
-    }
-}
+// ====================== State Conversion ======================
 
 const char* systemStateToString(int state) {
     switch (state) {
-        case STATIC_RSSI: return "STATIC_RSSI";
-        case STATIC_RSSI_TOF: return "STATIC_RSSI_TOF";
-        case STATIC_DYNAMIC_RSSI: return "STATIC_DYNAMIC_RSSI";
+        case STATIC_RSSI:             return "STATIC_RSSI";
+        case STATIC_RSSI_TOF:         return "STATIC_RSSI_TOF";
+        case STATIC_DYNAMIC_RSSI:     return "STATIC_DYNAMIC_RSSI";
         case STATIC_DYNAMIC_RSSI_TOF: return "STATIC_DYNAMIC_RSSI_TOF";
-        case OFFLINE: return "OFFLINE";
-        default: return "UNKNOWN";
+        case OFFLINE:                 return "OFFLINE";
+        default:                      return "UNKNOWN_STATE";
     }
 }
 
-bool promptUserAccuracyApprove() {
-    Serial.println("Select option:");
-    Serial.println("0 - Accuracy Not Sufficient. Proceed more scans at current label");
-    Serial.println("1 - Accuracy Approved.");
-
-    while (true) {
-        if (Serial.available()) {
-            char c = Serial.read();
-            if (c == '0') return false;
-            if (c == '1') return true;
-        }
+const char* modeToString(SystemMode mode) {
+    switch (mode) {
+        case MODE_TRAINING_ONLY:         return "Training";
+        case MODE_PREDICTION_ONLY:       return "Prediction";
+        case MODE_RSSI_MODEL_DIAGNOSTIC: return "Verify RSSI Anchors";
+        case MODE_TOF_DIAGNOSTIC:        return "Verify TOF Responders";
+        case MODE_FULL_SESSION:          return "Combined Prediction";
+        default:                         return "Unknown Mode";
     }
 }
 
-bool promptUserSDCardInitializationApprove() {
-    Serial.println("Select option:");
-    Serial.println("0 - Retry initiating SD card.");
-    Serial.println("1 - Skip initiating SD card.");
 
-    while (true) {
-        if (Serial.available()) {
-            char c = Serial.read();
-            if (c == '0') return false;
-            if (c == '1') return true;
-        }
-    }
-}
+// ====================== Utility Functions ======================
 
-// Apply Exponential Moving Average for RSSI smoothing
 int applyEMA(int prevRSSI, int newRSSI) {
-    if (prevRSSI == -100) return newRSSI;
-    return (int)(ALPHA * prevRSSI + (1 - ALPHA) * newRSSI);
+    if (prevRSSI == RSSI_DEFAULT_VALUE) return newRSSI;
+    return (int)(ALPHA * prevRSSI + (1.0f - ALPHA) * newRSSI);
 }
-

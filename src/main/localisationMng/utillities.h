@@ -1,6 +1,7 @@
-/*
+/**
  * @file utillities.h
- * @brief Final version with only constants, enums, data structures, and API declarations.
+ * @brief System-wide definitions for constants, enums, data structures, and utility APIs 
+ *        used by the indoor localization platform (RSSI/TOF-based).
  */
 
 #ifndef _UTILITIES_H_
@@ -8,116 +9,157 @@
 
 #include <vector>
 
-// =================== Constants ===================
-#define SCAN_BATCH_SIZE             (15)
-#define SCAN_SAMPLE_PER_BATCH       (3)
+// ====================== Constants ======================
+
+#define MIN_ANCHORS_VISIBLE         (3)
+#define MIN_AVERAGE_RSSI_DBM        (-75)
+
+#define RSSI_SCAN_BATCH_SIZE        (15)
+#define RSSI_SCAN_SAMPLE_PER_BATCH  (3)
+#define RSSI_DEFAULT_VALUE          (-100)
+#define RSSI_SCAN_DELAY_MS          (100)
+#define NUMBER_OF_ANCHORS           (10)
+
+#define TOF_NUMBER_OF_MAC_BYTES     (6)
+#define TOF_SCAN_BATCH_SIZE         (5)
+#define NUMBER_OF_RESPONDERS        (4)
+
 #define SCAN_VALIDATION_SAMPLE_SIZE (5)
 #define VALIDATION_PASS_THRESHOLD   (3)
-#define MAX_SCAN_RETRY_ATTEMPTS     (5)
-#define SCAN_DELAY_MS               (100)
+#define MAX_RETRIES                 (5)
+
 #define ALPHA                       (0.7f)
-#define DEFAULT_RSSI_VALUE          (-100)
-#define NUMBER_OF_ANCHORS           (10)
-#define NUMBER_OF_RESPONDERS        (4)
-#define NUMBER_OF_LABELS         (17)  
+#define NUMBER_OF_LABELS            (17)
+#define K                           (4) // KNN usage
 
-//Just for KNN use
-#define K (4)
 
-// =================== Enums ===================
+// ====================== Enums ======================
 
 typedef enum Label {
-    NOT_ACCURATE          = 0,
-    NEAR_ROOM_232         = 1,
-    NEAR_ROOM_234         = 2,
-    BETWEEN_ROOMS_234_236 = 3,
-    ROOM_236              = 4,
-    ROOM_231              = 5,
-    BETWEEN_ROOMS_231_236 = 6,
-    NEAR_BATHROOM         = 7,
-    NEAR_KITCHEN          = 8,
-    KITCHEN               = 9,
-    MAIN_ENTRANCE         = 10,
-    NEAR_ROOM_230         = 11,
-    LOBBY                 = 12,
-    ROOM_201              = 13,
-    PRINTER               = 14,
-    MAIN_EXIT             = 15,
-    BALCONY_ENTRANCE      = 16,
-    OFFICES_HALL          = 17
+    NOT_ACCURATE = 0,
+    NEAR_ROOM_232,
+    NEAR_ROOM_234,
+    BETWEEN_ROOMS_234_236,
+    ROOM_236,
+    ROOM_231,
+    BETWEEN_ROOMS_231_236,
+    NEAR_BATHROOM,
+    NEAR_KITCHEN,
+    KITCHEN,
+    MAIN_ENTRANCE,
+    NEAR_ROOM_230,
+    LOBBY,
+    ROOM_201,
+    PRINTER,
+    MAIN_EXIT,
+    BALCONY_ENTRANCE,
+    OFFICES_HALL
 } Label;
 
 typedef enum SystemState {
-    STATIC_RSSI             = 0, 
-    STATIC_RSSI_TOF         = 1,
-    STATIC_DYNAMIC_RSSI     = 2, 
-    STATIC_DYNAMIC_RSSI_TOF = 3,
-    OFFLINE                 = 4
+    STATIC_RSSI = 0,
+    STATIC_RSSI_TOF,
+    STATIC_DYNAMIC_RSSI,
+    STATIC_DYNAMIC_RSSI_TOF,
+    OFFLINE
 } SystemState;
 
-// =================== Structures ===================
+typedef enum SystemMode {
+    MODE_FULL_SESSION = 0,
+    MODE_TOF_DIAGNOSTIC,
+    MODE_RSSI_MODEL_DIAGNOSTIC,
+    MODE_TRAINING_ONLY,
+    MODE_PREDICTION_ONLY
+} SystemMode;
+
+
+// ====================== Data Structures ======================
+
+struct RSSICoverageResult {
+    Label label;
+    int visibleAnchors;
+    int averageRSSI;
+    bool anchorVisibility[NUMBER_OF_ANCHORS];
+    int anchorRSSI[NUMBER_OF_ANCHORS];
+};
+
+struct TOFCoverageResult {
+    Label label;
+    int visibleResponders;
+    int averageDistance;
+    bool responderVisibility[NUMBER_OF_RESPONDERS];
+    int responderDistance[NUMBER_OF_RESPONDERS];  // in cm
+};
 
 struct RSSIData {
-    int RSSIs[TOTAL_APS];
+    int RSSIs[NUMBER_OF_ANCHORS];  // Define TOTAL_APS if needed
     LOCATIONS label;
 };
 
 struct TOFData {
-    float TOFs[NUM_TOF_RESPONDERS];
+    float TOFs[NUMBER_OF_RESPONDERS]; // Define if needed
     LOCATIONS label;
 };
 
-// =================== Globals ===================
+
+// ====================== Globals ======================
+
+extern SystemMode            currentSystemMode;
+extern SystemState           currentSystemState;
+extern Label                 currentScanningLabel;
 
 extern std::vector<RSSIData> rssiDataSet;
-extern std::vector<TOFData> tofDataSet;
-extern Label currentScanningLabel;
+extern std::vector<TOFData>  tofDataSet;
 
-// =================== Utilities Functions Decleration ===================
+extern const char*           anchorSSIDs[NUMBER_OF_ANCHORS];
+extern const uint8_t         responderMacs[NUMBER_OF_RESPONDERS][TOF_NUMBER_OF_MAC_BYTES];
+
+
+// ====================== Enablements ======================
+
+struct Enablements {
+    static bool enable_training_model_on_host_machine;
+    static bool enable_SD_Card_backup;
+    static bool run_validation_phase;
+    static bool verify_responder_mac_mapping;
+    static bool verify_rssi_anchor_mapping;
+};
+
+
+// ====================== Utility Functions ======================
 
 /**
- * @brief Applies Exponential Moving Average (EMA) filter to RSSI.
- * @param prevRSSI Previous RSSI value
- * @param newRSSI Newly measured RSSI value
- * @return Smoothed RSSI
+ * @brief Apply EMA (exponential moving average) to RSSI.
  */
 int applyEMA(int prevRSSI, int newRSSI);
 
 /**
- * @brief Prompts user to select a location label.
- * @return Label selected by the user
+ * @brief Prompt user to select a location label.
  */
 char* promptLocationSelection();
 
 /**
- * @brief Maps a label enum to its string name.
- * @param label Integer label
- * @return String representation
+ * @brief Convert label enum to string.
  */
 const char* labelToString(int label);
 
 /**
- * @brief Prompts user to select system mode.
- * @return Selected SystemState enum
+ * @brief Prompt user to select system state.
  */
 SystemState promptSystemState();
 
 /**
- * @brief Maps a SystemState enum to string.
- * @param state Integer state
- * @return String name
+ * @brief Convert system state enum to string.
  */
 const char* systemStateToString(int state);
 
 /**
- * @brief Prompts user whether they approve the scan accuracy.
- * @return true if approved, false otherwise
+ * @brief Prompt user to approve scan accuracy.
  */
 bool promptUserAccuracyApprove();
 
 /**
- * @brief Checks if the backup dataset is relevant.
- * @return true if relevant, false otherwise
+ * @brief Check whether the stored data is valid for a location.
  */
 bool isLocationValid(LOCATION location);
 
