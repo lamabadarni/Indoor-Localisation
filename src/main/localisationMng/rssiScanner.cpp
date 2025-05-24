@@ -32,7 +32,8 @@ void performRSSIScan() {
         for (int j = 0; j < TOTAL_APS; ++j) {
             scanData.RSSIs[j] = accumulatedRSSIs[j];
         }
-        dataSet.push_back(scanData);
+        rssiDataSet.push_back(scanData);
+        saveRSSIScan(scanData) 
 
         Serial.printf("[RSSI] Scan %d for label %s: ", s + 1, labelToString(currentScanningLabel));
         for (int i = 0; i < NUMBER_OF_ANCHORS; ++i) {
@@ -59,7 +60,8 @@ int computeRSSIPredictionMatches() {
                 scanData.RSSIs[j] = rssiPointToPredict[j];
             }
 
-            dataSet.push_back(scanData);
+            rssiDataSet.push_back(scanData);
+            saveRSSIScan(scanData);
         }
 
          Serial.printf("[RSSI VALIDATION] #%d: Predicted %s | Actual %s\n",
