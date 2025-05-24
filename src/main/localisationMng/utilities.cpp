@@ -16,6 +16,16 @@ bool Enablements::verify_rssi_anchor_mapping            = false;
 
 SystemState currentSystemState                          = OFFLINE;
 SystemMode  currentSystemMode                           = MODE_FULL_SESSION;
+bool shouldReuseBackup = false;
+
+
+
+ScanConfig currentConfig = {
+    .systemState      = currentSystemState,
+    .RoundTimestamp   = 0,
+    .RSSINum          = NUMBER_OF_ANCHORS,
+    .TOFNum           = NUMBER_OF_RESPONDERS
+};
 
 
 // ====================== Label Conversion ======================
@@ -81,6 +91,27 @@ int applyEMA(int prevRSSI, int newRSSI) {
     return (int)(ALPHA * prevRSSI + (1.0f - ALPHA) * newRSSI);
 }
 
+/////////SD FILES Functions 
+String getSDBaseDir() {
+    return String("/") + systemStateToString(currentSystemState) + "/";
+}
+
+String getMetaFilePath() {
+    return getSDBaseDir() + "meta_.csv";
+}
+
+String getRSSIFilePath() {
+    return getSDBaseDir() + "rssi_scan_data_.csv";
+}
+
+String getTOFFilePath() {
+    return getSDBaseDir() + "tof_scan_data_.csv";
+}
+
+String getAccuracyFilePath() {
+    return getSDBaseDir() + "location_accuracy_.csv";
+}
+
 void resetReuseFromSDForLabel() {
     for(int i = 0; i < NUMBER_OF_LABELS; i++) {
         reuseFromSD[Label(i)] = false;
@@ -93,4 +124,90 @@ void setReuseFromSDForLabel(Label label) {
 
 bool getShouldReuseForLabel(Label label) {
     return reuseFromSD[label];
+}
+
+// Helper: delete a directory and all files within it, then remove the empty directory
+static void deleteDirectory(const String &dirPath) {
+    if (!SD.exists(dirPath)) return;
+    File dir = SD.open(dirPath);
+    while (true) {
+        File entry = dir.openNextFile();
+        if (!entry) break;
+        String name = entry.name();
+        SD.remove(name);
+        entry.close();
+    }
+    dir.close();
+    SD.rmdir(dirPath);
+    Serial.println("Deleted directory: " + dirPath);
+}
+
+/**
+ * @brief Wipe out the entire SD subdirectory for the current state, then
+ *        re-create it and lay down fresh CSV files with only headers.
+ * @return true on success, false on any SD error.
+ */
+bool resetStorage() {
+    String baseDir = getSDBaseDir();
+
+    // 1) delete old
+    deleteDirectory(baseDir);
+
+    // 2) recreate directory
+    if (!SD.mkdir(baseDir)) {
+        Serial.println("Failed to create directory: " + baseDir);
+        return false;
+    }
+    Serial.println("Created directory: " + baseDir);
+
+    // 3) create meta file
+    if (!createMetaFile(getMetaFilePath(), currentConfig)) {
+        Serial.println("Failed to create meta file.");
+        return false;
+    }
+
+    // 4) create RSSI CSV with header
+    {
+        File f = SD.open(getRSSIFilePath(), FILE_WRITE);
+        if (!f) {
+            Serial.println("Failed to create RSSI CSV.");
+            return false;
+        }
+        // RSSI columns
+        for (int i = 1; i <= NUMBER_OF_ANCHORS; ++i) {
+            f.print(String(i) + "_rssi,");
+        }
+        f.println("Location,Timestamp");
+        f.close();
+    }
+
+    // 5) create accuracy CSV with header
+    {
+        File f = SD.open(getAccuracyFilePath(), FILE_WRITE);
+        if (!f) {
+            Serial.println("Failed to create accuracy CSV.");
+            return false;
+        }
+        f.println("Location,Accuracy");
+        f.close();
+    }
+
+    // 6) if TOF mode, create TOF CSV as well
+    if (Enablements::currentSystemState == SystemState::STATIC_RSSI_TOF ||
+        Enablements::currentSystemState == SystemState::STATIC_DYNAMIC_RSSI_TOF) {
+        File f = SD.open(getTOFFilePath(), FILE_WRITE);
+        if (!f) {
+            Serial.println("Failed to create TOF CSV.");
+            return false;
+        }
+        for (int j = 1; j <= NUMBER_OF_RESPONDERS; ++j) {
+            f.print(String(j) + "_tof,");
+        }
+        f.println("Location,Timestamp");
+        f.close();
+    }
+
+    Serial.println("Storage reset complete for state: " +
+                   String(systemStateToString(currentConfig.systemState)));
+    return true;
 }

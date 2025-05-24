@@ -36,6 +36,17 @@ bool startLabelScanningSession(Label label) {
     }
 
     Serial.printf("Scanning Phase: final accepted scan at %s with accuracy: %d%%\n", labelToString(label), scanAccuracy);
+    // Save the scan data to SD card
+
+    AccuracyData record;
+    record.location  = label;
+    record.accuracy  = scanAccuracy;
+
+   accuracyDatas.push_back(record);
+    if (!saveAccuracyData(record)) {
+        Serial.println("Failed to save accuracy data.");
+    }
+
     return true;
 }
 

@@ -6,28 +6,8 @@
 #include "../localisationMng/predictionPhase.h"
 
 
-// Globals
 
-String sessionFile;  // defined as extern in utilities.h
-extern ScanConfig currentConfig;
-std::vector<Data> dataSet;
 
-String DataFile;
-String metaFile;
-String LocationAccuracyFile;
-
-// Constants
-SystemState currentSystemState = SystemState::STATIC_RSSI_TOF;
-
-ScanConfig   currentConfig = {
-    .IdRound        = "round_1",
-    .systemState    = currentSystemState,
-    .Count_Round     = 1,
-    .RoundTimestamp  = millis(),
-    .RSSINum       = ,
-    .TOFNum        = 0
-
-};
 
 
 const char* anchorSSIDs[TOTAL_APS] = {
@@ -47,47 +27,40 @@ void setup() {
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
-
-  // 1) Init SD (interactive if enabled)
-  bool sdAvailable = initSDCard();            // sets sdAvailable
- // if (sdAvailable) pruneOldCSVs(FILES_THRESHOLD);
-
-  // 2) Build per‐config filenames
-    bool reuse = false;
+  bool sdAvailable = initSDCard();       
+///////////////////// new setup for sd ////////////////////
     if (sdAvailable){
-      if(SD.exists(systemStateToString(currentSystemState))) {
-         // the purpose of reuse just to check if the meta data is relevant to curr config
-        loadAccuracy();
+         CurrDir = getSDBaseDir();
+
+      if(SD.exists((CurrDir))) {
         loadLocationDataset();
-        isBackupDataSetRelevant()
-        cleanUpCSVFile();
-        cleanUpDataSet();
+        shouldReuseBackup=resetReuseFromSDForLabel();
 
-        createMetaFile();
-        createCSVFile();
+        if(shouldReuseBackup){
+            if(updateCSV()){
+         Serial.println("Start using Backup data set! ");
+         return;
+        }
+            
+        }
+     Serial.println("Backup data not relevant, Need to rescan all over");
+         if(resetStorage()){
+        Serial.println("Success : Creating new backup data for your new scans! ");
+        clear.rssiDataSet
+        clear.tofDataSet      
+         }
+         else{
+        Serial.println("Failed to creater new Backup data ,");
 
-        Serial.println("No Backup data set relevant to current config");
-      
-    
-  }
-  // 3) If no SD, do fully interactive scan and exit setup
-
-    for (int i = 0; i < NUMBER_OF_LOCATIONS; ++i) {
-      LOCATIONS loc = promptLocationSelection();
-      Serial.println("Press Enter to start scanning...");
-      while (!Serial.available()) delay(50);
-      Serial.read();  // clear newline
-      Serial.printf(" Scanning location %d\n", (int)loc);
-
-      performScan(sessionFile,loc, sdAvailable);
-      Serial.printf(" Completed %u scans for loc %d\n", LocationScanBuffer.size(), (int)loc);
-    }
-    Serial.printf("INTERACTIVE SCAN COMPLETE: total=%u\n", dataSet.size());
-    return;
-  
+         }
   }
 
 }
+
+}
+
+
+
 
 void confirmLocation(LOCATIONS loc) {
     Serial.printf("Predicted location: %s\n", locationToString(loc));
@@ -178,4 +151,8 @@ void setup() {
 
 }
 
+//1 global var should reuder
+//2 map should be reused
+//3 csv file and data set should 
+//4)
         

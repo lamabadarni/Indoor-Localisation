@@ -106,19 +106,33 @@ struct TOFData {
     Label label;
 };
 
+struct AccuracyData {
+    Label location;
+    float accuracy;
+};
 
+struct ScanConfig {
+    SystemState systemState;
+    uint32_t RoundTimestamp;
+    int RSSINum;
+    int TOFNum;
+};
 // ====================== Globals ======================
 
 extern SystemMode            currentSystemMode;
 extern SystemState           currentSystemState;
 extern Label                 currentScanningLabel;
+extern ScanConfig            currentConfig;
 
 extern std::vector<RSSIData> rssiDataSet;
 extern std::vector<TOFData>  tofDataSet;
+extern std::vector<AccuracyData> accuracyDatas;
 extern std::map<Label, bool> reuseFromSD;
 
 extern const char*           anchorSSIDs[NUMBER_OF_ANCHORS];
 extern const uint8_t         responderMacs[NUMBER_OF_RESPONDERS][TOF_NUMBER_OF_MAC_BYTES];
+extern bool shouldReuseBackup;
+
 
 
 // ====================== Enablements ======================
@@ -169,4 +183,32 @@ bool promptUserAccuracyApprove();
  */
 bool isLocationValid(LOCATION location);
 
+/**
+ * @brief Get the base directory on the SD card for the current system state.
+ */
+String getSDBaseDir();
+
+/**
+ * @brief Get the full path to the meta file based on current system state.
+ */
+String getMetaFilePath();
+
+/**
+ * @brief Get the full path to the RSSI scan data file.
+ */
+String getRSSIFilePath();
+
+/**
+ * @brief Get the full path to the TOF scan data file.
+ */
+String getTOFFilePath();
+
+/**
+ * @brief Get the full path to the location accuracy file.
+ */
+String getAccuracyFilePath();
+
+static void deleteDirectory(const String &dirPath);
+
+bool resetStorage();
 #endif // _UTILITIES_H_
