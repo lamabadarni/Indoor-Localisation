@@ -30,7 +30,7 @@
 #define NUMBER_OF_RESPONDERS        (4)
 
 #define SCAN_VALIDATION_SAMPLE_SIZE (5)
-#define VALIDATION_PASS_THRESHOLD   (3)
+#define VALIDATION_PASS_THRESHOLD   (0.6)
 #define MAX_RETRIES                 (5)
 
 #define ALPHA                       (0.7f)
@@ -111,12 +111,12 @@ struct TOFData {
 
 extern SystemMode            currentSystemMode;
 extern SystemState           currentSystemState;
-extern Label                 currentScanningLabel;
+extern Label                 currentLabel;
 
 extern std::vector<RSSIData> rssiDataSet;
 extern std::vector<TOFData>  tofDataSet;
-extern std::map<Label, bool> reuseFromSD;
-extern bool reuseFromSD[NUMBER_OF_LABELS];
+extern bool                  reuseFromSD[NUMBER_OF_LABELS];
+extern int                   scanAccuracy;
 
 extern const char*           anchorSSIDs[NUMBER_OF_ANCHORS];
 extern const uint8_t         responderMacs[NUMBER_OF_RESPONDERS][TOF_NUMBER_OF_MAC_BYTES];

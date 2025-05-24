@@ -1,47 +1,35 @@
-#ifndef IOT_INDOOR__RSSI_LOCALISATION_SCANNING_H
-#define IOT_INDOOR__RSSI_LOCALISATION_SCANNING_H
+/**
+ * @file rssiScanner.h
+ * @brief Interface for performing RSSI-based scanning, prediction, and data collection.
+ * 
+ * Functions support both batch-based training scan collection and single-sample prediction.
+ * Used in localization workflows where RSSI is measured from known static Wi-Fi anchors.
+ */
+
+#ifndef RSSI_SCANNER_H
+#define RSSI_SCANNER_H
 
 #include <Arduino.h>
-#include <WiFi.h>
 #include "utillities.h"
 
 /**
- * @brief Starts a scanning session at a given label with retries and validation.
- * @param label The target label to scan at.
- * @return true if scan was successful and accepted, false otherwise.
+ * @brief Performs a batch of RSSI scans and stores them into the global dataset.
+ *        Each scan is a smoothed sample using EMA across N RSSI samples.
  */
-bool startLabelScanningSession(Label label);
+void performRSSIScan();
 
 /**
- * @brief Collects RSSI/TOF data based on the current system state.
- *        Dispatches to appropriate scanning functions.
+ * @brief Creates a single RSSI scan input for prediction.
+ *        This scan uses EMA across RSSI_SCAN_SAMPLE_PER_BATCH samples.
+ * @return Pointer to static int[NUMBER_OF_ANCHORS] containing RSSI values.
  */
-void collectMeasurements();
+int* createRSSIScanToMakePrediction();
 
 /**
- * @brief Validates prediction accuracy and asks for user approval.
- *        Includes fallback to RSSI-only or TOF-only if combined accuracy fails.
- * @return true if validation succeeded, false if aborted or rejected.
+ * @brief Performs SCAN_VALIDATION_SAMPLE_SIZE predictions and compares them to the current label.
+ *        Adds successful prediction samples to the dataset.
+ * @return Number of correct predictions.
  */
-bool validateScanAccuracy();
+int computeRSSIPredictionMatches();
 
-/**
- * @brief Performs static RSSI scanning from fixed anchors.
- */
-void scanStaticRSSI();
-
-/**
- * @brief Scans additional RSSI sources (future: dynamic RSSI).
- */
-void scanDynamicRSSI();
-
-/**
- * @brief Scans Time-of-Flight (TOF) distances from responders.
- */
-void scanTOF();
-
-/**
- * @brief Global scan accuracy percentage computed after validation.
- */
-
-#endif // IOT_INDOOR__RSSI_LOCALISATION_SCANNING_H
+#endif // RSSI_SCANNER_H

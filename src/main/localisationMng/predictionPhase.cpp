@@ -138,7 +138,7 @@ bool isBackupDataSetRelevant(void)
 
     for (int i = 0; i < NUMBER_OF_LABELS; ++i)
     {
-        currentScanningLabel = (Label)i;
+        currentLabel = (Label)i;
         if (numOfLabelInRSSI[i] >= 3 * K && numOfLabelInTOF[i] >= 3 * K && validateScanAccuracy())
         {
             reuseFromSD[i] = true;
@@ -151,71 +151,4 @@ bool isBackupDataSetRelevant(void)
     }
 
     return isDataSetValid;
-}
-
-/**
- * @brief Validates the scan results by checking how many predictions match the label.
- *        Uses both RSSI and TOF modules if enabled. If failed, offers fallback.
- */
-bool validateScanAccuracy() {
-    int matchesRSSI = 0;
-    int matchesTOF = 0;
-    bool combinedOK = false;
-
-    // Run RSSI and/or TOF predictions depending on system state
-    switch (Enablements::currentSystemState) {
-        case STATIC_RSSI:
-            matchesRSSI = computeRSSIPredictionMatches();
-            break;
-
-        case STATIC_RSSI_TOF:
-            matchesRSSI = computeRSSIPredictionMatches();
-            matchesTOF = computeTOFPredictionMatches();
-            break;
-
-        case STATIC_DYNAMIC_RSSI:
-            matchesRSSI = computeRSSIPredictionMatches();
-            break;
-
-        case STATIC_DYNAMIC_RSSI_TOF:
-            matchesRSSI = computeRSSIPredictionMatches();
-            matchesTOF = computeTOFPredictionMatches();
-            break;
-
-        default:
-            break;
-    }
-
-    int totalMatches = matchesRSSI + matchesTOF;
-    int totalAttempts = (matchesTOF > 0) ? 2 * SCAN_VALIDATION_SAMPLE_SIZE : SCAN_VALIDATION_SAMPLE_SIZE;
-    scanAccuracy = (100 * totalMatches) / totalAttempts;
-
-    Serial.printf("Scanning Phase: combined accuracy = %d%% (%d/%d correct predictions)\n",
-                  scanAccuracy, totalMatches, totalAttempts);
-
-    combinedOK = (totalMatches >= VALIDATION_PASS_THRESHOLD);
-
-    if (combinedOK && promptUserAccuracyApprove()) return true;
-
-    // Combined validation failed — fallback prompt
-    int choice = promptRetryValidationWithSingleMethod();
-
-    if (choice == 1) {
-        Serial.println("Retrying validation with RSSI only...");
-        matchesRSSI = computeRSSIPredictionMatches();
-        scanAccuracy = (100 * matchesRSSI) / SCAN_VALIDATION_SAMPLE_SIZE;
-        Serial.printf("[RSSI] Retry accuracy = %d%%\n", scanAccuracy);
-        return (matchesRSSI >= VALIDATION_PASS_THRESHOLD) && promptUserAccuracyApprove();
-    }
-
-    if (choice == 2) {
-        Serial.println("Retrying validation with TOF only...");
-        matchesTOF = computeTOFPredictionMatches();
-        scanAccuracy = (100 * matchesTOF) / SCAN_VALIDATION_SAMPLE_SIZE;
-        Serial.printf("[TOF] Retry accuracy = %d%%\n", scanAccuracy);
-        return (matchesTOF >= VALIDATION_PASS_THRESHOLD) && promptUserAccuracyApprove();
-    }
-
-    Serial.println("User aborted validation.");
-    return false;
 }

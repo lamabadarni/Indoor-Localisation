@@ -31,7 +31,7 @@ void performTOFScan() {
 
     for(int scan = 0; scan < TOF_SCAN_BATCH_SIZE ; scan++) {
         TOFData scanData;
-        scanData.label = currentScanningLabel;
+        scanData.label = currentLabel;
 
         for (int i = 0; i < NUMBER_OF_RESPONDERS; i++) {
             wifi_ftm_initiator_cfg_t config = {
@@ -60,7 +60,7 @@ void performTOFScan() {
         //Should Save to CSV !!!!!
         tofDataSet.push_back(data);
 
-        Serial.printf("[TOF] Scan %d for label %s: ", s + 1, labelToString(currentScanningLabel));
+        Serial.printf("[TOF] Scan %d for label %s: ", s + 1, labelToString(currentLabel));
         for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
             Serial.printf("%.1f  ", data.TOFs[i]);
         }
@@ -109,11 +109,11 @@ int computeTOFPredictionMatches() {
         createTOFScanToMakePrediction(scan);
         Label predicted = tofPredict(scan);
 
-        if (predicted == currentScanningLabel) {
+        if (predicted == currentLabel) {
             matches++;
 
             TOFData data;
-            data.label = currentScanningLabel;
+            data.label = currentLabel;
             for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
                 data.TOFs[i] = scan[i];
             }
@@ -121,7 +121,7 @@ int computeTOFPredictionMatches() {
         }
 
         Serial.printf("[TOF VALIDATION] #%d: Predicted %s | Actual %s\n",
-                      v + 1, labelToString(predicted), labelToString(currentScanningLabel));
+                      v + 1, labelToString(predicted), labelToString(currentLabel));
     }
 
     return matches;

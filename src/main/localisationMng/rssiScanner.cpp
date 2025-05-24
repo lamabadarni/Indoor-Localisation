@@ -34,7 +34,7 @@ void performRSSIScan() {
         }
         dataSet.push_back(scanData);
 
-        Serial.printf("[RSSI] Scan %d for label %s: ", s + 1, labelToString(currentScanningLabel));
+        Serial.printf("[RSSI] Scan %d for label %s: ", s + 1, labelToString(currentLabel));
         for (int i = 0; i < NUMBER_OF_ANCHORS; ++i) {
             Serial.printf("%d  ", data.RSSIs[i]);
         }
@@ -49,7 +49,7 @@ int computeRSSIPredictionMatches() {
     for(int sampleToPredict = 0; sampleToPredict < SCAN_VALIDATION_SAMPLE_SIZE; sampleToPredict++) {
         int rssiPointToPredict[NUMBER_OF_ANCHORS] = createRSSIScanToMakePredection();
         Label predictedLabel = rssiPredict(rssiPointToPredict);
-        if(predictedLabel == currentScanningLabel) {
+        if(predictedLabel == currentLabel) {
             matches++;
 
             //Add each scan to scan data if the predection succeeded
@@ -63,7 +63,7 @@ int computeRSSIPredictionMatches() {
         }
 
          Serial.printf("[RSSI VALIDATION] #%d: Predicted %s | Actual %s\n",
-                      v + 1, labelToString(predicted), labelToString(currentScanningLabel));
+                      v + 1, labelToString(predicted), labelToString(currentLabel));
     }
 
     return matches;
