@@ -84,27 +84,26 @@ TOFCoverageResult scanTOFCoverage(Label label) {
     TOFCoverageResult result = {0};
     result.label = label;
 
-    double distances[NUMBER_OF_RESPONDERS] = {0.0f};
     int totalCm = 0;
 
     currentScanningLabel = label;
-    createTOFScanToMakePrediction(distances);
+    createTOFScanToMakePrediction();
 
     for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
-        if (distances[i] >= 0.0f) {
+        if (accumulatedTOFs[i] >= 0) {
             result.responderVisibility[i] = true;
             result.responderDistance[i] = (int)distances[i];
             totalCm += result.responderDistance[i];
             result.visibleResponders++;
         } else {
             result.responderVisibility[i] = false;
-            result.responderDistance[i] = INVALID_DISTANCE_CM;
+            result.responderDistance[i] = TOF_DEFAULT_DISTANCE_CM;
         }
     }
 
     result.averageDistance = (result.visibleResponders > 0)
                              ? (totalCm / result.visibleResponders)
-                             : INVALID_DISTANCE_CM;
+                             : TOF_DEFAULT_DISTANCE_CM;
 
     return result;
 }
@@ -129,10 +128,10 @@ bool verifyTOFScanCoverage() {
         bool approved = promptRSSICoverageUserFeedback(); // reuse prompt
 
         if (!approved) {
-            if (result.visibleResponders < MIN_RESPONDERS_VISIBLE) {
+            if (result.visibleResponders < TOF_MIN_RESPONDERS_VISIBLE) {
                 Serial.println("Advice: Add more responders or reposition to ensure redundancy.");
             }
-            if (result.averageDistance > MAX_AVERAGE_TOF_DISTANCE_CM || result.averageDistance == INVALID_DISTANCE_CM) {
+            if (result.averageDistance > TOF_MAX_AVERAGE_DISTANCE_CM || result.averageDistance == TOF_DEFAULT_DISTANCE_CM) {
                 Serial.println("Advice: Reduce distance between scanner and responders.");
             }
 

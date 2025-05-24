@@ -1,6 +1,5 @@
 #include "scanning.h"
 
-static double lastTOFScan[NUMBER_OF_RESPONDERS];
 static bool scanComplete = false;
 
 //Handler function used as call back function when responder sends back to initiator
@@ -16,13 +15,11 @@ static void tofReportHandler(void* arg, esp_event_base_t event_base, int32_t eve
         //Convert distance from millimeters to centimeters.
         double cm = report->distance_mm / 10.0;
     } else {
-        // If failed, set a default value (e.g., 1500 cm)
-        lastTOFScan[idx] = 1500.0;
+        accumulatedTOFs[idx] = TOF_DEFAULT_DISTANCE_CM;
     }
 
     scanComplete = true;
 }
-
 
 void performTOFScan() {
     // register a callback function (ftmReportHandler) to listen for FTM result events.
@@ -40,8 +37,7 @@ void performTOFScan() {
             };
 
             scanComplete = false;
-            // in case of failure, set a default value
-            lastTOFScan[i] = 1500.0;
+            accumulatedTOFs[i] = TOF_DEFAULT_DISTANCE_CM;
 
             esp_err_t err = esp_wifi_ftm_initiate_session(responderMacs[i], &cfg);
             if (err != ESP_OK) {
@@ -54,10 +50,9 @@ void performTOFScan() {
                 delay(10);
             }
 
-            data.TOFs[i] = lastTOFScan[i];
+            data.TOFs[i] = accumulatedTOFs[i];
         }
 
-        //Should Save to CSV !!!!!
         tofDataSet.push_back(data);
 
         Serial.printf("[TOF] Scan %d for label %s: ", s + 1, labelToString(currentLabel));
@@ -70,7 +65,7 @@ void performTOFScan() {
     esp_event_handler_unregister(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler);
 }
 
-void createTOFScanToMakePrediction(double out[NUMBER_OF_RESPONDERS]) {
+void createTOFScanToMakePrediction() {
     esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler, NULL);
 
     for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
@@ -80,8 +75,7 @@ void createTOFScanToMakePrediction(double out[NUMBER_OF_RESPONDERS]) {
         };
 
         scanComplete = false;
-        // in case of failure, set a default value
-        lastTOFScan[i] = 1500.0;
+        accumulatedTOFs[i] = TOF_DEFAULT_DISTANCE_CM;
 
         esp_err_t err = esp_wifi_ftm_initiate_session(responderMacs[i], &cfg);
         if (err != ESP_OK) {
@@ -93,8 +87,6 @@ void createTOFScanToMakePrediction(double out[NUMBER_OF_RESPONDERS]) {
         while (!scanComplete && millis() - start < 300) {
             delay(10);
         }
-
-        out[i] = lastTOFScan[i];
     }
 
     esp_event_handler_unregister(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler);
@@ -105,9 +97,8 @@ int computeTOFPredictionMatches() {
     int matches = 0;
 
     for (int v = 0; v < SCAN_VALIDATION_SAMPLE_SIZE; ++v) {
-        double scan[NUMBER_OF_RESPONDERS];
-        createTOFScanToMakePrediction(scan);
-        Label predicted = tofPredict(scan);
+        createTOFScanToMakePrediction();
+        Label predicted = tofPredict();
 
         if (predicted == currentLabel) {
             matches++;

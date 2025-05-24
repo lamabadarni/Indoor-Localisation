@@ -11,9 +11,9 @@
 // ====================== System Setup ======================
 
 SystemMode promptSystemMode() {
-    Serial.println("\nSelect System Mode:");
+    Serial.println("\nUserUI: Select System Mode:");
     for (int i = 0; i < MODE_COUNT; ++i) {
-        Serial.printf("  %d. %s\n", i, modeToString((SystemMode)i));
+        Serial.println("  " + String(i) + ". " + String(modeToString((SystemMode)i)));
     }
 
     int selection = -1;
@@ -24,92 +24,64 @@ SystemMode promptSystemMode() {
     }
 
     currentSystemMode = static_cast<SystemMode>(selection);
-    Serial.printf("Selected Mode: %s\n\n", modeToString(currentSystemMode));
+    Serial.println("UserUI: Selected mode is " + String(modeToString(currentSystemMode)));
     return currentSystemMode;
 }
 
 SystemState promptSystemState() {
-    Serial.println("Select System State:");
-    Serial.println("0 - STATIC_RSSI");
-    Serial.println("1 - STATIC_RSSI_TOF");
-    Serial.println("2 - STATIC_DYNAMIC_RSSI");
-    Serial.println("3 - STATIC_DYNAMIC_RSSI_TOF");
-    Serial.println("4 - OFFLINE");
+    Serial.println("UserUI: Select System State:");
+    for (int i = 0; i <= OFFLINE; ++i) {
+        Serial.println("  " + String(i) + " - " + String(systemStateToString(i)));
+    }
 
     while (true) {
         if (Serial.available()) {
             char c = Serial.read();
-            if (c >= '0' && c <= '4') return static_cast<SystemState>(c - '0');
+            int selected = c - '0';
+            if (selected >= 0 && selected <= OFFLINE) {
+                Serial.println("UserUI: Selected system state is " + String(systemStateToString(selected)));
+                return static_cast<SystemState>(selected);
+            }
         }
     }
 }
 
+
 void setupEnablementsFromUser() {
-    Serial.println("\n=== Configure Enablements ===");
+    Serial.println("\nUserUI: === Configure Enablements ===");
 
-    Enablements::currentSystemState = promptSystemState();
+    currentSystemState = promptSystemState();
+    
+    struct {
+        const char* prompt;
+        bool* flag;
+        const char* name;
+    } options[] = {
+        { "Enable SD Card Backup? (1=Yes, 0=No)", &Enablements::enable_SD_Card_backup, "SD Card Backup" },
+        { "Enable Training Model on Host? (1=Yes, 0=No)", &Enablements::enable_training_model_on_host_machine, "Training on Host" },
+        { "Run Validation Phase? (1=Yes, 0=No)", &Enablements::run_validation_phase, "Validation Phase" },
+        { "Verify TOF Responder Mapping? (1=Yes, 0=No)", &Enablements::verify_responder_mac_mapping, "TOF Responder Mapping" },
+        { "Verify RSSI Anchor Mapping? (1=Yes, 0=No)", &Enablements::verify_rssi_anchor_mapping, "RSSI Anchor Mapping" }
+    };
 
-    Serial.println("Enable SD Card Backup? (1=Yes, 0=No)");
-    while (!Serial.available());
-    Enablements::enable_SD_Card_backup = Serial.read() == '1';
-
-    Serial.println("Enable Training Model on Host? (1=Yes, 0=No)");
-    while (!Serial.available());
-    Enablements::enable_training_model_on_host_machine = Serial.read() == '1';
-
-    Serial.println("Run Prediction Phase? (1=Yes, 0=No)");
-    while (!Serial.available());
-    Enablements::run_prediction_phase = Serial.read() == '1';
-
-    Serial.println("Evaluate TOF Responder Placement? (1=Yes, 0=No)");
-    while (!Serial.available());
-    Enablements::evaluate_responder_placement = Serial.read() == '1';
-
-    Serial.println("Verify TOF Responder Mapping? (1=Yes, 0=No)");
-    while (!Serial.available());
-    Enablements::verify_responder_mac_mapping = Serial.read() == '1';
-
-    Serial.println("Verify RSSI Anchor Mapping? (1=Yes, 0=No)");
-    while (!Serial.available());
-    Enablements::verify_rssi_anchor_mapping = Serial.read() == '1';
+    for (auto& opt : options) {
+        Serial.println(opt.prompt);
+        while (!Serial.available());
+        *opt.flag = Serial.read() == '1';
+        Serial.println("UserUI: " + String(opt.name) + " = " + String(*opt.flag));
+    }
 }
+  }
+}
+
 
 
 // ====================== Location Selection ======================
 
-char* promptLocationSelection() {
-    Serial.println("Select Location:");
-    for (int i = 1; i <= NUMBER_OF_LOCATIONS; ++i) {
-        Serial.printf("%d - %d\n", i, i);
-    }
-
-    int loc = -1;
-    while (loc < 0 || loc >= NUMBER_OF_LOCATIONS) {
-        if (Serial.available()) {
-            char c = Serial.read();
-            if (c >= '0' && c <= '9') loc = c - '0';
-            if (c == '1') {
-                switch (Serial.peek()) {
-                    case '0': Serial.read(); loc = 10; break;
-                    case '1': Serial.read(); loc = 11; break;
-                    case '2': Serial.read(); loc = 12; break;
-                    case '3': Serial.read(); loc = 13; break;
-                    case '4': Serial.read(); loc = 14; break;
-                    case '5': Serial.read(); loc = 15; break;
-                    case '6': Serial.read(); loc = 16; break;
-                    case '7': Serial.read(); loc = 17; break;
-                }
-            }
-        }
-    }
-
-    return locationToString(loc);
-}
-
 Label promptLocationLabel() {
-    Serial.println("Select Label by Index:");
+    Serial.println("UserUI: Select Label by Index:");
     for (int i = 0; i < NUMBER_OF_LABELS; ++i) {
-        Serial.printf("  %d - %s\n", i, labelToString(i));
+        Serial.println("  " + String(i) + " - " + String(labelToString(i)));
     }
 
     int label = -1;
@@ -118,8 +90,10 @@ Label promptLocationLabel() {
         label = Serial.parseInt();
     }
 
+    Serial.println("UserUI: selected label is " + String(labelToString(label)));
     return static_cast<Label>(label);
 }
+
 
 
 // ====================== User Decision Prompts ======================
@@ -132,8 +106,14 @@ bool promptUserAccuracyApprove() {
     while (true) {
         if (Serial.available()) {
             char c = Serial.read();
-            if (c == '0') return false;
-            if (c == '1') return true;
+            if (c == '0') {
+                Serial.println("UserUI: user rejected scan accuracy.");
+                return false;
+            }
+            if (c == '1') {
+                Serial.println("UserUI: user approved scan accuracy.");
+                return true;
+            }
         }
     }
 }
@@ -195,6 +175,23 @@ int promptRetryValidationWithSingleMethod() {
         return input;
     
     return 0; // Default to abort if input is invalid
+}
+
+
+int promptUserPreferredPrediction() {
+    Serial.println("UserUI: RSSI and TOF predictions differ.");
+    Serial.println("Which prediction do you trust?");
+    Serial.println("1 - Trust RSSI");
+    Serial.println("2 - Trust TOF");
+
+    int input = -1;
+    while (input < 0 || input > 1) {
+        while (Serial.available() == 0);
+        input = Serial.parseInt();
+    }
+
+    Serial.println("UserUI: user selected preference = " + String(input));
+    return input;
 }
 
 

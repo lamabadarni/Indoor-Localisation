@@ -16,11 +16,24 @@ bool Enablements::verify_rssi_anchor_mapping            = false;
 
 // ======================   Globals    ======================
 
+const char* anchorSSIDs[NUMBER_OF_ANCHORS] = {
+        "234/236",
+        "236",
+        "231/236",
+        "231", 
+        "kitchen",
+        "entrance",
+        "lobby",
+        "balcony",
+        "201",
+        "offices"
+};
+
 SystemState currentSystemState                          = OFFLINE;
 SystemMode  currentSystemMode                           = MODE_FULL_SESSION;
 
 bool reuseFromSD[NUMBER_OF_LABELS]                      = {false};
-int scanAccuracy                                        = -1
+double scanAccuracy                                     = -1
 
 // ====================== Label Conversion ======================
 

@@ -6,42 +6,8 @@
 #include "../localisationMng/predictionPhase.h"
 
 
-// Globals 
-
-String sessionFile;  // defined as extern in utilities.h
-extern ScanConfig currentConfig;
-std::vector<Data> dataSet;
-
-String DataFile;
-String metaFile;
-String LocationAccuracyFile;
-
-// Constants
-SystemState currentSystemState = SystemState::STATIC_RSSI_TOF;
-
-ScanConfig   currentConfig = {
-    .IdRound        = "round_1",
-    .systemState    = currentSystemState,
-    .Count_Round     = 1,
-    .RoundTimestamp  = millis(),
-    .RSSINum       = ,
-    .TOFNum        = 0
-
-};
 
 
-const char* anchorSSIDs[TOTAL_APS] = {
-        "234/236",
-        "236",
-        "231/236",
-        "231", 
-        "kitchen",
-        "entrance",
-        "lobby",
-        "balcony",
-        "201",
-        "offices"
-};
 
 void setup() {
   Serial.begin(115200);
@@ -73,7 +39,7 @@ void setup() {
   // 3) If no SD, do fully interactive scan and exit setup
 
     for (int i = 0; i < NUMBER_OF_LOCATIONS; ++i) {
-      LOCATIONS loc = promptLocationSelection();
+      Label label = promptLocationLabel();
       Serial.println("Press Enter to start scanning...");
       while (!Serial.available()) delay(50);
       Serial.read();  // clear newline

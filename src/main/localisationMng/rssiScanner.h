@@ -13,6 +13,15 @@
 #include "utillities.h"
 
 /**
+ * @brief Executes the scanning phase across all location labels.
+ *
+ * For each label, prompts the user to begin scanning, collects RSSI and/or TOF data
+ * based on the current system state, validates the scan, and repeats if necessary.
+ * This function is typically used to gather training or prediction data for the localization model.
+ */
+void runScanningPhase();
+
+/**
  * @brief Performs a batch of RSSI scans and stores them into the global dataset.
  *        Each scan is a smoothed sample using EMA across N RSSI samples.
  */
@@ -21,12 +30,12 @@ void performRSSIScan();
 /**
  * @brief Creates a single RSSI scan input for prediction.
  *        This scan uses EMA across RSSI_SCAN_SAMPLE_PER_BATCH samples.
- * @return Pointer to static int[NUMBER_OF_ANCHORS] containing RSSI values.
+ *        and fills accumlatedRSSIs global with sampled RSSIs
  */
-int* createRSSIScanToMakePrediction();
+void createRSSIScanToMakePrediction();
 
 /**
- * @brief Performs SCAN_VALIDATION_SAMPLE_SIZE predictions and compares them to the current label.
+ * @brief Performs NUM_OF_VALIDATION_SCANS predictions and compares them to the current label.
  *        Adds successful prediction samples to the dataset.
  * @return Number of correct predictions.
  */
