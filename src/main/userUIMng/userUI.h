@@ -94,4 +94,11 @@ void verifySystemConfiguration();
  */
 int promptRetryValidationWithSingleMethod();
 
+/**
+ * @brief Ask user if the predicted label is correct, retry, or skip.
+ * @return 0 = incorrect, 1 = correct, 9 = skip
+ */
+int promptValidationApprovalOrSkip();
+
+
 #endif // USER_UI_H
