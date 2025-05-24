@@ -23,13 +23,6 @@ bool startLabelScanningSession();
 void collectMeasurements();
 
 /**
- * @brief Validates prediction accuracy and asks for user approval.
- * @param matches Number of correct predictions.
- * @return true if user approves the scan, false otherwise.
- */
-bool validateScanAccuracy();
-
-/**
  * @brief Performs static RSSI scanning from fixed anchors.
  */
 void scanStaticRSSI();

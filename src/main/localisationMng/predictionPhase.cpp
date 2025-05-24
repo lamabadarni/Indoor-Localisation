@@ -14,6 +14,24 @@ static double euclidean(const double* a, const double* b, int size)
 }
 
 
+static void preparePointRSSI(double RSSIs[NUMBER_OF_ANCHORS])
+{
+    for (int i = 0; i < NUMBER_OF_ANCHORS; ++i)
+    {
+        // Normalize the RSSI values using min-max scaling
+        RSSIs[i] = (RSSIs[i] + 100) / 100.0;
+    }
+}
+
+static void preparePointTOF(double TOF[NUMBER_OF_RESPONDERS])
+{
+    for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i)
+    {
+        // Normalize the TOF values using min-max scaling
+        TOF[i] = TOF[i] / 2000;
+    }
+}
+
 static Label _predict(const vector<double> &distances, const vector<Label> &labels)
 {
     // Find the minimum K distances using bubble sort
@@ -69,7 +87,7 @@ Label rssiPredict(double input[NUMBER_OF_ANCHORS])
 
     // Calculate distances and store corresponding labels
     for (int i = 0 ; i < sizeOfDataSet ; ++i) {
-        distances[i] = euclidean(rssiDataSet[i].RSSIs, input, sizeOfInput);
+        distances[i] = euclidean(preparePoint(rssiDataSet[i].RSSIs), input, sizeOfInput);
         labels[i] = dataSet[i].label;
     }
 
@@ -91,22 +109,6 @@ Label tofPredict(double input[NUMBER_OF_RESPONDERS])
     return _predict(distances, labels);
 }
 
-void preparePoint(double RSSIs[NUMBER_OF_ANCHORS])
-{
-    for (int i = 0; i < NUMBER_OF_ANCHORS; ++i)
-    {
-        // Normalize the RSSI values using min-max scaling
-        RSSIs[i] = (RSSIs[i] + 100) / 100.0;
-    }
-}
-
-static bool isBackupLocationValid[NUMBER_OF_LABELS] = {false};
-
-static bool isLocationDataValid(Label location)
-{
-    return isLocationDataValid[location];
-}
-
 bool isBackupDataSetRelevant(void)
 {
     if (currentSystemState == SystemState::STATIC_RSSI_TOF && tofDataSet.size() < 10 * K ||
@@ -117,7 +119,7 @@ bool isBackupDataSetRelevant(void)
 
     unsigned int numOfLabelInRSSI[NUMBER_OF_LABELS] = {0};
     unsigned int numOfLabelInTOF[NUMBER_OF_LABELS] = {0};
-
+    bool isDataSetValid = false;
     int sizeOfDataSet = dataSet.size();
 
     for (const RSSIData &data : rssiDataSet)
@@ -132,9 +134,11 @@ bool isBackupDataSetRelevant(void)
 
     for (int i = 0; i < NUMBER_OF_LABELS; ++i)
     {
-        if (numOfLabelInRSSI[i] >= 3 * K && numOfLabelInTOF[i] >= 3 * K && isLocationDataValid(i))
+        currentScanningLabel = (Label)i;
+        if (numOfLabelInRSSI[i] >= 3 * K && numOfLabelInTOF[i] >= 3 * K && validateScanAccuracy())
         {
-            isBackupLocationValid[i] = true;
+            reuseFromSD[i] = true;
+            isDataSetValid = true;
         }
         else
         {
@@ -142,5 +146,72 @@ bool isBackupDataSetRelevant(void)
         }
     }
 
-    return accuracy >= BACKUB_ACCURACY_THRESHOLD;
+    return isDataSetValid;
+}
+
+/**
+ * @brief Validates the scan results by checking how many predictions match the label.
+ *        Uses both RSSI and TOF modules if enabled. If failed, offers fallback.
+ */
+bool validateScanAccuracy() {
+    int matchesRSSI = 0;
+    int matchesTOF = 0;
+    bool combinedOK = false;
+
+    // Run RSSI and/or TOF predictions depending on system state
+    switch (Enablements::currentSystemState) {
+        case STATIC_RSSI:
+            matchesRSSI = computeRSSIPredictionMatches();
+            break;
+
+        case STATIC_RSSI_TOF:
+            matchesRSSI = computeRSSIPredictionMatches();
+            matchesTOF = computeTOFPredictionMatches();
+            break;
+
+        case STATIC_DYNAMIC_RSSI:
+            matchesRSSI = computeRSSIPredictionMatches();
+            break;
+
+        case STATIC_DYNAMIC_RSSI_TOF:
+            matchesRSSI = computeRSSIPredictionMatches();
+            matchesTOF = computeTOFPredictionMatches();
+            break;
+
+        default:
+            break;
+    }
+
+    int totalMatches = matchesRSSI + matchesTOF;
+    int totalAttempts = (matchesTOF > 0) ? 2 * SCAN_VALIDATION_SAMPLE_SIZE : SCAN_VALIDATION_SAMPLE_SIZE;
+    scanAccuracy = (100 * totalMatches) / totalAttempts;
+
+    Serial.printf("Scanning Phase: combined accuracy = %d%% (%d/%d correct predictions)\n",
+                  scanAccuracy, totalMatches, totalAttempts);
+
+    combinedOK = (totalMatches >= VALIDATION_PASS_THRESHOLD);
+
+    if (combinedOK && promptUserAccuracyApprove()) return true;
+
+    // Combined validation failed — fallback prompt
+    int choice = promptRetryValidationWithSingleMethod();
+
+    if (choice == 1) {
+        Serial.println("Retrying validation with RSSI only...");
+        matchesRSSI = computeRSSIPredictionMatches();
+        scanAccuracy = (100 * matchesRSSI) / SCAN_VALIDATION_SAMPLE_SIZE;
+        Serial.printf("[RSSI] Retry accuracy = %d%%\n", scanAccuracy);
+        return (matchesRSSI >= VALIDATION_PASS_THRESHOLD) && promptUserAccuracyApprove();
+    }
+
+    if (choice == 2) {
+        Serial.println("Retrying validation with TOF only...");
+        matchesTOF = computeTOFPredictionMatches();
+        scanAccuracy = (100 * matchesTOF) / SCAN_VALIDATION_SAMPLE_SIZE;
+        Serial.printf("[TOF] Retry accuracy = %d%%\n", scanAccuracy);
+        return (matchesTOF >= VALIDATION_PASS_THRESHOLD) && promptUserAccuracyApprove();
+    }
+
+    Serial.println("User aborted validation.");
+    return false;
 }

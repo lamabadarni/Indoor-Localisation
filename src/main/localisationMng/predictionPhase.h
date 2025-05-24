@@ -8,8 +8,8 @@
     * The kNN algorithm is used for predicting the location based on RSSI values.
 */
 
-#ifndef IOT_INDOOR_LOCALISATION_predectionPhase_H
-#define IOT_INDOOR_LOCALISATION_predectionPhase_H
+#ifndef _IOT_INDOOR_LOCALISATION_PREDICTION_PHASE_H_
+#define _IOT_INDOOR_LOCALISATION_PREDICTION_PHASE_H_
 
 #include <Arduino.h>
 #include <math.h>
@@ -31,12 +31,6 @@ LOCATIONS rssiPredict(double input[NUMBER_OF_ANCHORS]);
 LOCATIONS tofPredict(double input[NUMBER_OF_RESPONDERS]);
 
 /*
-    * @brief Prepares the RSSI data for prediction.
-    * @param RSSIs: Array of RSSI values to be prepared.
-*/
-void preparePoint(double RSSIs[NUMBER_OF_ANCHORS]);
-
-/*
     * @brief Determines the relevance of the backup dataset.
     *        Evaluates the dataset based on prediction accuracy.
     *        only called at setup() assumes that dataset is already filled
@@ -45,4 +39,10 @@ void preparePoint(double RSSIs[NUMBER_OF_ANCHORS]);
 */
 bool isBackupDataSetRelevant(void);
 
-#endif
+/**
+ * @brief Validates the scan results by checking how many predictions match the label.
+ *        Uses both RSSI and TOF modules if enabled. If failed, offers fallback.
+ */
+bool validateScanAccuracy(void)
+
+#endif // IOT_INDOOR_LOCALISATION_PREDICTION_PHASE_H
