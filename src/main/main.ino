@@ -1,10 +1,11 @@
-#include "utillities.h"
-#include "userUI.h"
-#include "scanning.h"
-#include "predictionPhase.h"
-#include "validationPhase.h"
-#include "./userUIMng/verefire.h"
-#include "sdCardBackup.h"
+
+#include <utilities.h>
+#include <userUI.h>
+#include <scanning.h>
+#include <predictionPhase.h>
+#include <validationPhase.h>
+#include <verefier.h>
+#include <sdCardBackup.h>
 
 
 void setup() {
@@ -32,7 +33,7 @@ void loop() {
 
         case MODE_TOF_DIAGNOSTIC:
         Serial.println("[MAIN] MODE_TOF_DIAGNOSTIC: Running TOF diagnostics.");
-        verifyTOFScanCoverage();
+        //verifyTOFScanCoverage();
         break;
 
         case MODE_TRAINING_ONLY:
@@ -94,7 +95,7 @@ void handlePredictionOnlySDLogic() {
     bool sdAvailable = false;
 
     while (!sdAvailable && retries < MAX_RETRIES_TO_INIT_SD_CARD) {
-        sdAvailable = initSDCard(csPin);
+        sdAvailable = initSDCard();
         if (sdAvailable) break;
 
         Serial.println("[SD] Required SD card not found.");
@@ -127,7 +128,7 @@ void handleTrainingOrFullSDLogic() {
     bool sdAvailable = false;
 
     while (!sdAvailable && retries < MAX_RETRIES_TO_INIT_SD_CARD) {
-        sdAvailable = initSDCard(csPin);
+        sdAvailable = initSDCard();
         if (sdAvailable) break;
 
         Serial.println("[SD] Backup is enabled, but SD card not detected.");
@@ -172,7 +173,6 @@ void handleTrainingOrFullSDLogic() {
     if (resetStorage()) {
         Serial.println("[SD] Initialized new backup folder.");
         rssiDataSet.clear();
-        tofDataSet.clear();
     } else {
         Serial.println("[SD] Failed to create new backup storage.");
     }
