@@ -76,10 +76,7 @@ void performTOFScan() {
 
         LOG_INFO("TOF", "Scan %d for label %s", scan + 1, labelToString(currentLabel));
         LOG_INFO("TOF", "TOF[%d] = %.1f cm", i, scanData.TOFs[i]);
-        
-        Serial.println(output);
     }
-
     esp_event_handler_unregister(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler);
 }
 
@@ -133,9 +130,8 @@ int computeTOFPredictionMatches() {
 
         }
 
-        Serial.println("[TOF VALIDATION] #" + String(v + 1) + ": Predicted " + String(labelToString(predicted)) + 
-                       " | Actual " + String(labelToString(currentLabel)));
-
+        LOG_INFO("TOF VALIDATION", "#%d: Predicted %s | Actual %s", 
+         v + 1, labelToString(predicted), labelToString(currentLabel));
     }
     return matches;
 }

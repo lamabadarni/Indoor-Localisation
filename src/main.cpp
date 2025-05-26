@@ -10,7 +10,7 @@
 
 void setup() {
     Serial.begin(115200);
-    delay_ms(1000);
+    delay_ms(10000);
     
     Serial.println("=============== System Boot ===============");
     
@@ -18,7 +18,7 @@ void setup() {
     currentSystemMode = promptSystemMode();
     setupEnablementsFromUser();
 
-    handleSDAndEnablements();
+    //handleSDAndEnablements();
     
     Serial.println("=============== System Ready ===============");
 }
@@ -146,7 +146,7 @@ void handleTrainingOrFullSDLogic() {
         return;
     }
 
-    String CurrDir = getSDBaseDir();
+    string CurrDir = getSDBaseDir();
     if (!SD.exists(CurrDir)) return;
 
     if (loadLocationDataset()) {

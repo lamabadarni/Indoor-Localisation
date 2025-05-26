@@ -1,216 +1,165 @@
-/**
- * @file userUI.cpp
- * @brief Implementation of user prompts for system configuration, label selection, and approval logic.
- * 
- * This module provides interactive terminal-based UI functions for selecting:
- * - System mode and state
- * - Enablement flags like SD card logging and diagnostics
- * - Label selection for scanning or validation
- * - User approval for scan accuracy, coverage, and prediction choices
- *
- * It ensures structured user feedback at each critical step during scanning and validation phases.
- * 
- * @author Lama Badarni
- */
-
-#include "utils/platform.h"
-#include <cstring>
+#include "../utils/platform.h"
+#include "../utils/utilities.h"
+#include "../ui/logger.h"
 #include "userUI.h"
 
-static int readIntFromUser() {
-#ifdef ARDUINO
-    while (Serial.available() == 0);
-    return Serial.parseInt();
-#else
-    char input[16];
-    fgets(input, sizeof(input), stdin);
-    return atoi(input);
-#endif
+// ========== SYSTEM SETUP ==========
+static void promptUserLoggerConfiguration() {
+    LOG_INFO("SETUP", "[USER] > Enable INFO logs? (y/n): ");
+    SystemSetup::printInfoLogs = (readCharFromUser() == 'y' || readCharFromUser() == 'Y');
+
+    LOG_INFO("SETUP", "[USER] > Enable DEBUG logs? (y/n): ");
+    SystemSetup::printDebugLogs = (readCharFromUser() == 'y' || readCharFromUser() == 'Y');
+
+    LOG_INFO("SETUP", "Logger configured: INFO=%d, DEBUG=%d", 
+             SystemSetup::printInfoLogs, SystemSetup::printDebugLogs);
 }
 
-static char readCharFromUser() {
-#ifdef ARDUINO
-    while (Serial.available() == 0);
-    return Serial.read();
-#else
-    char input[8];
-    fgets(input, sizeof(input), stdin);
-    return input[0];
-#endif
+static SystemMode promptUserSystemMode() {
+    LOG_INFO("SETUP", "[USER] > Select System Mode:");
+    for (int i = 0; i < MODES_NUM; ++i) {
+        LOG_INFO("SETUP", "  %d - %s", i + 1, systemModes[i].c_str());
+    }
+    int sel = -1;
+    while (sel < 1 || sel > MODES_NUM) sel = readIntFromUser();
+    return static_cast<SystemMode>(sel - 1);
 }
 
-// ====================== System Setup ======================
-
-SystemMode promptSystemMode() {
-    Serial.println("\n[USER] Select System Mode:");
-    for (int i = 0; i < MODE_COUNT; ++i) {
-        LOG_INFO("USER", "Selected mode: %s", modeToString(currentSystemMode));
+static SystemScannerMode promptUserScannerMode() {
+    LOG_INFO("SETUP", "[USER] > Select Scanner Mode:");
+    for (int i = 0; i < SYSTEM_SCANNER_MODES_NUM; ++i) {
+        LOG_INFO("SETUP", "  %d - %s", i + 1, systemScannerModes[i].c_str());
     }
-
-    int selection = -1;
-    while (selection < 0 || selection >= MODE_COUNT) {
-        Serial.print("[USER] Enter mode number: ");
-        while (Serial.available() == 0);
-        selection = readIntFromUser();
-    }
-
-    currentSystemMode = static_cast<SystemMode>(selection);
-    Serial.println("[USER] Selected mode is " + String(modeToString(currentSystemMode)));
-    return currentSystemMode;
+    int sel = -1;
+    while (sel < 1 || sel > SYSTEM_SCANNER_MODES_NUM) sel = readIntFromUser();
+    return static_cast<SystemScannerMode>(sel - 1);
 }
 
-SystemState promptSystemState() {
-    Serial.println("[USER] Select System State:");
-    for (int i = 0; i <= OFFLINE; ++i) {
-        Serial.println("  " + String(i) + " - " + String(systemStateToString(i)));
-    }
-
-    while (true) {
-        if (Serial.available()) {
-            char c = readCharFromUser();
-            int selected = c - '0';
-            if (selected >= 0 && selected <= OFFLINE) {
-                Serial.println("[USER] Selected system state is " + String(systemStateToString(selected)));
-                return static_cast<SystemState>(selected);
-            }
-        }
-    }
-}
-
-void setupEnablementsFromUser() {
-    Serial.println("\n[USER] === Configure Enablements ===");
-
-    currentSystemState = promptSystemState();
+void runUserSystemSetup() {
+    promptUserLoggerConfiguration();
+    SystemSetup::currentSystemMode = promptUserSystemMode();
+    SystemSetup::currentSystemScannerMode = promptUserScannerMode();
 
     struct {
         const char* prompt;
         bool* flag;
-        const char* name;
-    } options[] = {
-        { "[USER] Enable SD Card Backup? (1=Yes, 0=No)", &Enablements::enable_SD_Card_backup, "SD Card Backup" },
-        { "[USER] Enable Training Model on Host? (1=Yes, 0=No)", &Enablements::enable_training_model_on_host_machine, "Training on Host" },
-        { "[USER] Run Validation Phase? (1=Yes, 0=No)", &Enablements::run_validation_phase, "Validation Phase" },
-        { "[USER] Verify TOF Responder Mapping? (1=Yes, 0=No)", &Enablements::verify_responder_mac_mapping, "TOF Responder Mapping" },
-        { "[USER] Verify RSSI Anchor Mapping? (1=Yes, 0=No)", &Enablements::verify_rssi_anchor_mapping, "RSSI Anchor Mapping" }
+    } toggles[] = {
+        {"Enable SD card backup? (y/n): ", &SystemSetup::forceSDCardBackup},
+        {"Run validation phase? (y/n): ", &SystemSetup::validateWhileScanningPhase},
+        {"Enable label selection? (y/n): ", &SystemSetup::chooseLabelsToScan}
     };
 
-    for (auto& opt : options) {
-        Serial.println(opt.prompt);
-        while (!Serial.available());
-        *opt.flag = Serial.read() == '1';
-        Serial.println("[USER] " + String(opt.name) + " = " + String(*opt.flag));
+    for (auto& opt : toggles) {
+        LOG_INFO("SETUP", "[USER] > %s", opt.prompt);
+        *opt.flag = (readCharFromUser() == 'y' || readCharFromUser() == 'Y');
     }
 }
 
-// ====================== Location Selection ======================
-
-Label promptLocationLabel() {
-    Serial.println("[USER] Select Label by Index:");
-    for (int i = 0; i < NUMBER_OF_LABELS; ++i) {
-        Serial.println("  " + String(i) + " - " + String(labelToString((Label)i)));
+// ========== LABEL ==========
+void promptUserLocationLabel() {
+    LOG_INFO("LABEL", "[USER] > Select label by index:");
+    for (int i = 0; i < LABELS_COUNT; ++i) {
+        LOG_INFO("LABEL", "  %d - %s", i + 1, labels[i].c_str());
     }
-
-    int label = -1;
-    while (label < 0 || label >= NUMBER_OF_LABELS) {
-        while (Serial.available() == 0);
-        label = readIntFromUser();
-    }
-
-    Serial.println("[USER] selected label is " + String(labelToString(label)));
-    return static_cast<Label>(label);
+    int sel = -1;
+    while (sel < 1 || sel > LABELS_COUNT) sel = readIntFromUser();
+    currentLabel = static_cast<Label>(sel - 1);
 }
 
-// ====================== User Decision Prompts ======================
+// ========== FEEDBACK ==========
+bool promptUserApproveScanAccuracy() {
+    LOG_INFO("FEEDBACK", "[USER] > Approve scan accuracy? (y/n): ");
+    char c = readCharFromUser();
+    return c == 'y' || c == 'Y';
+}
 
-bool promptUserAccuracyApprove() {
-    Serial.println("[USER] Select option:");
-    Serial.println("[USER] 0 - Accuracy Not Sufficient. Proceed more scans at current label");
-    Serial.println("[USER] 1 - Accuracy Approved.");
+bool promptUserRescanAfterInvalidation() {
+    LOG_INFO("FEEDBACK", "[USER] > Rescan after failed validation? (y/n): ");
+    char c = readCharFromUser();
+    return c == 'y' || c == 'Y';
+}
 
-    while (true) {
-        if (Serial.available()) {
-            char c = readCharFromUser();
-            if (c == '0') {
-                Serial.println("[USER] user rejected scan accuracy.");
-                return false;
-            }
-            if (c == '1') {
-                Serial.println("[USER] user approved scan accuracy.");
-                return true;
-            }
+bool promptUserRetryValidation() {
+    LOG_INFO("FEEDBACK", "[USER] > Retry prediction? (y/n): ");
+    char c = readCharFromUser();
+    return c == 'y' || c == 'Y';
+}
+
+bool promptUserCoverageSufficient() {
+    LOG_INFO("FEEDBACK", "[USER] > Is coverage sufficient? (y/n): ");
+    char c = readCharFromUser();
+    return c == 'y' || c == 'Y';
+}
+
+bool promptUserProceedToNextLabel() {
+    LOG_INFO("FEEDBACK", "[USER] > Proceed to next label? (y/n): ");
+    char c = readCharFromUser();
+    return c == 'y' || c == 'Y';
+}
+
+bool promptUserAbortToImproveEnvironment() {
+    LOG_INFO("FEEDBACK", "[USER] > Abort to improve environment? (y/n): ");
+    char c = readCharFromUser();
+    return c == 'y' || c == 'Y';
+}
+
+void promptUserShowDebugLogs() {
+    LOG_INFO("FEEDBACK", "[USER] > Show debug logs during rescan? (y/n): ");
+    char c = readCharFromUser();
+    SystemSetup::printDebugLogs = (c == 'y' || c == 'Y');
+}
+
+// ========== PREDICTION ==========
+bool promptUserApprovePrediction() {
+    LOG_INFO("PREDICT", "[USER] > Approve predicted label? (y/n): ");
+    char c = readCharFromUser();
+    return c == 'y' || c == 'Y';
+}
+
+Label promptUserChooseBetweenPredictions(Label rssi, Label tof) {
+    LOG_INFO("PREDICT", "[USER] > Choose between predictions:");
+    LOG_INFO("PREDICT", "1 - RSSI (%s)", labels[rssi].c_str());
+    LOG_INFO("PREDICT", "2 - TOF  (%s)", labels[tof].c_str());
+    int sel = readIntFromUser();
+    return (sel == 2) ? tof : rssi;
+}
+
+// ========== REUSE / ABORT ==========
+char promptUserReuseDecision() {
+    LOG_INFO("UI", "[USER] > Reuse saved scan?");
+    LOG_INFO("UI", "Y - Yes, reuse");
+    LOG_INFO("UI", "V - Validate again");
+    LOG_INFO("UI", "N - No, rescan");
+    return readCharFromUser();
+}
+
+char promptUserRunCoverageDiagnostic() {
+    LOG_INFO("UI", "[USER] > Run RSSI coverage diagnostic?");
+    LOG_INFO("UI", "Y - Yes");
+    LOG_INFO("UI", "N - No");
+    LOG_INFO("UI", "D - Don't ask again");
+    return readCharFromUser();
+}
+
+void promptUserAbortOrContinue(bool allowAbort) {
+    LOG_INFO("SYSTEM", "[USER] > Press 'c' to continue...");
+
+    char input = getCharFromUserWithTimeout(10000);
+    if (input == 'c' || input == 'C') {
+        LOG_INFO("SYSTEM", "Continuing...");
+        return;
+    }
+
+    if (allowAbort) {
+        LOG_INFO("SYSTEM", "No input detected. Abort current phase?");
+        LOG_INFO("SYSTEM", "c - Continue, x - Abort phase, q - Abort full system");
+        input = getCharFromUserWithTimeout(15000);
+        if (input == 'x' || input == 'X') {
+            LOG_INFO("SYSTEM", "User aborted this phase.");
+            forceNextPhase = true;
+        } else if (input == 'q' || input == 'Q') {
+            LOG_INFO("SYSTEM", "User aborted full session.");
+            shouldAbort = true;
         }
     }
-}
-
-bool promptUserSDCardInitializationApprove() {
-    Serial.println("[USER] Select option:");
-    Serial.println("[USER] 0 - Retry initiating SD card.");
-    Serial.println("[USER] 1 - Skip initiating SD card.");
-
-    while (true) {
-        if (Serial.available()) {
-            char c = readCharFromUser();
-            if (c == '0') return false;
-            if (c == '1') return true;
-        }
-    }
-}
-
-bool promptRSSICoverageUserFeedback() {
-    Serial.println("[USER] Select option:");
-    Serial.println("[USER] 0 - Bad coverage.");
-    Serial.println("[USER] 1 - Good coverage.");
-
-    while (true) {
-        if (Serial.available()) {
-            char c = readCharFromUser();
-            if (c == '0') return false;
-            if (c == '1') return true;
-        }
-    }
-}
-
-bool promptVerifyScanCoverageAtAnotherLabel() {
-    Serial.println("[USER] Do you want to verify scan coverage at another label? (1 = yes, 0 = no): ");
-    while (Serial.available() == 0);
-    int input = readIntFromUser();
-    return input == 1;
-}
-
-bool promptAbortForImprovement() {
-    Serial.println("[USER] Do you want to abort and reconfigure before continuing? (1 = yes, 0 = no): ");
-    while (Serial.available() == 0);
-    int input = readIntFromUser();
-    return input == 1;
-}
-
-int promptRetryValidationWithSingleMethod() {
-    Serial.println("[USER] Combined validation not sufficient.");
-    Serial.println("[USER] Would you like to retry validation using only one method?");
-    Serial.println("[USER] 1 - Retry with RSSI only");
-    Serial.println("[USER] 2 - Retry with TOF only");
-
-    while (Serial.available() == 0);
-    int input = readIntFromUser();
-
-    if (input == 1 || input == 2)
-        return input;
-
-    return 0;
-}
-
-int promptUserPreferredPrediction() {
-    Serial.println("[USER] RSSI and TOF predictions differ.");
-    Serial.println("[USER] Which prediction do you trust?");
-    Serial.println("[USER] 1 - Trust RSSI");
-    Serial.println("[USER] 2 - Trust TOF");
-
-    int input = -1;
-    while (input < 0 || input > 1) {
-        while (Serial.available() == 0);
-        input = readIntFromUser();
-    }
-
-    Serial.println("[USER] user selected preference = " + String(input));
-    return input;
 }

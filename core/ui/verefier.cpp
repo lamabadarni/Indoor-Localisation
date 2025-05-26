@@ -3,78 +3,111 @@
  * @brief Implementation of scanning functions for verifying RSSI and TOF anchor coverage.
  */
 
-#include <userUI.h>
-#include <verefier.h>
-#include <tofScanner.h>
-#include "utils/logger.h"
+ #include "../utils/utilities.h"
+#include "../ui/userUI.h"
+#include "../ui/verefier.h"
+#include "../scanning/rssiScanner.h"
+#include "../scanning/tofScanner.h"
+#include "../utils/platform.h"
 
-// ================= RSSI =================
+typedef struct {
+    int    seen    = 0;
+    double average = 0;
+} Coverage;
 
-RSSICoverageResult scanRSSICoverage() {
-    RSSICoverageResult result = {(Label)0};
-    result.label = currentLabel;
+static printStartLog() {
+    LOG_INFO("COVERAGE", "------------------------------------------------------------");
+    LOG_INFO("COVERAGE", "Interactive RSSI Coverage Diagnostic");
+    LOG_INFO("COVERAGE", "This diagnostic helps evaluate the signal strength and balance");
+    LOG_INFO("COVERAGE", "from all anchors currently visible at your location.");
+    LOG_INFO("COVERAGE", "------------------------------------------------------------");
+    
+    LOG_INFO("COVERAGE", "IMPORTANT:");
+    LOG_INFO("COVERAGE", "DO NOT change the environment (e.g., walk away, close doors,");
+    LOG_INFO("COVERAGE", "or move anchors) while scanning or running predictions.");
+    LOG_INFO("COVERAGE", "Changing the environment in the middle of a scan will cause");
+    LOG_INFO("COVERAGE", "inaccurate results and misleading coverage analysis.");
+    
+    LOG_INFO("COVERAGE", "Run this diagnostic only when the environment is STABLE and IDLE.");
+    LOG_INFO("COVERAGE", "------------------------------------------------------------");
 
-    WiFi.disconnect(true);
-    delay_ms(100);
-    int n = WiFi.scanNetworks(false, true);
-
-    int rssiSum = 0;
-
-    for (int i = 0; i < NUMBER_OF_ANCHORS; ++i) {
-        result.anchorVisibility[i] = false;
-        result.anchorRSSI[i] = RSSI_DEFAULT_VALUE;
-
-        for (int j = 0; j < n; ++j) {
-            if (WiFi.BSSIDstr(j).equalsIgnoreCase(anchorSSIDs[i])) {
-                result.anchorVisibility[i] = true;
-                result.anchorRSSI[i] = WiFi.RSSI(j);
-                rssiSum += result.anchorRSSI[i];
-                result.visibleAnchors++;
-                break;
-            }
-        }
-    }
-
-    result.averageRSSI = (result.visibleAnchors > 0)
-                         ? (rssiSum / result.visibleAnchors)
-                         : RSSI_DEFAULT_VALUE;
-
-    return result;
 }
 
-bool verifyRSSIScanCoverage() {
+static bool startCalled = false;
+
+bool interactiveScanCoverage() {
+    if(!startCalled) {
+        printStartLog();
+        startCalled = true;
+    }
     while (true) {
-        LOG_INFO("VERIFY", "Verifying RSSI scan coverage");
-        currentLabel = promptLocationLabel();
-        RSSICoverageResult result = scanRSSICoverage();
+        promptLocationLabel();
+        switch (currentSystemMode) {
+            case MODE_TOF_DIAGNOSTIC:
+            LOG_INFO("VERIFY", "Verifying TOF scan coverage");
+            performTOFScanCoverage();
+            break;
+            case MODE_RSSI_DIAGNOSTIC:
+            LOG_INFO("VERIFY", "Verifying RSSI scan coverage");
+            performRSSIScanCoverage();
+        }
 
-        LOG_INFO("VERIFY", "----- RSSI Coverage Report -----");
-        LOG_INFO("VERIFY", "Location: %s", labelToString(currentLabel));
-        LOG_INFO("VERIFY", "Visible Anchors: %d", result.visibleAnchors);
-        LOG_INFO("VERIFY", "Average RSSI: %d dBm", result.averageRSSI);
-
-        bool approved = promptRSSICoverageUserFeedback();
-
-        if (!approved) {
-            if (result.visibleAnchors < MIN_ANCHORS_VISIBLE) {
-                LOG_WARN("VERIFY", "Advice: Increase anchor density in this location.");
-            }
-            if (result.averageRSSI < MIN_AVERAGE_RSSI_DBM) {
-                LOG_WARN("VERIFY", "Advice: Move anchors closer or reduce interference.");
-            }
-
-            if (promptAbortForImprovement()) {
-                LOG_WARN("VERIFY", "Aborting RSSI coverage verification.");
-                return false;
-            }
+        if (promptAbortForImprovementAfterCoverage()) {
+            LOG_WARN("VERIFY", "Aborting coverage diagnostic for improvement.");
+            shouldAbort = true;
+            return false;
         }
 
         if (!promptVerifyScanCoverageAtAnotherLabel()) {
             break;
         }
+
+        promptAbotOrContinue();
     }
 
     return true;
+}
+
+// ================= RSSI =================
+
+void performRSSIScanCoverage() {
+    RSSICoverageResult result = scanRSSICoverage();
+    LOG_INFO("VERIFY", "----- RSSI Coverage Report -----");
+    LOG_INFO("VERIFY", "Location: %s", labelToString(currentLabel));
+    LOG_INFO("VERIFY", "Visible Anchors: %d", result.visibleAnchors);
+    LOG_INFO("VERIFY", "Average RSSI: %d ", result.averageRSSI);
+
+    bool approved = promptRSSICoverageUserFeedback();
+
+    if (!approved) {
+        if (result.visibleAnchors < MIN_ANCHORS_VISIBLE) {
+            LOG_WARN("VERIFY", "Advice: Increase anchor density in this location.");
+        }
+        if (result.averageRSSI < MIN_AVERAGE_RSSI_DBM) {
+            LOG_WARN("VERIFY", "Advice: Move anchors closer or reduce interference.");
+        }
+    }
+}
+
+ Coverage scanRSSIForCoverage() {
+
+    Coverage result;
+    int sum = 0;
+    
+    RSSIData scanData = createSingleRSSIScan();
+
+    for (int i = 0; i < NUMBER_OF_ANCHORS; i++) {
+        if(accumulatedRSSIs[i] != RSSI_DEFAULT_VALUE) {
+            result.seen++;
+            sum += accumulatedRSSIs[i];
+        }
+    }
+
+    result.average = (result.senn > 0)
+                        ? (rssiSum / result.visibleAnchors)
+                        : RSSI_DEFAULT_VALUE;
+
+    return result;
 }
 
 // ================= TOF =================
@@ -109,7 +142,9 @@ TOFCoverageResult scanTOFCoverage() {
 bool verifyTOFScanCoverage() {
     while (true) {
         LOG_INFO("VERIFY", "Verifying TOF responder coverage");
-        currentLabel = promptLocationLabel();
+        delay_ms(USER_PROMPTION_DELAY);
+        promptLocationLabel();
+        delay_ms(USER_PROMPTION_DELAY);
         TOFCoverageResult result = scanTOFCoverage();
 
         LOG_INFO("VERIFY", "----- TOF Coverage Report -----");
@@ -123,7 +158,7 @@ bool verifyTOFScanCoverage() {
         }
 
         bool approved = promptRSSICoverageUserFeedback();
-
+        delay_ms(USE);
         if (!approved) {
             if (result.visibleResponders < TOF_MIN_RESPONDERS_VISIBLE) {
                 LOG_WARN("VERIFY", "Advice: Add more responders or reposition to ensure redundancy.");
@@ -139,9 +174,11 @@ bool verifyTOFScanCoverage() {
             }
         }
 
+        delay_ms(USER_PROMPTION_DELAY);
         if (!promptVerifyScanCoverageAtAnotherLabel()) {
             break;
         }
+        delay_ms(USER_PROMPTION_DELAY);
     }
 
     return true;
