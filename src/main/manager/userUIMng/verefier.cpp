@@ -1,64 +1,63 @@
 /**
  * @file verefier.cpp
- * @brief Implementation of scanning functions for verifying RSSI and TOF anchor coverage.
+ * @brief Implementation of scanning functions for verifying RSSI anchor coverage.
  * @author Lama Badarni
  */
 
 #include <WiFi.h>
 #include <userUI.h>
 #include <verefier.h>
+#include <sdCardBackup.h>
+
+static int seen = 0;
 // ================= RSSI =================
 
-RSSICoverageResult scanRSSICoverage() {
-    RSSICoverageResult result = {(Label)0};
-    result.label = currentLabel;
-
+double scanRSSICoverage() {
+    seen = 0; // Reset seen anchors count
     WiFi.disconnect(true);
     delay(100);
-    int n = WiFi.scanNetworks(false, true);
 
     int rssiSum = 0;
 
-    for (int i = 0; i < NUMBER_OF_ANCHORS; ++i) {
-        result.anchorVisibility[i] = false;
-        result.anchorRSSI[i] = RSSI_DEFAULT_VALUE;
-
-        for (int j = 0; j < n; ++j) {
-            if (WiFi.BSSIDstr(j).equalsIgnoreCase(anchorSSIDs[i])) {
-                result.anchorVisibility[i] = true;
-                result.anchorRSSI[i] = WiFi.RSSI(j);
-                rssiSum += result.anchorRSSI[i];
-                result.visibleAnchors++;
-                break;
+    int n = WiFi.scanNetworks(false, true);
+    for (int j = 0; j < n; ++j) {
+        String ssid = WiFi.SSID(j);
+        int rssi = WiFi.RSSI(j);
+            for (int k = 0; k < NUMBER_OF_ANCHORS; ++k) {
+                if (ssid.equals(anchorSSIDs[k])) {
+                    Serial.print("[VERIFY] SEEN SSID: "); Serial.println(ssid);
+                    Serial.print("[VERIFY] SEEN RSSI: "); Serial.println(String(rssi));
+                    rssiSum += rssi;
+                    seen++;
+                }
             }
-        }
+            
     }
 
-    result.averageRSSI = (result.visibleAnchors > 0)
-                         ? (rssiSum / result.visibleAnchors)
-                         : RSSI_DEFAULT_VALUE;
+    Serial.println("[VERIFY] Scan completed. Anchors seen: " + String(seen));
 
-    return result;
+    return (seen > 0) ? (rssiSum / seen) : RSSI_DEFAULT_VALUE;
 }
 
 bool verifyRSSIScanCoverage() {
     while (true) {
         Serial.println("[VERIFY] Verifying RSSI scan coverage");
         currentLabel = promptLocationLabel();
-        RSSICoverageResult result = scanRSSICoverage();
+        int result = scanRSSICoverage();
 
         Serial.println("[VERIFY] ----- RSSI Coverage Report -----");
         Serial.print("[VERIFY] Location: "); Serial.println(labelToString(currentLabel));
-        Serial.print("[VERIFY] Visible Anchors: "); Serial.println(result.visibleAnchors);
-        Serial.print("[VERIFY] Average RSSI: "); Serial.println(result.averageRSSI);
+        Serial.print("[VERIFY] Visible Anchors: "); Serial.println(seen);
+        Serial.print("[VERIFY] Average RSSI: "); Serial.println(result);
 
-        bool approved = promptRSSICoverageUserFeedback();
+        break;
+       /* bool approved = promptRSSICoverageUserFeedback();
 
         if (!approved) {
-            if (result.visibleAnchors < MIN_ANCHORS_VISIBLE) {
+            if (seen < MIN_ANCHORS_VISIBLE) {
                 Serial.println("[VERIFY] Advice: Increase anchor density in this location.");
             }
-            if (result.averageRSSI < MIN_AVERAGE_RSSI_DBM) {
+            if (result < MIN_AVERAGE_RSSI_DBM) {
                 Serial.println("[VERIFY] Advice: Move anchors closer or reduce interference.");
             }
 
@@ -67,10 +66,9 @@ bool verifyRSSIScanCoverage() {
                 return false;
             }
         }
-
         if (!promptVerifyScanCoverageAtAnotherLabel()) {
             break;
-        }
+        }*/
     }
 
     return true;

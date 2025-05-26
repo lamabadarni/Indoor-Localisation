@@ -7,6 +7,7 @@
 #include <Accuracy_data_manger.h>
 #include <scanning.h>
 #include <rssiScanner.h>
+#include <verefier.h>
 #include <userUI.h>
 #include <validationPhase.h>
 
@@ -25,6 +26,19 @@ void runScanningPhase() {
         while (!Serial.available()) delay(50);
         Serial.read();
 
+        Serial.println("[USER]Would you like to get feedback about rssi coverage before scanning?");
+        Serial.println("[USER] 0 - No.");
+        Serial.println("[USER] 1 - Yes.");
+        while (true) {
+            if (Serial.available()) {
+            char c = Serial.read();
+            if (c == '1') { verifyRSSIScanCoverage(); break; }
+            if (c == '0') {
+                Serial.println("[USER] Skipping RSSI coverage verification.");
+                break;
+            }
+        }
+    }
         Serial.println("[SCAN] Starting scan at: " + String(labelToString(currentLabel)));
         startLabelScanningSession();
     }
@@ -81,23 +95,10 @@ void collectMeasurements() {
             performRSSIScan();
             break;
 
-        case STATIC_RSSI_TOF:
-            Serial.println("[SCAN] Mode: STATIC_RSSI_TOF");
-            performRSSIScan();
-            //performTOFScan();
-            break;
-
         case STATIC_DYNAMIC_RSSI:
             Serial.println("[SCAN] Mode: STATIC_DYNAMIC_RSSI");
             performRSSIScan();
             scanDynamicRSSI();
-            break;
-
-        case STATIC_DYNAMIC_RSSI_TOF:
-            Serial.println("[SCAN] Mode: STATIC_DYNAMIC_RSSI_TOF");
-            performRSSIScan();
-            scanDynamicRSSI();
-            //performTOFScan();
             break;
 
         default:
@@ -108,10 +109,6 @@ void collectMeasurements() {
 
 void scanStaticRSSI() {
     performRSSIScan();
-}
-
-void scanTOF() {
-    Serial.println("[SCAN] FTM not implemented.");
 }
 
 void scanDynamicRSSI() {

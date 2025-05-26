@@ -1,6 +1,6 @@
 /**
  * @file predictionPhase.cpp
- * @brief Executes real-time predictions using KNN over RSSI and TOF datasets with user trust resolution for conflicting results.
+ * @brief Executes real-time predictions using KNN over RSSI dataset with user trust resolution for conflicting results.
  * @author Ward Iroq
  */
 
@@ -26,51 +26,13 @@ void runPredictionPhase(void) {
     while(true) {
         Serial.println("[PREDICT] >> Press Enter to start predicting...");
         while (!Serial.available()) delay(50);
+
         Serial.read();  // consume newline
-        
-        bool hasTOF = currentSystemState == STATIC_RSSI_TOF || currentSystemState == STATIC_DYNAMIC_RSSI_TOF;
-        
         Serial.println("[PREDICT] Collecting RSSI scan...");
         createRSSIScanToMakePrediction();
-        /*
-        if(hasTOF) {
-            Serial.println("[PREDICT] Collecting TOF scan...");
-            createTOFScanToMakePrediction();
-        }
-        */
-        Label rssiLabel = rssiPredict();
-        /**
-        if (hasTOF && rssiLabel != tofLabel) {
-            Serial.println("[PREDICT] RSSI and TOF predictions differ:");
-            Serial.println("[PREDICT]   RSSI Prediction: " + String(labelToString(rssiLabel)));
-            Serial.println("[PREDICT]   TOF  Prediction: " + String(labelToString(tofLabel)));
 
-            int userChoice = promptUserPreferredPrediction();
-            
-            if (userChoice == 1) {
-                Serial.println("[PREDICT] User chose RSSI prediction.");
-                RSSIData scanData;
-                scanData.label = rssiLabel;
-                for (int j = 0; j < NUMBER_OF_ANCHORS; ++j) {
-                    scanData.RSSIs[j] = accumulatedRSSIs[j];
-                }
-                rssiDataSet.push_back(scanData);
-            } 
-            
-            else if (userChoice == 2) {
-                Serial.println("[PREDICT] User chose TOF prediction.");
-                TOFData scanData;
-                scanData.label = tofLabel;
-                for (int j = 0; j < NUMBER_OF_RESPONDERS; ++j) {
-                    scanData.TOFs[j] = accumulatedTOFs[j];
-                }
-            }
-                
-        } 
-        else {
-            Serial.println("[PREDICT] Final prediction = " + String(labelToString(rssiLabel)));
-        }
-        */
+        Label rssiLabel = rssiPredict();
+
         Serial.println("[PREDICT] Do you want to continue predicting? (y/n)");
         while (!Serial.available()) delay(50);
         char response = Serial.read();
@@ -96,14 +58,6 @@ static void preparePointRSSI(int RSSIs[NUMBER_OF_ANCHORS], double toBeNormalised
     for (int i = 0; i < NUMBER_OF_ANCHORS; ++i)
     {
         toBeNormalised[i] = ((double)(RSSIs[i] + 100)) / 100.0;
-    }
-}
-
-static void preparePointTOF(double TOF[NUMBER_OF_RESPONDERS], double toBeNormalised[NUMBER_OF_RESPONDERS]) {
-    // Normalize the TOF values using min-max scaling
-    for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i)
-    {
-        toBeNormalised[i] = TOF[i] / 2000;
     }
 }
 
@@ -173,23 +127,3 @@ Label rssiPredict() {
 
     return _predict(distances, labels, K_RSSI);
 }
-
-/*
-Label tofPredict() {
-    double normalisedInput[NUMBER_OF_RESPONDERS];
-    std::vector<double> distances(sizeOfDataSet, 0);
-    std::vector<Label> labels(sizeOfDataSet, NOT_ACCURATE);
-
-    preparePointTOF(accumulatedTOFs, normalisedInput);
-    // Calculate distances and store corresponding labels
-    for (int i = 0 ; i < sizeOfDataSet ; ++i) {
-        double normalisedPoint[NUMBER_OF_RESPONDERS];
-
-        preparePointTOF(tofDataSet[i].TOFs, normalisedPoint);
-        distances[i] = euclidean(normalisedPoint, normalisedInput, NUMBER_OF_RESPONDERS);
-        labels[i] = tofDataSet[i].label;
-    }
-
-    return _predict(distances, labels, K_TOF);
-}
-    */

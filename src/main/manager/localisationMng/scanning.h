@@ -1,14 +1,3 @@
-/**
- * @file tofScanner.h
- * @brief TOF (Time-of-Flight) scanning interface for collecting responder distances and validation input.
- *
- * Handles asynchronous distance measurements using WiFi FTM sessions and organizes prediction-ready input arrays.
- * Supports both prediction phase scans and multi-attempt validation rounds.
- * 
- * @author Lama Badarni
- */
-
-
 #ifndef IOT_INDOOR_LOCALISATION_SCANNING_H
 #define IOT_INDOOR_LOCALISATION_SCANNING_H
 
@@ -18,7 +7,7 @@
 /**
  * @brief Executes the scanning phase across all location labels.
  *
- * For each label, prompts the user to begin scanning, collects RSSI and/or TOF data
+ * For each label, prompts the user to begin scanning, collects RSSI
  * based on the current system state, validates the scan, and repeats if necessary.
  * This function is typically used to gather training or prediction data for the localization model.
  */
@@ -32,7 +21,7 @@ void runScanningPhase();
 bool startLabelScanningSession();
 
 /**
- * @brief Collects RSSI/TOF data based on the current system state.
+ * @brief Collects RSSI data based on the current system state.
  *        Dispatches to appropriate scanning functions.
  */
 void collectMeasurements();
@@ -46,12 +35,5 @@ void scanStaticRSSI();
  * @brief Scans additional RSSI sources (future: dynamic RSSI).
  */
 void scanDynamicRSSI();
-
-
-/**
- * @brief Scans Time-of-Flight (TOF) distances from responders.
- */
-void scanTOF();
-
 
 #endif //IOT_INDOOR_LOCALISATION_SCANNING_H

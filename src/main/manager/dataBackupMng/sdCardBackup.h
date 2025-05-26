@@ -15,7 +15,7 @@ bool initSDCard();
 /// @param csPin Chip-Select pin number.
 
 
-/// @brief Load RSSI and/or TOF datasets from SD based on currentSystemState.
+/// @brief Load RSSI dataset from SD based on currentSystemState.
 /// @return true if all required files loaded without errors.
 bool loadLocationDataset();
 
@@ -29,12 +29,5 @@ bool updateCSV();
 /// @param row RSSIData struct containing the new scan.
 /// @return true if write was successful.
 bool saveRSSIScan(const RSSIData &row);
-
-/// @brief Append a single TOF scan entry to the TOF CSV.
-/// @param row TOFData struct containing the new scan.
-/// @return true if write was successful.
-bool saveTOFScan(const TOFData &row);
-
-
 
 #endif // SD_CARD_BACKUP_H

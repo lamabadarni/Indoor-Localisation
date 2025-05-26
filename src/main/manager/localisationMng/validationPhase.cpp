@@ -70,7 +70,6 @@ void printFinalValidationSummary() {
 
 bool validateScanAccuracy() {
     int matchesRSSI = -1;
-    int matchesTOF = -1;
 
     Serial.println("[VALIDATE] Running predictions...");
 
@@ -79,42 +78,24 @@ bool validateScanAccuracy() {
             Serial.println("[VALIDATE] Mode: STATIC_RSSI");
             matchesRSSI = computeRSSIPredictionMatches();
             break;
-        case STATIC_RSSI_TOF:
-            Serial.println("[VALIDATE] Mode: STATIC_RSSI_TOF");
-            matchesRSSI = computeRSSIPredictionMatches();
-            //matchesTOF  = computeTOFPredictionMatches();
-            break;
         case STATIC_DYNAMIC_RSSI:
             Serial.println("[VALIDATE] Mode: STATIC_DYNAMIC_RSSI");
             matchesRSSI = computeRSSIPredictionMatches();
-            break;
-        case STATIC_DYNAMIC_RSSI_TOF:
-            Serial.println("[VALIDATE] Mode: STATIC_DYNAMIC_RSSI_TOF");
-            matchesRSSI = computeRSSIPredictionMatches();
-            //matchesTOF  = computeTOFPredictionMatches();
             break;
         default:
             Serial.println("[VALIDATE] Unknown system state.");
             return false;
     }
 
-    int totalMatches = matchesRSSI + matchesTOF;
-    int totalAttempts = (matchesTOF > -1) ? 2 * NUM_OF_VALIDATION_SCANS : NUM_OF_VALIDATION_SCANS;
-    accuracy = (100 * totalMatches) / totalAttempts;
+    accuracy = (double)(100 * matchesRSSI) / (double)NUM_OF_VALIDATION_SCANS;
 
-    Serial.println("[VALIDATE] Accuracy = " + String(accuracy) + "% (" + String(totalMatches) + "/" + String(totalAttempts) + " correct)");
+    Serial.println("[VALIDATE] Accuracy = " + String(accuracy) + "% (" + String(matchesRSSI) + "/" + String(NUM_OF_VALIDATION_SCANS) + " correct)");
 
-    bool valid = (accuracy >= VALIDATION_PASS_THRESHOLD);
-    return valid && promptUserAccuracyApprove();
+    return accuracy >= VALIDATION_PASS_THRESHOLD && promptUserAccuracyApprove();
 }
 
 bool isBackupDataSetRelevant(void) {
     Serial.println("[VALIDATE] Starting backup dataset relevance validation...");
-
-    if ((currentSystemState == STATIC_RSSI_TOF || currentSystemState == STATIC_DYNAMIC_RSSI_TOF)) {
-        Serial.println("[VALIDATE] TOF dataset too small for combined state.");
-        return false;
-    }
 
     if (rssiDataSet.size() < MIN_VALID_DATA_SET_SIZE) {
         Serial.println("[VALIDATE] RSSI dataset too small.");
@@ -122,8 +103,6 @@ bool isBackupDataSetRelevant(void) {
     }
 
     unsigned int numOfLabelInRSSI[NUMBER_OF_LABELS] = {0};
-    unsigned int numOfLabelInTOF[NUMBER_OF_LABELS] = {0};
-
     bool isDataSetValid = false;
 
     for (const RSSIData &data : rssiDataSet) {
@@ -133,10 +112,10 @@ bool isBackupDataSetRelevant(void) {
     for (int i = 0; i < NUMBER_OF_LABELS; ++i) {
         Serial.println("[VALIDATE] Label " + String(i) + " - " + labelToString((Label)i));
         Serial.println("  [VALIDATE] RSSI samples: " + String(numOfLabelInRSSI[i]));
-        Serial.println("  [VALIDATE] TOF samples : " + String(numOfLabelInTOF[i]));
 
         currentLabel = (Label)i;
-        if (numOfLabelInRSSI[i] >= MIN_DATA_PER_LABEL_SIZE && numOfLabelInTOF[i] >= 0.5 * MIN_DATA_PER_LABEL_SIZE) {
+
+        if (numOfLabelInRSSI[i] >= MIN_DATA_PER_LABEL_SIZE) {
             currentLabel = (Label)i;
             Serial.println("[VALIDATE] --------------------------------------------");
             Serial.println("[VALIDATE] Please go to label: " + String(labelToString(currentLabel)) + "Press Enter to start validation...");

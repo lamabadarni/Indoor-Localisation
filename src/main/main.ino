@@ -10,15 +10,14 @@
 
 void setup() {
     Serial.begin(115200);
-    delay(1000);
-    
+    delay(4000);
     Serial.println("=============== System Boot ===============");
-    
     // Prompt mode and enablements
     currentSystemMode = promptSystemMode();
-    setupEnablementsFromUser();
-
-    handleSDAndEnablements();
+    if(currentSystemMode != MODE_RSSI_MODEL_DIAGNOSTIC && currentSystemMode != MODE_TEST_SD_CARD) {
+        setupEnablementsFromUser();
+        handleSDAndEnablements();
+    }
     
     Serial.println("=============== System Ready ===============");
 }
@@ -29,11 +28,6 @@ void loop() {
         case MODE_RSSI_MODEL_DIAGNOSTIC:
         Serial.println("[MAIN] MODE_RSSI_MODEL_DIAGNOSTIC: Running RSSI diagnostics.");
         verifyRSSIScanCoverage();
-        break;
-
-        case MODE_TOF_DIAGNOSTIC:
-        Serial.println("[MAIN] MODE_TOF_DIAGNOSTIC: Running TOF diagnostics.");
-        //verifyTOFScanCoverage();
         break;
 
         case MODE_TRAINING_ONLY:
@@ -147,7 +141,7 @@ void handleTrainingOrFullSDLogic() {
     }
 
     String CurrDir = getSDBaseDir();
-    if (!SD.exists(CurrDir)) return;
+    if (SD.exists(CurrDir)){
 
     if (loadLocationDataset()) {
         Serial.println("[SD] FATAL: Failed to load dataset from SD.");
@@ -169,7 +163,7 @@ void handleTrainingOrFullSDLogic() {
     } else {
         Serial.println("[SD] Backup not sufficient for reuse.");
     }
-
+    }
     if (resetStorage()) {
         Serial.println("[SD] Initialized new backup folder.");
         rssiDataSet.clear();
