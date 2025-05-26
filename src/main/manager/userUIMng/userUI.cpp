@@ -67,14 +67,22 @@ void setupEnablementsFromUser() {
         { "[USER] Enable SD Card Backup? (1=Yes, 0=No)", &Enablements::enable_SD_Card_backup, "SD Card Backup" },
         { "[USER] Enable Training Model on Host? (1=Yes, 0=No)", &Enablements::enable_training_model_on_host_machine, "Training on Host" },
         { "[USER] Run Validation Phase? (1=Yes, 0=No)", &Enablements::run_validation_phase, "Validation Phase" },
-        { "[USER] Verify TOF Responder Mapping? (1=Yes, 0=No)", &Enablements::verify_responder_mac_mapping, "TOF Responder Mapping" },
         { "[USER] Verify RSSI Anchor Mapping? (1=Yes, 0=No)", &Enablements::verify_rssi_anchor_mapping, "RSSI Anchor Mapping" }
     };
 
+    char c;
     for (auto& opt : options) {
         Serial.println(opt.prompt);
-        while (!Serial.available());
-        *opt.flag = Serial.read() == '1';
+        while (true) {
+            if (Serial.available()) {
+                 c = Serial.read();
+                if (c == '0' || c == '1') {
+                    break;
+                }
+            }
+        }
+        *opt.flag = c == '1';
+        delay(2000);
         Serial.println("[USER] " + String(opt.name) + " = " + String(*opt.flag));
     }
 }
@@ -83,12 +91,12 @@ void setupEnablementsFromUser() {
 
 Label promptLocationLabel() {
     Serial.println("[USER] Select Label by Index:");
-    for (int i = 0; i < NUMBER_OF_LABELS; ++i) {
+    for (int i = 1; i < NUMBER_OF_LABELS; ++i) {
         Serial.println("  " + String(i) + " - " + String(labelToString((Label)i)));
     }
 
     int label = -1;
-    while (label < 0 || label >= NUMBER_OF_LABELS) {
+    while (label <= 0 || label >= NUMBER_OF_LABELS) {
         while (Serial.available() == 0);
         label = Serial.parseInt();
     }
@@ -159,35 +167,4 @@ bool promptAbortForImprovement() {
     while (Serial.available() == 0);
     int input = Serial.parseInt();
     return input == 1;
-}
-
-int promptRetryValidationWithSingleMethod() {
-    Serial.println("[USER] Combined validation not sufficient.");
-    Serial.println("[USER] Would you like to retry validation using only one method?");
-    Serial.println("[USER] 1 - Retry with RSSI only");
-    Serial.println("[USER] 2 - Retry with TOF only");
-
-    while (Serial.available() == 0);
-    int input = Serial.parseInt();
-
-    if (input == 1 || input == 2)
-        return input;
-
-    return 0;
-}
-
-int promptUserPreferredPrediction() {
-    Serial.println("[USER] RSSI and TOF predictions differ.");
-    Serial.println("[USER] Which prediction do you trust?");
-    Serial.println("[USER] 1 - Trust RSSI");
-    Serial.println("[USER] 2 - Trust TOF");
-
-    int input = -1;
-    while (input < 0 || input > 1) {
-        while (Serial.available() == 0);
-        input = Serial.parseInt();
-    }
-
-    Serial.println("[USER] user selected preference = " + String(input));
-    return input;
 }

@@ -6,7 +6,6 @@
  * - Mode/state selection
  * - Location label selection
  * - Accuracy approval, scan coverage evaluation
- * - Preference between RSSI and TOF predictions
  * 
  * These functions support the interactive setup and validation process of the localization system.
  * 
@@ -89,22 +88,9 @@ bool promptUserSDCardInitializationApprove();
 void verifySystemConfiguration();
 
 /**
- * @brief Prompt user to retry validation using only RSSI or only TOF.
- * @return 0 = abort, 1 = retry with RSSI, 2 = retry with TOF.
- */
-int promptRetryValidationWithSingleMethod();
-
-/**
  * @brief Ask user if the predicted label is correct, retry, or skip.
  * @return 0 = incorrect, 1 = correct, 9 = skip
  */
 int promptValidationApprovalOrSkip();
-
-/**
- * @brief Ask user which prediction they trust when RSSI and TOF disagree.
- * @return 1 = trust RSSI, 2 = trust TOF, 0 = fallback to RSSI.
- */
-int promptUserPreferredPrediction();
-
 
 #endif // USER_UI_H

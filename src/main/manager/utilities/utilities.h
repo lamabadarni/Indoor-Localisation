@@ -1,7 +1,7 @@
 /**
  * @file utilities.h
  * @brief System-wide definitions for constants, enums, data structures, and utility APIs 
- *        used by the indoor localization platform (RSSI/TOF-based).
+ *        used by the indoor localization platform (RSSI-based).
  */
 
 #ifndef _UTILITIES_H_
@@ -21,22 +21,13 @@
 // == Coverage ==
 #define MIN_ANCHORS_VISIBLE         (3)
 #define MIN_AVERAGE_RSSI_DBM        (-75)
-#define TOF_MIN_RESPONDERS_VISIBLE  (2)
-#define TOF_MAX_AVERAGE_DISTANCE_CM (600)
 
 // == RSSI Scanner ==
 #define RSSI_SCAN_BATCH_SIZE        (15)
 #define RSSI_SCAN_SAMPLE_PER_BATCH  (3)
 #define RSSI_DEFAULT_VALUE          (-100)
 #define RSSI_SCAN_DELAY_MS          (100)
-#define NUMBER_OF_ANCHORS           (10)
-
-// == TOF Scanner ==
-#define TOF_NUMBER_OF_MAC_BYTES     (6)
-#define TOF_SCAN_BATCH_SIZE         (5)
-#define TOF_MAX_VALID_CM            (500.0)  // Adjustable max valid TOF reading
-#define TOF_DEFAULT_DISTANCE_CM     (1500.0)
-#define NUMBER_OF_RESPONDERS        (4)
+#define NUMBER_OF_ANCHORS           (9)
 
 // == Validation consts == 
 #define NUM_OF_VALIDATION_SCANS     (5)
@@ -49,7 +40,6 @@
 // == Predection consts ==
 #define ALPHA                       (0.7f)
 #define K_RSSI                      (4) 
-#define K_TOF                       (2)
 #define MIN_VALID_DATA_SET_SIZE     (K_RSSI * 10) 
 #define MIN_DATA_PER_LABEL_SIZE     (K_RSSI * 3) 
 
@@ -58,7 +48,6 @@
 #define csPin                       (5) // Chip Select pin for SD card
 static constexpr char META_FILENAME[]        = "meta_.csv";
 static constexpr char RSSI_FILENAME[]        = "rssi_scan_data_.csv";
-static constexpr char TOF_FILENAME[]         = "tof_scan_data_.csv";
 static constexpr char ACCURACY_FILENAME[]    = "location_accuracy_.csv";
 static constexpr char TMP_SUFFIX[]           = ".tmp";
 
@@ -87,18 +76,16 @@ typedef enum Label {
 
 typedef enum SystemState {
     STATIC_RSSI = 0,
-    STATIC_RSSI_TOF,
     STATIC_DYNAMIC_RSSI,
-    STATIC_DYNAMIC_RSSI_TOF,
     OFFLINE
 } SystemState;
 
 typedef enum SystemMode {
     MODE_FULL_SESSION = 0,
-    MODE_TOF_DIAGNOSTIC,
     MODE_RSSI_MODEL_DIAGNOSTIC,
     MODE_TRAINING_ONLY,
-    MODE_PREDICTION_ONLY
+    MODE_PREDICTION_ONLY,
+    MODE_TEST_SD_CARD
 } SystemMode;
 
 // ====================== Enablements ======================
@@ -121,21 +108,8 @@ struct RSSICoverageResult {
     int anchorRSSI[NUMBER_OF_ANCHORS];
 };
 
-struct TOFCoverageResult {
-    Label label;
-    int visibleResponders;
-    int averageDistance;
-    bool responderVisibility[NUMBER_OF_RESPONDERS];
-    int responderDistance[NUMBER_OF_RESPONDERS];  // in cm
-};
-
 struct RSSIData {
     int RSSIs[NUMBER_OF_ANCHORS];  
-    Label label;
-};
-
-struct TOFData {
-    double TOFs[NUMBER_OF_RESPONDERS];
     Label label;
 };
 
@@ -147,7 +121,6 @@ struct AccuracyData {
 struct ScanConfig {
     SystemState systemState;
     int RSSINum;
-    int TOFNum;
 };
 
 // ====================== Globals ======================
@@ -202,11 +175,6 @@ String getMetaFilePath();
  * @brief Get the full path to the RSSI scan data file.
  */
 String getRSSIFilePath();
-
-/**
- * @brief Get the full path to the TOF scan data file.
- */
-String getTOFFilePath();
 
 /**
  * @brief Get the full path to the location accuracy file.

@@ -21,18 +21,16 @@ const char* anchorSSIDs[NUMBER_OF_ANCHORS] = {
         "236",
         "231/236",
         "231", 
-        "kitchen",
-        "entrance",
-        "lobby",
-        "balcony",
-        "201",
-        "offices"
+        "Kitchen",
+        "Entrance",
+        "Lobby",
+        "Balcony",
+        "Offices"
 };
 
 ScanConfig currentConfig = {
     .systemState      = currentSystemState,
     .RSSINum          = NUMBER_OF_ANCHORS,
-    .TOFNum           = NUMBER_OF_RESPONDERS
 };
 
 SystemState currentSystemState     = OFFLINE;
@@ -46,12 +44,12 @@ int accumulatedRSSIs[NUMBER_OF_ANCHORS];
 // ====================== Label Conversion ======================
 
 const char* labelToString(int loc) {
-    static const char* locationNames[] = {
+    static const char* labelNames[] = {
         "NOT_ACCURATE",
-        "NEAR_ROOM_232",
         "NEAR_ROOM_234",
-        "BETWEEN_ROOMS_234_236",
         "ROOM_236",
+        "BETWEEN_ROOMS_234_236",
+        "NEAR_ROOM_232",
         "ROOM_231",
         "BETWEEN_ROOMS_231_236",
         "NEAR_BATHROOM",
@@ -60,17 +58,16 @@ const char* labelToString(int loc) {
         "MAIN_ENTRANCE",
         "NEAR_ROOM_230",
         "LOBBY",
-        "ROOM_201",
         "PRINTER",
         "MAIN_EXIT",
         "BALCONY_ENTRANCE",
         "OFFICES_HALL"
     };
 
-    if (loc < 0 || loc >= (sizeof(locationNames) / sizeof(locationNames[0]))) {
-        return "UNKNOWN_LOCATION";
+    if (loc <= 0 || loc >= NUMBER_OF_LABELS) {
+        return labelNames[0];
     }
-    return locationNames[loc];
+    return labelNames[loc];
 }
 
 
@@ -79,9 +76,7 @@ const char* labelToString(int loc) {
 const char* systemStateToString(int state) {
     switch (state) {
         case STATIC_RSSI:             return "STATIC_RSSI";
-        case STATIC_RSSI_TOF:         return "STATIC_RSSI_TOF";
         case STATIC_DYNAMIC_RSSI:     return "STATIC_DYNAMIC_RSSI";
-        case STATIC_DYNAMIC_RSSI_TOF: return "STATIC_DYNAMIC_RSSI_TOF";
         case OFFLINE:                 return "OFFLINE";
         default:                      return "UNKNOWN_STATE";
     }
@@ -92,8 +87,8 @@ const char* modeToString(SystemMode mode) {
         case MODE_TRAINING_ONLY:         return "Training";
         case MODE_PREDICTION_ONLY:       return "Prediction";
         case MODE_RSSI_MODEL_DIAGNOSTIC: return "Verify RSSI Anchors";
-        case MODE_TOF_DIAGNOSTIC:        return "Verify TOF Responders";
         case MODE_FULL_SESSION:          return "Combined Prediction";
+        case MODE_TEST_SD_CARD:          return "Test SD Card";
         default:                         return "Unknown Mode";
     }
 }
@@ -101,7 +96,6 @@ const char* modeToString(SystemMode mode) {
 static void deleteDirectory(const String &dirPath);
 String metaPath = getSDBaseDir() + META_FILENAME;
 String rssiPath = getSDBaseDir() + RSSI_FILENAME;
-String tofPath = getSDBaseDir() + TOF_FILENAME;
 String accPath = getSDBaseDir() + ACCURACY_FILENAME;
 
 // ====================== Utility Functions ======================
@@ -122,10 +116,6 @@ String getMetaFilePath() {
 
 String getRSSIFilePath() {
     return getSDBaseDir() + "rssi_scan_data_.csv";
-}
-
-String getTOFFilePath() {
-    return getSDBaseDir() + "tof_scan_data_.csv";
 }
 
 String getAccuracyFilePath() {
@@ -177,8 +167,8 @@ static void deleteDirectory(const String &dirPath) {
  * @return true on success, false on any SD error.
  */
 bool resetStorage() {
-    // Build the directory name, e.g. "/STATIC_RSSI_TOF"
-    String baseDir = "/" + String(systemStateToString(currentSystemState)) + "/";
+    // Build the directory name, e.g. "/STATIC_RSSI"
+    String baseDir = "/" + String(systemStateToString(currentSystemState));
 
     // 1) Delete existing state folder (and contents)
     deleteDirectory(baseDir);
@@ -220,21 +210,6 @@ bool resetStorage() {
             return false;
         }
         f.println("Location,Accuracy");
-        f.close();
-    }
-
-    // 6) TOF CSV (only in TOF modes)
-    if (currentConfig.systemState == STATIC_RSSI_TOF ||
-        currentConfig.systemState == STATIC_DYNAMIC_RSSI_TOF) {
-        File f = SD.open(tofPath, FILE_WRITE);
-        if (!f) {
-            Serial.println("Failed to create TOF CSV.");
-            return false;
-        }
-        for (int j = 1; j <= NUMBER_OF_RESPONDERS; ++j) {
-            f.print(String(j) + "_tof,");
-        }
-        f.println("Location");
         f.close();
     }
 

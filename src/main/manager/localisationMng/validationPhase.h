@@ -33,7 +33,7 @@ void printFinalValidationSummary();
 
 /**
  * @brief Validates the scan results by checking how many predictions match the label.
- *        Uses both RSSI and TOF modules if enabled. If failed, offers fallback.
+ *        Uses RSSI module if enabled. If failed, offers fallback.
  */
 bool validateScanAccuracy();
 

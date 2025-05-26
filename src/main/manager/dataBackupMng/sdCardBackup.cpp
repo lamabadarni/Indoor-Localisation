@@ -13,11 +13,9 @@ String tmp = ".tmp";
 //------------------------------------------------------------------------------
 // Forward declarations for local (static) functions
 //------------------------------------------------------------------------------
-static bool loadFileToDataset(const String& path, bool isTofFile);
-static bool verifyCSVFormat(const String& header, bool isTofFile);
+static bool loadFileToDataset(const String& path);
 static std::vector<String> splitedString;
 static void fromCSVRssiToVector( String line);
-static void fromCSVTofToVector( String line);
 static bool deleteInvalidLocations(const String& filePath);
 //==================================================================
 //          PUBLIC FUNCTIONS
@@ -34,9 +32,28 @@ static void splitByComma(String data, char comma) {
 }
 
 bool initSDCard() {
-    if (!SD.begin(csPin)) {
+    delay(1000);
+    Serial.println("Initializing SD card...");
+    int retries = 0;
+    pinMode(csPin, OUTPUT);
+    digitalWrite(csPin, HIGH); // Ensure CS pin is high before initializing
+    SD.end(); // Ensure previous SD state is cleared
+    SPI.begin(18, 19, 23, 5);
+    if (!SD.begin()) {
+        delay(500);
         Serial.println("SD init failed. Prompting user...");
+        delay(500);
         return promptUserSDCardInitializationApprove();
+    }
+    File root = SD.open("/");
+    if (!root || !root.isDirectory()) {
+        Serial.println("file system is not mounted.");
+        Serial.println("Failed to open root directory.");
+        SD.end(); // Ensure previous SD state is cleared
+        return false;
+    }
+    else {
+        Serial.println("SD card mounted successfully.");
     }
     Serial.println("SD card initialized.");
     return true;
@@ -49,16 +66,11 @@ bool loadLocationDataset() {
 
     // Load RSSI if required
 
-        if (!loadFileToDataset(getRSSIFilePath(), false)) 
-           ok = false;  // isTofFile=false
-    
+    if (!loadFileToDataset(getRSSIFilePath())) {
+            SD.end(); // Ensure previous SD state is cleared
+        ok = false;
 
-    // Load TOF if required
-    if (state == SystemState::STATIC_RSSI_TOF ||
-        state == SystemState::STATIC_DYNAMIC_RSSI_TOF) {
-        if (!loadFileToDataset(getTOFFilePath(), true)) ok = false;    // isTofFile=true
     }
-
     if (!ok) Serial.println("Error loading one or more dataset files.");
     return ok;
 }
@@ -73,6 +85,7 @@ bool deleteInvalidLocations(const String& filePath) {
     File inputFile = SD.open(filePath, FILE_READ);
     File outputFile = SD.open(tmpPath, FILE_WRITE);
     if (!inputFile || !outputFile) {
+        SD.end(); // Ensure previous SD state is cleared
         Serial.println("Error opening files for filtering.");
         if (inputFile) inputFile.close();
         if (outputFile) outputFile.close();
@@ -107,19 +120,9 @@ bool deleteInvalidLocations(const String& filePath) {
 }
 
 bool updateCSV() {
-    bool ok = true;
-    auto state = currentSystemState;
-
-    if (state == SystemState::STATIC_RSSI_TOF || state == SystemState::STATIC_DYNAMIC_RSSI_TOF) {
-        ok &= deleteInvalidLocations(getRSSIFilePath());
-        ok &= deleteInvalidLocations(getTOFFilePath());
-    } else if (state == SystemState::STATIC_RSSI || state == SystemState::STATIC_DYNAMIC_RSSI) {
-        ok &= deleteInvalidLocations(getRSSIFilePath());
-    }
-
-    
-    if (ok) 
+    if (deleteInvalidLocations(getRSSIFilePath())) 
       return loadLocationDataset();
+
     Serial.println("updateCSV failed.");
     return false;
 }
@@ -139,25 +142,12 @@ void fromCSVRssiToVector( String line){
      return;
 }
 
-void fromCSVTofToVector( String line){
-    TOFData row{};
-     splitByComma(line,',');
-     if(splitedString.size() != NUMBER_OF_RESPONDERS+1){
-        return;
-     }
-
-     for(int i=0 ; i<NUMBER_OF_RESPONDERS;i++){
-     row.TOFs[i]=splitedString[i].toDouble();
-     }
-     row.label=(Label)splitedString[NUMBER_OF_RESPONDERS].toInt();
-}
-
 
 //==================================================================
 //          PRIVATE (STATIC) FUNCTIONS
 //==================================================================
 
-static bool loadFileToDataset(const String& path, bool isTofFile) {
+static bool loadFileToDataset(const String& path) {
     File f = SD.open(path, FILE_READ);
     if (!f) {
         Serial.println("Failed to open for reading: " + path);
@@ -169,8 +159,7 @@ static bool loadFileToDataset(const String& path, bool isTofFile) {
         String line = f.readStringUntil('\n');
         line.trim();
         if (line.length() < 3) continue;
-        if (isTofFile) (fromCSVTofToVector(line));
-        else           (fromCSVRssiToVector(line));
+        fromCSVRssiToVector(line);
     }
     f.close();
     Serial.println("Successfully loaded data from: " + path);
@@ -179,14 +168,23 @@ static bool loadFileToDataset(const String& path, bool isTofFile) {
 
 
 bool saveRSSIScan(const RSSIData &row) {
+    Serial.println(" save rssi scan ");
     // Open (or create) in append mode
     File f = SD.open(getRSSIFilePath(), FILE_APPEND);
-    if (!f) return false;
+    if (!f) {
+            SD.end(); // Ensure previous SD state is cleared
+        Serial.println("Failed to open for writing: " + getRSSIFilePath());
+        return false;
+    }
 
     // If file empty, write header first
     if (f.size() == 0) {
         for (int i = 1; i <= NUMBER_OF_ANCHORS; ++i) {
-            f.print(String(i) + "_rssi,");
+            if (f.print(String(i) + "_rssi,") == 0) {
+                Serial.println("Failed to write header to file.");
+                f.close();
+                return false;
+            }
         }
         f.println("Location");
     }
@@ -198,31 +196,7 @@ bool saveRSSIScan(const RSSIData &row) {
     }
     // Then location label and a timestamp
     f.println(String((int)row.label));
-
-    f.close();
-    return true;
-}
-
-bool saveTOFScan(const TOFData &row) {
-    File f = SD.open(getTOFFilePath(), FILE_APPEND);
-    if (!f) return false;
-
-    // If file empty, write header first
-    if (f.size() == 0) {
-        for (int j = 1; j <= NUMBER_OF_RESPONDERS; ++j) {
-            f.print(String(j) + "_tof,");
-        }
-        f.println("Location");
-    }
-
-    // Write the TOF values
-    for (int j = 0; j < NUMBER_OF_RESPONDERS; ++j) {
-        f.print(String(row.TOFs[j]));
-        f.print(',');
-    }
-    // Then location label and a timestamp
-    f.println(String((int)row.label));
-
+    Serial.println("Saved RSSI values at file: " + getRSSIFilePath());
     f.close();
     return true;
 }

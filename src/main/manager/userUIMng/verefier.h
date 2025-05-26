@@ -1,6 +1,6 @@
 /**
  * @file verefier.h
- * @brief Diagnostic scanning utilities for evaluating RSSI and TOF coverage across labels.
+ * @brief Diagnostic scanning utilities for evaluating RSSI coverage across labels.
  *
  * Provides functions to:
  * - Scan anchor visibility and RSSI levels
@@ -24,27 +24,12 @@
  * @brief Perform RSSI scan for a given label.
  * @return Result struct with per-anchor RSSI data.
  */
-RSSICoverageResult scanRSSICoverage();
+double scanRSSICoverage();
 
 /**
  * @brief Verifies anchor coverage via user feedback loop for RSSI.
  * @return true if user completed all checks, false if aborted.
  */
 bool verifyRSSIScanCoverage();
-
-
-// ====================== TOF Verification ======================
-
-/**
- * @brief Measures TOF distance for each responder from the current label.
- * @return TOFCoverageResult with distances and visibility per responder.
- */
-TOFCoverageResult scanTOFCoverage();
-
-/**
- * @brief Verifies TOF responder visibility with user feedback.
- * @return true if user approves coverage at all tested labels.
- */
-bool verifyTOFScanCoverage();
 
 #endif // VEREFIER_H
