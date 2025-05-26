@@ -4,13 +4,12 @@
  * @author Ward Iroq
  */
 
-#include <predictionPhase.h>
-#include <rssiScanner.h>
-#include <tofScanner.h>
-#include <userUI.h>
-#include <vector>
-#include <Core/utils/utilities.h>  
-#include "utils/logger.h"
+#include "../utils/platform.h"
+#include "../utils/utilities.h"  
+#include "predictionPhase.h"
+#include "../scanning/rssiScanner.h"
+#include "../scanning/tofScanner.h"
+#include "../ui/userUI.h"
 
 #define BACKUB_ACCURACY_THRESHOLD (0.8)
 #define TRAIN_TEST_SPLIT (0.8)
@@ -24,12 +23,11 @@ void runPredictionPhase(void) {
         return;
     }
 
-    LOG_INFO("PREDICT", "System state = %s", systemStateToString(currentSystemState));
+    LOG_INFO("PREDICT", "System state = %s", systemStateToString());
 
     while (true) {
         LOG_INFO("UI", "[PREDICT] >> Press Enter to start predicting...");
-        while (!Serial.available()) delay_ms(50);
-        Serial.read();  // consume newline
+        readCharFromUser();
 
         bool hasTOF = currentSystemState == STATIC_RSSI_TOF || currentSystemState == STATIC_DYNAMIC_RSSI_TOF;
 
@@ -46,8 +44,8 @@ void runPredictionPhase(void) {
 
         if (hasTOF && rssiLabel != tofLabel) {
             LOG_WARN("PREDICT", "RSSI and TOF predictions differ:");
-            LOG_INFO("PREDICT", "  RSSI Prediction: %s", labelToString(rssiLabel));
-            LOG_INFO("PREDICT", "  TOF  Prediction: %s", labelToString(tofLabel));
+            LOG_INFO("PREDICT", "  RSSI Prediction: %s", labelToString[rssiLabel]);
+            LOG_INFO("PREDICT", "  TOF  Prediction: %s", labelToString[tofLabel]);
 
             int userChoice = promptUserPreferredPrediction();
 
@@ -69,12 +67,11 @@ void runPredictionPhase(void) {
                 tofDataSet.push_back(scanData);
             }
         } else {
-            LOG_INFO("PREDICT", "Final prediction = %s", labelToString(rssiLabel));
+            LOG_INFO("PREDICT", "Final prediction = %s", labelToString[rssiLabel]);
         }
 
-        LOG_INFO("UI", "[PREDICT] Do you want to continue predicting? (y/n)");
-        while (!Serial.available()) delay_ms(50);
-        char response = Serial.read();
+        //ask user to proceed or not
+
         if (response != 'y' && response != 'Y') {
             LOG_INFO("PREDICT", "User chose to exit prediction loop.");
             break;
@@ -114,7 +111,7 @@ static Label _predict(std::vector<double>& distances, std::vector<Label>& labels
         }
     }
 
-    int closestLabel[NUMBER_OF_LABELS] = {0};
+    int closestLabel[LABELS_COUNT] = {0};
     for (int i = 0; i < k; ++i) {
         closestLabel[labels[sizeOfDataSet - i - 1]]++;
     }
@@ -122,7 +119,7 @@ static Label _predict(std::vector<double>& distances, std::vector<Label>& labels
     int maxVotes = 0;
     Label labelWithMaxVotes = (Label)0;
 
-    for (int i = 0; i < NUMBER_OF_LABELS; ++i) {
+    for (int i = 0; i < LABELS_COUNT; ++i) {
         if (closestLabel[i] > maxVotes) {
             maxVotes = closestLabel[i];
             labelWithMaxVotes = (Label)i;

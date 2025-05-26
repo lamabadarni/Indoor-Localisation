@@ -5,7 +5,7 @@
 #include <SD.h>
 #include <SPI.h>
 
-bool createMetaFile(const String &filename) {
+bool createMetaFile(const string &filename) {
     if (SD.exists(filename)) {
         Serial.println("Meta file already exists.");
         return false;

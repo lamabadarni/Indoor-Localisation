@@ -14,22 +14,20 @@
 #ifndef RSSI_SCANNER_H
 #define RSSI_SCANNER_H
 
-#include <utils/utilities.h>
-#include <backup/sdCardIO.h>
+#include <../utils/utilities.h>
 
+/**
+ * @brief Creates a single RSSI scan.
+ *        This scan uses EMA across RSSI_SCAN_SAMPLE_PER_BATCH samples.
+ *        and fills accumlatedRSSIs global with sampled RSSIs
+ */
+RSSIData createSingleRSSIScan();
 
 /**
  * @brief Performs a batch of RSSI scans and stores them into the global dataset.
  *        Each scan is a smoothed sample using EMA across N RSSI samples.
  */
 void performRSSIScan();
-
-/**
- * @brief Creates a single RSSI scan input for prediction.
- *        This scan uses EMA across RSSI_SCAN_SAMPLE_PER_BATCH samples.
- *        and fills accumlatedRSSIs global with sampled RSSIs
- */
-void createRSSIScanToMakePrediction();
 
 /**
  * @brief Performs NUM_OF_VALIDATION_SCANS predictions and compares them to the current label.
