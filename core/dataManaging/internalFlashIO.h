@@ -9,15 +9,4 @@
 
 bool initInternalFlash();
 
-// ====================== Dataset Management ======================
-
-bool loadLocationDataset();
-bool cleanupCSV(const bool validLocationsMap[NUMBER_OF_LABELS]);
-bool resetCSV();
-
-// ====================== Scan Row Writing ======================
-
-bool saveRSSIScan(const RSSIData& row);
-bool saveTOFScan(const TOFData& row);
-
 #endif // INTERNAL_FLASH_IO_H
