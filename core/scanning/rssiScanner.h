@@ -10,11 +10,10 @@
  * @author Lama Badarni
  */
 
+#include "../utils/utilities.h"
 
 #ifndef RSSI_SCANNER_H
 #define RSSI_SCANNER_H
-
-#include <../utils/utilities.h>
 
 /**
  * @brief Creates a single RSSI scan.

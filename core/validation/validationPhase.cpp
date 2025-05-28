@@ -5,6 +5,8 @@
 #include "../prediction/predictionPhase.h"
 #include "../ui/userUI.h"
 #include "../scanning/scanningPhase.h"
+#include "../scanning/rssiScanner.h"
+#include "../scanning/tofScanner.h"
 
 static bool validatedLabels[LABELS_COUNT];
 
@@ -50,11 +52,12 @@ void startLabelValidationSession() {
         LOG_INFO("VALIDATE", "Predicted location: %s", labels[predicted]);
 
         approved =  userValidationApprove();
+        delay_ms(DELAY_BETWEEN_PHASES);
 
         if (approved) {
             LOG_INFO("VALIDATE", "User approved prediction at: %s", labels[predicted]);
             validatedLabels[currentLabel] = true;
-            saveToBuffer(data);
+            saveData(data);
             return;
         }
         else {
@@ -63,6 +66,7 @@ void startLabelValidationSession() {
                 return;
             }
         }
+
         delay_ms(DELAY_BETWEEN_PHASES);
     }
 
@@ -75,7 +79,7 @@ void printFinalValidationSummary() {
     LOG_INFO("VALIDATE", "=============== Validation Summary ===============");
     for (int i = 0; i < LABELS_COUNT; ++i) {
         const char* result = validatedLabels[i] ? "VALIDATED" : "NOT VALIDATED";
-        LOG_INFO("VALIDATE", "Label %d - %s: %s", i, labelToString((Label)i), result);
+        LOG_INFO("VALIDATE", "Label %d - %s: %s", i, labels[i], result);
     }
     LOG_INFO("VALIDATE", "==================================================");
     LOG_INFO("VALIDATE", " ");
@@ -85,13 +89,22 @@ bool validateScanAccuracy() {
     int matchesRSSI = -1;
     int matchesTOF = -1;
 
+    bool valid = false;
+
     LOG_INFO("VALIDATE", "Validating scan accuracy...");
 
     switch (currentSystemState) {
         case STATIC_RSSI:
             matchesRSSI = computeRSSIPredictionMatches();
             break;
+        case TOF :
+            matchesRSSI = computeTOFPredictionMatches();
         case STATIC_RSSI_TOF:
             matchesRSSI = computeRSSIPredictionMatches();
+            matchesTOF  = computeTOFPredictionMatches();
+            break;
     }
+
+    return (((double)(matchesRSSI / VALIDATION_MAX_ATTEMPTS)) > VALIDATION_PASS_THRESHOLD) ||
+           (((double)(matchesTOF / VALIDATION_MAX_ATTEMPTS)) > VALIDATION_PASS_THRESHOLD) ; 
 }

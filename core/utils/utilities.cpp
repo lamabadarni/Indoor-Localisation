@@ -10,19 +10,16 @@
 // ====================== System Setup ======================
 
 // == System Mode ==
-SystemSetup::currentSystemMode        = MODES_NUM;
-SystemSetup::currentSystemBootMode    = SYSTEM_BOOT_MODES_NUM;
-SystemSetup::currentSystemScannerMode = SYSTEM_SCANNER_MODES_NUM;
+SystemMode         SystemSetup::currentSystemMode        = MODES_NUM;
+SystemScannerMode  SystemSetup::currentSystemScannerMode = SYSTEM_SCANNER_MODES_NUM;
+SystemBootMode     SystemSetup::currentSystemBootMode    = SYSTEM_BOOT_MODES_NUM; 
 
 // == Features ==
-SystemSetup::chooseLabelsToScan         = false;
-SystemSetup::forceSDCardBackup          = false;
-SystemSetup::validateWhileScanningPhase = false;
+bool SystemSetup::enableBackup   = false;
+bool SystemSetup::enableRestore  = false;
 
 // == Logging ==
-SystemSetup::printInfoLogs    = true;
-SystemSetup::printWarningLogs = true;
-SystemSetup::printDebugLogs   = false;
+LogLevel SystemSetup::logLevel   = LOG_LEVEL_ERROR;
 
 
 // ======================   Globals    ======================
@@ -30,6 +27,8 @@ SystemSetup::printDebugLogs   = false;
 bool    reuseFromSD[LABELS_COUNT]  = {false};
 double  accuracy                   = -1;
 bool    shouldAbort                = false;
+bool    reconfigure                = true;
+
 // ======================  CONST Globals    ======================
 
 const std::string anchorSSIDs[NUMBER_OF_ANCHORS] = {
@@ -78,7 +77,6 @@ const std::string systemModes[MODES_NUM] = {
 
 const std::string systemBootModes[SYSTEM_BOOT_MODES_NUM] {
     "MODE_TOF_DIAGNOSTIC",
-    "MODE_TOF_COMMUNICATION_TEST",
     "MODE_COLLECT_TOF_RESPONDERS_MAC",
     "MODE_RSSI_DIAGNOSTIC",
     "MODE_SD_CARD_TEST"
@@ -95,15 +93,6 @@ const std::string systemScannerModes[SYSTEM_SCANNER_MODES_NUM] {
 int applyEMA(int prevRSSI, int newRSSI) {
     if (prevRSSI == RSSI_DEFAULT_VALUE) return newRSSI;
     return (int)(ALPHA * prevRSSI + (1.0f - ALPHA) * newRSSI);
-}
-
-int getChoosenLabelsCount() {
-    int ctr = 0;
-    for(int i =  0; i < LABELS_COUNT; i++) {
-        if(labels[i]) ctr++;
-    }
-
-    return ctr;
 }
 
 char readCharFromUser() {
@@ -136,4 +125,12 @@ char getCharFromUserWithTimeout(int timeoutMs) {
     }
 
     return '\0';  // timeout or no input
+}
+
+bool isRSSIActive() {
+    return SystemScannerMode::STATIC_RSSI || SystemScannerMode::STATIC_RSSI_TOF ;
+}
+
+bool isTOFActive() {
+    return SystemScannerMode::TOF || SystemScannerMode::STATIC_RSSI_TOF ;
 }

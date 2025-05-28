@@ -4,32 +4,49 @@
 #include "userUI.h"
 
 // ========== SYSTEM SETUP ==========
-static void promptUserLoggerConfiguration() {
-    LOG_INFO("SETUP", "[USER] > Enable INFO logs? (y/n): ");
-    SystemSetup::printInfoLogs = (readCharFromUser() == 'y' || readCharFromUser() == 'Y');
+static LogLevel promptUserLoggerConfiguration() {
+    delay_ms(USER_PROMPTION_DELAY);
+    LOG_INFO("SETUP", "[USER] > Choose log level ");
+    LOG_INFO("SETUP", "E - ERROR logs ");
+    LOG_INFO("SETUP", "W - ERROR and WARN log ");
+    LOG_INFO("SETUP", "I - ERROR , WARN and INFO logs ");
+    LOG_INFO("SETUP", "D - ERROR , WARN , INFO and DEBUG logs ");
 
-    LOG_INFO("SETUP", "[USER] > Enable DEBUG logs? (y/n): ");
-    SystemSetup::printDebugLogs = (readCharFromUser() == 'y' || readCharFromUser() == 'Y');
-
-    LOG_INFO("SETUP", "Logger configured: INFO=%d, DEBUG=%d", 
-             SystemSetup::printInfoLogs, SystemSetup::printDebugLogs);
+    char choosen = readCharFromUser();
+    delay_ms(USER_PROMPTION_DELAY);
+    if(choosen == 'e' || choosen == 'E') {
+        SystemSetup::logLevel = LogLevel::LOG_LEVEL_ERROR;
+    }
+    else if(choosen == 'w' || choosen == 'W') {
+        SystemSetup::logLevel = LogLevel::LOG_LEVEL_WARN;
+    }
+    else if(choosen == 'i' || choosen == 'I') {
+        SystemSetup::logLevel = LogLevel::LOG_LEVEL_INFO;
+    }
+    else if(choosen == 'd' || choosen == 'D') {
+        SystemSetup::logLevel = LogLevel::LOG_LEVEL_DEBUG;
+    }
 }
 
 static SystemMode promptUserSystemMode() {
+    delay_ms(USER_PROMPTION_DELAY);
     LOG_INFO("SETUP", "[USER] > Select System Mode:");
     for (int i = 0; i < MODES_NUM; ++i) {
         LOG_INFO("SETUP", "  %d - %s", i + 1, systemModes[i].c_str());
     }
+    delay_ms(USER_PROMPTION_DELAY);
     int sel = -1;
     while (sel < 1 || sel > MODES_NUM) sel = readIntFromUser();
     return static_cast<SystemMode>(sel - 1);
 }
 
 static SystemScannerMode promptUserScannerMode() {
+    delay_ms(USER_PROMPTION_DELAY);
     LOG_INFO("SETUP", "[USER] > Select Scanner Mode:");
     for (int i = 0; i < SYSTEM_SCANNER_MODES_NUM; ++i) {
         LOG_INFO("SETUP", "  %d - %s", i + 1, systemScannerModes[i].c_str());
     }
+
     int sel = -1;
     while (sel < 1 || sel > SYSTEM_SCANNER_MODES_NUM) sel = readIntFromUser();
     return static_cast<SystemScannerMode>(sel - 1);
@@ -38,15 +55,20 @@ static SystemScannerMode promptUserScannerMode() {
 void runUserSystemSetup() {
     promptUserLoggerConfiguration();
     SystemSetup::currentSystemMode = promptUserSystemMode();
+
+    if(SystemSetup::currentSystemMode == MODE_SYSTEM_BOOT) {
+        return;
+    }
+
     SystemSetup::currentSystemScannerMode = promptUserScannerMode();
 
     struct {
         const char* prompt;
         bool* flag;
     } toggles[] = {
-        {"Enable SD card backup? (y/n): ", &SystemSetup::forceSDCardBackup},
-        {"Run validation phase? (y/n): ", &SystemSetup::validateWhileScanningPhase},
-        {"Enable label selection? (y/n): ", &SystemSetup::chooseLabelsToScan}
+        {"Enable backup?           (y/n): "  , &SystemSetup::enableBackup},
+        {"Enable validation phase? (y/n): "  , &SystemSetup::enableValidationPhase},
+        {"Enable restore?          (y/n): "  , &SystemSetup::enableRestore}
     };
 
     for (auto& opt : toggles) {
@@ -106,7 +128,7 @@ bool promptUserAbortToImproveEnvironment() {
 void promptUserShowDebugLogs() {
     LOG_INFO("FEEDBACK", "[USER] > Show debug logs during rescan? (y/n): ");
     char c = readCharFromUser();
-    SystemSetup::printDebugLogs = (c == 'y' || c == 'Y');
+    SystemSetup::logLevel = (c == 'y' || c == 'Y') ? LogLevel::LOG_LEVEL_DEBUG : SystemSetup::logLevel;
 }
 
 // ========== PREDICTION ==========
@@ -150,16 +172,12 @@ void promptUserAbortOrContinue(bool allowAbort) {
         return;
     }
 
-    if (allowAbort) {
-        LOG_INFO("SYSTEM", "No input detected. Abort current phase?");
-        LOG_INFO("SYSTEM", "c - Continue, x - Abort phase, q - Abort full system");
-        input = getCharFromUserWithTimeout(15000);
-        if (input == 'x' || input == 'X') {
-            LOG_INFO("SYSTEM", "User aborted this phase.");
-            forceNextPhase = true;
-        } else if (input == 'q' || input == 'Q') {
-            LOG_INFO("SYSTEM", "User aborted full session.");
-            shouldAbort = true;
-        }
+
+    LOG_INFO("SYSTEM", "No input detected. Abort current phase?");
+    LOG_INFO("SYSTEM", "c - Continue, q - Abort full system");
+    input = getCharFromUserWithTimeout(15000);
+    if (input == 'q' || input == 'Q') {
+        LOG_INFO("SYSTEM", "User aborted full session.");
+        shouldAbort = true;
     }
 }

@@ -7,7 +7,7 @@
 #define UNTITLED3_SCAN_DATA_MANAGER_H
 
 #include <vector>
-#include <Core/utils/utilities.h>  
+#include <core/utils/utilities.h>  
 #include <sdCardBackup.h>
 // Metadata structure capturing your scan configuration
 */
@@ -17,6 +17,3 @@
  */
 ///bool createMetaFile(const string &filename);
 
-
-
-#endif //UNTITLED3_SCAN_DATA_MANAGER_H

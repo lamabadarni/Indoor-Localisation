@@ -1,19 +1,9 @@
-/**
- * @file predictionPhase.h
- * @brief Prediction system interface for computing locations using RSSI and TOF kNN models.
- *
- * Declares methods to run predictions and collect scan input using global buffers.
- * Used in both real-time location estimation and validation scenarios.
- * 
- * @author Ward Iroq
- */
 
+ #include <../core/utils/utilities.h>  
 
 #ifndef _IOT_INDOOR_LOCALISATION_PREDICTION_PHASE_H_
 #define _IOT_INDOOR_LOCALISATION_PREDICTION_PHASE_H_
 
-#include <math.h>
-#include <Core/utils/utilities.h>  
 
 /**
  * @brief this function predicts the current label based on RSSI and ToF values accumualted in real time.

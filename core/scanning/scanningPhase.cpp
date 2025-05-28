@@ -1,15 +1,10 @@
-/**
- * @file scanning.cpp
- * @brief Manages full scanning sessions across labels, handles retries, validation, and measurement dispatching.
- * @author Lama Badarni
- */
-
 #include "scanningPhase.h"
 #include "rssiScanner.h"
 #include "tofScanner.h"
 #include "../ui/userUI.h"
 #include "../validation/validationPhase.h"
-#inclue "../utils/utilities.h"
+#include "../utils/utilities.h"
+#include "../ui/logger.h"
 
 static bool dontAskAgain = false;
 
@@ -17,99 +12,108 @@ void runScanningPhase() {
     delay_ms(DELAY_BETWEEN_PHASES);
 
     LOG_INFO("SCAN", "=============== Scanning Phase Started ===============");
-    LOG_INFO("SCAN", "In this phase, the system will collect signal data from your environment.");
-    LOG_INFO("SCAN", "Please stand still at the selected location while the scan is in progress.");
-    LOG_INFO("SCAN", "Collected data will be used for training or prediction depending on the system mode.");
+    LOG_INFO("SCAN", "Please stand still at the selected location during scanning.");
+    LOG_INFO("SCAN", "Collected data will be used for training.");
 
-    for (int i = 0; i < NUMBER_OF_LABELS; i++) {
+    for (int i = 0; i < LABELS_COUNT; ++i) {
         delay_ms(DELAY_BETWEEN_PHASES);
 
-        currentLabel = promptLocationLabel();
-        if(reuseFromSD[currentLabel]) {
-            int labelAccuracy;
-            LOG_INFO("SCANNING", "Backup data available for label: %s", labels[currentLabel]);
-            LOG_INFO("SCANNING", "Stored prediction accuracy: %d %", labelAccuracy);
-            char input = prompUserReuseApprove();
-            if(input == 'N' || input == 'n') break;
-            if(input == 'V' || input == 'v') validateScanAccuracy();
+        promptUserLocationLabel();  // Sets currentLabel
+        if (reuseFromSD[currentLabel]) {
+            LOG_INFO("SCAN", "Backup data available for label: %s", labels[currentLabel].c_str());
+            char input = promptUserReuseDecision();
+            if (input == 'N' || input == 'n') continue;
+            if (input == 'V' || input == 'v') {
+                bool accurate = validateScanAccuracy();
+                if(accurate) {
+                    
+                }
+                continue;
+            }
         }
 
-        Serial.println();
-        LOG_INFO("SCANNING", "[SCAN] Selected Label: " + labels[currentLabel]);
-        LOG_INFO("SCANNING", "[SCAN] Press Enter to start scanning...");
+        LOG_INFO("SCAN", "Selected Label: %s", labels[currentLabel].c_str());
+        LOG_INFO("SCAN", "Press any key to start scanning...");
         readCharFromUser();
 
-        startLabelScanningSession();
+        if (!startLabelScanningSession()) {
+            LOG_WARN("SCAN", "Skipping label due to repeated validation failure.");
+        }
     }
 
-    LOG_INFO("SCANNING", "=============== Scanning Phase Completed ===============");
+    LOG_INFO("SCAN", "=============== Scanning Phase Completed ===============");
 }
 
 bool startLabelScanningSession() {
     int retryCount = 0;
     bool validScan = false;
-    if(!dontAskAgain) {
-        char input = promptUserCoverageDiagnosticBeforeScan();
-        if(input == 'Y' || input == 'y') performRSSIScanCoverage();
-        if(input == 'D' || input == 'd') dontAskAgain = true;
+
+    if (!dontAskAgain) {
+        char input = promptUserRunCoverageDiagnostic();
+        if (input == 'Y' || input == 'y') scanStaticRSSI();
+        if (input == 'D' || input == 'd') dontAskAgain = true;
     }
 
     while (retryCount < MAX_RETRIES_FOR_RSSI) {
-        LOG_INFO("SCANNING", "[SCAN] Attempt # %d for: %s",  String(retryCount + 1), labels[currentLabel]));
+        LOG_INFO("SCAN", "Attempt #%d for label: %s", retryCount + 1, labels[currentLabel].c_str());
 
         collectMeasurements();
 
-        LOG_INFO("SCANNING", "[SCAN] Validating scan accuracy...");
-
+        LOG_INFO("SCAN", "Validating scan accuracy...");
         validScan = validateScanAccuracy();
+
         if (validScan) {
-            LOG_INFO("SCANNING", " Scan successful at: %s ", labels[currentLabel]);
+            LOG_INFO("SCAN", "Scan successful for label: %s", labels[currentLabel].c_str());
             break;
         }
 
-        LOG_INFO("SCANNING", "[SCAN] Accuracy insufficient for user, retrying...");
+        LOG_WARN("SCAN", "Accuracy insufficient. Retrying...");
         retryCount++;
     }
 
     if (!validScan) {
-        Serial.println("[SCAN] Scan failed after max retries at: " + String(labelToString(currentLabel)));
-        return false;
+        LOG_ERROR("SCAN", "Scan failed after max retries for label: %s", labels[currentLabel].c_str());
     }
 
-    Serial.println("[SCAN] Final accepted scan at: " + String(labelToString(currentLabel)) + ", Accuracy: " + String(accuracy) + "%");
-
-    return true;
+    return validScan;
 }
 
 void collectMeasurements() {
-    Serial.println("[SCAN] Collecting measurements...");
+    LOG_INFO("SCAN", "Collecting measurements based on current state...");
 
-    switch (currentSystemState) {
+    switch (SystemSetup::currentSystemMode) {
         case STATIC_RSSI:
-            LOG_INFO("SCANNING", "[SCAN] Mode: STATIC_RSSI");
+            LOG_INFO("SCAN", "System Mode: STATIC_RSSI");
             performRSSIScan();
+            break;
+
+        case TOF:
+            LOG_INFO("SCAN", "System Mode: TOF");
+            performTOFScan();
             break;
 
         case STATIC_RSSI_TOF:
-            LOG_INFO("SCANNING", "[SCAN] Mode: STATIC_RSSI_TOF");
+            LOG_INFO("SCAN", "System Mode: STATIC_RSSI_TOF");
             performRSSIScan();
-            //performTOFScan();
+            performTOFScan();
             break;
 
         default:
-            LOG_INFO("SCANNING", "[SCAN] Unsupported system state.");
+            LOG_WARN("SCAN", "Unsupported system state: %d", SystemSetup::currentSystemScannerMode);
             break;
     }
 }
 
 void scanStaticRSSI() {
+    LOG_INFO("SCAN", "Running static RSSI scan coverage check...");
     performRSSIScan();
 }
 
 void scanTOF() {
-    LOG_INFO("SCANNING", "[SCAN] FTM not implemented.");
+    LOG_INFO("SCAN", "Running TOF scan...");
+    performTOFScan();
 }
 
 void scanDynamicRSSI() {
-   LOG_INFO("SCANNING", "[SCAN] Dynamic RSSI scanning not implemented.");
+    LOG_INFO("SCAN", "Dynamic RSSI scanning not implemented yet.");
 }

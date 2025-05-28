@@ -1,15 +1,12 @@
-/**
- * @file predictionPhase.cpp
- * @brief Executes real-time predictions using KNN over RSSI and TOF datasets with user trust resolution for conflicting results.
- * @author Ward Iroq
- */
 
+#include "../ui/logger.h"
 #include "../utils/platform.h"
 #include "../utils/utilities.h"  
 #include "predictionPhase.h"
 #include "../scanning/rssiScanner.h"
 #include "../scanning/tofScanner.h"
 #include "../ui/userUI.h"
+
 
 #define BACKUB_ACCURACY_THRESHOLD (0.8)
 #define TRAIN_TEST_SPLIT (0.8)
@@ -18,36 +15,35 @@ void runPredictionPhase(void) {
     LOG_INFO("UI", " ");
     LOG_INFO("UI", "=============== Prediction Phase Started ===============");
 
-    if (currentSystemState == OFFLINE) {
-        LOG_ERROR("PREDICT", "System state is OFFLINE. Cannot proceed.");
+    if (SystemSetup::currentSystemMode == MODES_NUM) {
+        LOG_ERROR("PREDICT", "System state is invalid. Cannot proceed.");
         return;
     }
 
-    LOG_INFO("PREDICT", "System state = %s", systemStateToString());
 
     while (true) {
         LOG_INFO("UI", "[PREDICT] >> Press Enter to start predicting...");
         readCharFromUser();
 
-        bool hasTOF = currentSystemState == STATIC_RSSI_TOF || currentSystemState == STATIC_DYNAMIC_RSSI_TOF;
+        if(isRSSIActive) {
+            LOG_INFO("PREDICT", "Collecting RSSI scan...");
+            createSingleRSSIScan();
+        }
 
-        LOG_INFO("PREDICT", "Collecting RSSI scan...");
-        createRSSIScanToMakePrediction();
-
-        if (hasTOF) {
+        if (isTOFActive) {
             LOG_INFO("PREDICT", "Collecting TOF scan...");
-            createTOFScanToMakePrediction();
+            createSingleTOFScan();
         }
 
         Label rssiLabel = rssiPredict();
         Label tofLabel = tofPredict();
 
-        if (hasTOF && rssiLabel != tofLabel) {
+        if (isRSSIActive && isTOFActive && rssiLabel != tofLabel) {
             LOG_WARN("PREDICT", "RSSI and TOF predictions differ:");
-            LOG_INFO("PREDICT", "  RSSI Prediction: %s", labelToString[rssiLabel]);
-            LOG_INFO("PREDICT", "  TOF  Prediction: %s", labelToString[tofLabel]);
+            LOG_INFO("PREDICT", "  RSSI Prediction: %s", labels[rssiLabel]);
+            LOG_INFO("PREDICT", "  TOF  Prediction: %s", labels[tofLabel]);
 
-            int userChoice = promptUserPreferredPrediction();
+            int userChoice = promptUserChooseBetweenPredictions(rssiLabel, tofLabel);
 
             if (userChoice == 1) {
                 LOG_INFO("PREDICT", "User chose RSSI prediction.");
@@ -67,15 +63,10 @@ void runPredictionPhase(void) {
                 tofDataSet.push_back(scanData);
             }
         } else {
-            LOG_INFO("PREDICT", "Final prediction = %s", labelToString[rssiLabel]);
+            LOG_INFO("PREDICT", "Final prediction = %s", labels[rssiLabel]);
         }
 
-        //ask user to proceed or not
-
-        if (response != 'y' && response != 'Y') {
-            LOG_INFO("PREDICT", "User chose to exit prediction loop.");
-            break;
-        }
+        
     }
 }
 
@@ -133,7 +124,7 @@ Label rssiPredict() {
     int sizeOfDataSet = rssiDataSet.size();
     double normalisedInput[NUMBER_OF_ANCHORS];
     std::vector<double> distances(sizeOfDataSet, 0);
-    std::vector<Label> labels(sizeOfDataSet, NOT_ACCURATE);
+    std::vector<Label> labels(sizeOfDataSet, LABELS_COUNT);
 
     preparePointRSSI(accumulatedRSSIs, normalisedInput);
     for (int i = 0; i < sizeOfDataSet; ++i) {
@@ -150,7 +141,7 @@ Label tofPredict() {
     int sizeOfDataSet = tofDataSet.size();
     double normalisedInput[NUMBER_OF_RESPONDERS];
     std::vector<double> distances(sizeOfDataSet, 0);
-    std::vector<Label> labels(sizeOfDataSet, NOT_ACCURATE);
+    std::vector<Label> labels(sizeOfDataSet, LABELS_COUNT);
 
     preparePointTOF(accumulatedTOFs, normalisedInput);
     for (int i = 0; i < sizeOfDataSet; ++i) {

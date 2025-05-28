@@ -1,11 +1,22 @@
-#include <scanning.h>
-#include <string.h>
-#include <Core/utils/utilities.h>  
-
-#include <tofScanner.h>
+#include "scanningPhase.h"
+#include "core/utils/platform.h"
+#include "core/utils/utilities.h"  
+#include "core/ui/logger.h"
+#include "tofScanner.h"
+#include "data.h"
+#include "predictionPhase.h"
 #include "esp_wifi.h"
 
+static bool registered = false;
+static bool inProcess  = false;
+
 static bool scanComplete = false;
+
+static void resetTOFScanBuffer() {
+    for(int i = 0; i < NUMBER_OF_RESPONDERS; i++) {
+        accumulatedTOFs[i] = TOF_DEFAULT_DISTANCE_CM;
+    }
+}
 
 //Handler function used as call back function when responder sends back to initiator
 static void tofReportHandler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data) {
@@ -41,47 +52,38 @@ static void tofReportHandler(void* arg, esp_event_base_t event_base, int32_t eve
 }
 
 void performTOFScan() {
+
+    resetTOFScanBuffer();
     // register a callback function (ftmReportHandler) to listen for FTM result events.
-    esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler, NULL);
+    if(!registered && !inProcess) {
+        esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler, NULL);
+        registered = true;
+        inProcess  = true;
+    }
 
     for(int scan = 0; scan < TOF_SCAN_BATCH_SIZE ; scan++) {
-        TOFData scanData;
-        scanData.label = currentLabel;
+        
+        TOFData scanData = createSingleTOFScan();
+        saveData(scanData);
+        
+        LOG_DEBUG("TOF", "Scan %d for label %s", scan + 1, labels[currentLabel]);
 
-        for (int i = 0; i < NUMBER_OF_RESPONDERS; i++) {
-            wifi_ftm_initiator_cfg_t config = {
-                .frm_count = 16, 
-                .burst_period = 2
-            };
-
-            scanComplete = false;
-            accumulatedTOFs[i] = TOF_DEFAULT_DISTANCE_CM;
-
-            esp_err_t err = esp_wifi_ftm_initiate_session(responderMacs[i], &config);
-            if (err != ESP_OK) {
-                LOG_WARN("TOF", "Session failed for responder %d (%s)", i, esp_err_to_name(err));
-                continue;
-            }
-
-            unsigned long start = millis_since_boot();
-            while (!scanComplete && millis_since_boot() - start < 300) {
-                delay_ms(TOF_SCAN_DELAY_MS);
-            }
-
-            scanData.TOFs[i] = accumulatedTOFs[i];
+        for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
+            LOG_DEBUG("TOF", "SSID[%s], Diatance = %d", tofSSIDs[i] , accumulatedTOFs[i]);
         }
-        tofDataSet.push_back(scanData);
-        saveTOFScan(scanData);
-
-
-        LOG_INFO("TOF", "Scan %d for label %s", scan + 1, labelToString(currentLabel));
-        LOG_INFO("TOF", "TOF[%d] = %.1f cm", i, scanData.TOFs[i]);
     }
     esp_event_handler_unregister(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler);
+    registered = false;
+    inProcess  = false;
 }
 
-void createTOFScanToMakePrediction() {
-    esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler, NULL);
+TOFData createSingleTOFScan() {
+
+    if(!registered && !inProcess) {
+        esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler, NULL);
+        registered = true;
+        inProcess  = true;
+    }
 
     for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
         wifi_ftm_initiator_cfg_t cfg = {
@@ -89,32 +91,43 @@ void createTOFScanToMakePrediction() {
             .burst_period = 2
         };
 
+        cfg.channel = 0 ; // Wi-fi channel to use for FTM - 0 since it's unknown
+
         scanComplete = false;
         accumulatedTOFs[i] = TOF_DEFAULT_DISTANCE_CM;
 
-        esp_err_t err = esp_wifi_ftm_initiate_session(responderMacs[i], &cfg);
-        if (err != ESP_OK) {
-            LOG_INFO("TOF", "[VALIDATION] #%d: Predicted %s | Actual %s", v + 1,
-                labelToString(predicted), labelToString(currentLabel));
+        esp_err_t err = esp_wifi_ftm_initiate_session(&cfg);
 
+        if (err != ESP_OK) {
+            LOG_ERROR("TOF", "Failed to initiate session for responder: %s", tofSSIDs[i]);
             continue;
         }
 
-        unsigned long start = millis();
-        while (!scanComplete && millis() - start < 300) {
+        unsigned long start    = millis_since_boot();
+        unsigned long duration = millis_since_boot();
+        while (!scanComplete && duration - start < 300) {
             delay_ms(TOF_SCAN_DELAY_MS);
+            duration = millis_since_boot();
+        }
+        if(!scanComplete) {
+             LOG_ERROR("TOF", "TOF scan timeout, aborting current scanning session");
+        } 
+        else {
+            LOG_ERROR("TOF", "TOF scan completed after: %l", duration-start);
         }
     }
 
-    esp_event_handler_unregister(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler);
+    if(inProcess) {
+        esp_event_handler_unregister(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler);
+    }
 }
 
 
 int computeTOFPredictionMatches() {
     int matches = 0;
 
-    for (int v = 0; v < SCAN_VALIDATION_SAMPLE_SIZE; ++v) {
-        createTOFScanToMakePrediction();
+    for (int v = 0; v < TOF_SCAN_SAMPLE_PER_BATCH; ++v) {
+        createSingleTOFScan();
         Label predicted = tofPredict();
 
         if (predicted == currentLabel) {
@@ -126,12 +139,13 @@ int computeTOFPredictionMatches() {
                 data.TOFs[i] = accumulatedTOFs[i];
             }
             tofDataSet.push_back(data);
-            saveTOFScan(data);
-
+            saveData(data);
         }
 
-        LOG_INFO("TOF VALIDATION", "#%d: Predicted %s | Actual %s", 
-         v + 1, labelToString(predicted), labelToString(currentLabel));
+        LOG_DEBUG("TOF", "[VALIDATION] #%d: Predicted %s | Actual %s",
+            v + 1, labels[predicted], labels[currentLabel]);
     }
+
+    
     return matches;
 }

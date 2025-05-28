@@ -32,5 +32,3 @@
  */
 //bool saveAccuracyData(const AccuracyData &row);
 
-
-#endif // ACCURACY_DATA_MANAGER_H

@@ -1,15 +1,5 @@
-/**
- * @file utilities.h
- * @brief System-wide definitions for constants, enums, data structures, and utility APIs 
- *        used by the indoor localization platform (RSSI/TOF-based).
- */
-
-#ifndef _UTILITIES_H_
-#define _UTILITIES_H_
-
-
+#pragma once
 #include "platform.h"
-
 // ====================== Constants ======================
 
 // == User UI ==
@@ -32,10 +22,11 @@
 
 // == TOF Scanner ==
 #define TOF_NUMBER_OF_MAC_BYTES     (6)
-#define TOF_SCAN_BATCH_SIZE         (5)
+#define TOF_SCAN_BATCH_SIZE         (15)
+#define TOF_SCAN_SAMPLE_PER_BATCH   (2)
 #define TOF_MAX_VALID_CM            (500.0)  // Adjustable max valid TOF reading
 #define TOF_DEFAULT_DISTANCE_CM     (1500.0)
-#define TOF_SCAN_DELAY_MS           (10)
+#define TOF_SCAN_DELAY_MS           (20)
 #define NUMBER_OF_RESPONDERS        (4)
 
 // == Validation == 
@@ -85,10 +76,9 @@ typedef enum {
 
 typedef enum {
     MODE_TOF_DIAGNOSTIC = 0,
-    MODE_TOF_COMMUNICATION_TEST,
     MODE_COLLECT_TOF_RESPONDERS_MAC,
     MODE_RSSI_DIAGNOSTIC,
-    MODE_SD_CARD_TEST,
+    MODE_RESTORE_DATA_TEST,
     SYSTEM_BOOT_MODES_NUM
 } SystemBootMode;
 
@@ -98,6 +88,13 @@ typedef enum {
     STATIC_RSSI_TOF,
     SYSTEM_SCANNER_MODES_NUM
 } SystemScannerMode;
+
+typedef enum {
+    LOG_LEVEL_ERROR = 0,
+    LOG_LEVEL_WARN,
+    LOG_LEVEL_INFO,
+    LOG_LEVEL_DEBUG
+} LogLevel;
 
 // ====================== Data Structures ======================
 
@@ -117,24 +114,21 @@ struct AccuracyData {
 };
 
 struct BufferedData {
-    bool rssiData;
-    int lastN;
-    bool tofData;
-    int lastN;
+   static bool rssiData;
+   static bool tofData;
+   static int lastN;
 };
 
 // ====================== System Setup ======================
 
-typedef struct SystemSetup {
+struct SystemSetup {
     static SystemMode         currentSystemMode;
     static SystemScannerMode  currentSystemScannerMode;
     static SystemBootMode     currentSystemBootMode;
-    static bool               forceSDCardBackup;
-    static bool               validateWhileScanningPhase;
-    static bool               chooseLabelsToScan;
-    static bool               printInfoLogs;
-    static bool               printWarningLogs;
-    static bool               printDebugLogs;
+    static bool               enableBackup;
+    static bool               enableRestore;
+    static bool               enableValidationPhase;
+    static LogLevel           logLevel;
 };
 
 // ====================== Globals ======================
@@ -143,10 +137,9 @@ extern Label        currentLabel;
 extern double       accuracy;
 extern BufferedData bufferedData;
 extern bool         shouldAbort;
-extern bool         forceNextPhase;
+extern bool         reconfigure;
 
 extern bool    reuseFromSD[LABELS_COUNT];
-extern bool    choosenLabels[LABELS_COUNT];
 extern int     accumulatedRSSIs[NUMBER_OF_ANCHORS];
 extern double  accumulatedTOFs[NUMBER_OF_RESPONDERS];
 extern uint8_t responderMacs[NUMBER_OF_RESPONDERS][TOF_NUMBER_OF_MAC_BYTES];
@@ -155,6 +148,7 @@ extern std::vector<RSSIData>  rssiDataSet;
 extern std::vector<TOFData>   tofDataSet;
 
 extern const std::string   anchorSSIDs[NUMBER_OF_ANCHORS];
+extern const std::string   tofSSIDs[NUMBER_OF_RESPONDERS];
 extern const std::string   labels[LABELS_COUNT];
 extern const std::string   systemModes[MODES_NUM];
 extern const std::string   systemScannerModes[SYSTEM_SCANNER_MODES_NUM];
@@ -171,8 +165,9 @@ char readCharFromUser();
 
 int readIntFromUser();
 
-int getChoosenLabelsCount();
-
 char getCharFromUserWithTimeout(int timeoutMs);
 
-#endif // _UTILITIES_H_
+bool isRSSIActive();
+
+bool isTOFActive();
+

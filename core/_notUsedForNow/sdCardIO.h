@@ -34,6 +34,3 @@
 /// @return true if write was successful.
 //bool saveTOFScan(const TOFData &row);
 
-
-
-#endif // SD_CARD_BACKUP_H

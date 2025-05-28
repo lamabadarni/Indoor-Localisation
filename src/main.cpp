@@ -1,180 +1,66 @@
 
-#include "core/utils/utilities.h"
-#include <core/ui/userUI.h>
-#include <core/scanning/scanningPhase.h>
-#include <core/prediction/predictionPhase.h>
-#include <core/validation/validationPhase.h>
-#include <core/ui/verefier.h>
-#include <core/backup/sdCardIO.h>
+#include "../core/utils/platform.h"
+#include "../core/utils/utilities.h"
+#include "../core/ui/userUI.h"
+#include "../core/ui/logger.h"
 
+#include "systemStateHandler/bootHandler.h"
+#include "systemStateHandler/scanningSessionHandler.h"
+#include "systemStateHandler/predectionSessionHandler.h"
+#include "systemStateHandler/fullSessionHandler.h"
 
-void setup() {
-    Serial.begin(115200);
-    delay_ms(10000);
-    
-    Serial.println("=============== System Boot ===============");
-    
-    // Prompt mode and enablements
-    currentSystemMode = promptSystemMode();
-    setupEnablementsFromUser();
+#include "esp_event.h"
+#include "esp_log.h"
 
-    //handleSDAndEnablements();
-    
-    Serial.println("=============== System Ready ===============");
+static void initLogger() {
+    // Set the global log level (applies to all tags unless overridden)
+    esp_log_level_set("*", ESP_LOG_INFO);
 }
 
-void loop() {
-    Serial.println("[MAIN] Starting execution based on selected mode...");
-    switch(currentSystemMode) {
-        case MODE_RSSI_MODEL_DIAGNOSTIC:
-        Serial.println("[MAIN] MODE_RSSI_MODEL_DIAGNOSTIC: Running RSSI diagnostics.");
-        verifyRSSIScanCoverage();
-        break;
-
-        case MODE_TOF_DIAGNOSTIC:
-        Serial.println("[MAIN] MODE_TOF_DIAGNOSTIC: Running TOF diagnostics.");
-        verifyTOFScanCoverage();
-        break;
-
-        case MODE_TRAINING_ONLY:
-        Serial.println("[MAIN] MODE_TRAINING_ONLY: Running scanning phase only.");
-        runScanningPhase();
-        if (Enablements::run_validation_phase) {
-            Serial.println("[MAIN] Validation phase is enabled. Starting validation.");
-            runValidationPhase();
-        }
-        else {
-            Serial.println("[MAIN] Validation phase is disabled. Skipping.");
-        }
-        break;
-
-        case MODE_PREDICTION_ONLY:
-        Serial.println("[MAIN] MODE_PREDICTION_ONLY: Running prediction phase.");
-        runPredictionPhase();
-        break;
-
-        case MODE_FULL_SESSION:
-        Serial.println("[MAIN] MODE_FULL_SESSION: Running scan, prediction, and optional validation.");
-        runScanningPhase();
-        if (Enablements::run_validation_phase) {
-            Serial.println("[MAIN] Validation phase is enabled. Starting validation.");
-            runValidationPhase();
-        }
-        else {
-            Serial.println("[MAIN] Validation phase is disabled. Skipping.");
-        }
-        runPredictionPhase();
-        break;
-
-        default:
-        Serial.println("[MAIN] Unknown mode. Restart device.");
-        break;
-    }
+static void handleSoftExit() {
     
-    Serial.println("[MAIN] Session complete. Enter 'r' to restart or reset device.");
-    while (true);
 }
 
-void handleSDAndEnablements() {
 
-  switch (currentSystemMode) {
-    case MODE_PREDICTION_ONLY:
-      handlePredictionOnlySDLogic();
-      break;
-    case MODE_FULL_SESSION:
-    case MODE_TRAINING_ONLY:
-      handleTrainingOrFullSDLogic();
-      break;
-    default:
-      break;  // No SD handling needed for diagnostic modes
-  }
-}
+extern "C" void app_main() {
+    initLogger();  // Replace Serial.begin() for ESP-IDF logging
+    delay_ms(10000);  // Optional startup delay
 
-void handlePredictionOnlySDLogic() {
-    int retries = 0;
-    bool sdAvailable = false;
+    while (true) {
+        runUserSystemSetup();  // Prompts user for system mode and settings
 
-    while (!sdAvailable && retries < MAX_RETRIES_TO_INIT_SD_CARD) {
-        sdAvailable = initSDCard();
-        if (sdAvailable) break;
+        switch (SystemSetup::currentSystemMode) {
+            case MODE_SYSTEM_BOOT:
+                handleSystemBoot();
+                break;
 
-        Serial.println("[SD] Required SD card not found.");
-        if (!promptUserSDCardInitializationApprove()) {
-            Serial.println("[SD] Aborting system - cannot predict without SD card.");
-            while (true);
+            case MODE_SCANNING_SESSION:
+                handleScanningSession();
+                break;
+
+            case MODE_PREDICTION_SESSION:
+                handlePredictionSession();
+                break;
+
+            case MODE_FULL_SESSION:
+                handleFullSession();
+                break;
+
+            default:
+                LOG_ERROR("MAIN", "Unknown system mode.");
+                break;
         }
-        retries++;
-        delay_ms(150);
-    }
 
-    if (!loadLocationDataset()) {
-        Serial.println("[SD] FATAL: Failed to load dataset from SD.");
-        while (true);
-    }
 
-    ///check that all location are valid
-    if (!isBackupDataSetRelevant()) {
-        Serial.println("[SD] FATAL: Backup data is invalid for prediction.");
-        while (true);
-    }
+        if(reconfigure) break;
+        if(shouldAbort) handleSoftExit();
 
-    Serial.println("[SD] Prediction mode will use existing backup dataset.");
-}
-
-void handleTrainingOrFullSDLogic() {
-    if (!Enablements::enable_SD_Card_backup) return;
-
-    int retries = 0;
-    bool sdAvailable = false;
-
-    while (!sdAvailable && retries < MAX_RETRIES_TO_INIT_SD_CARD) {
-        sdAvailable = initSDCard();
-        if (sdAvailable) break;
-
-        Serial.println("[SD] Backup is enabled, but SD card not detected.");
-        if (!promptUserSDCardInitializationApprove()) {
-            Serial.println("[SD] Proceeding without backup.");
-            return;
+        LOG_INFO("MAIN", "Would you like to run another session?");
+        LOG_INFO("MAIN", "(y - yes | n - no)");
+        char again = readCharFromUser();
+        if (again != 'y' && again != 'Y') {
+            LOG_INFO("MAIN", "Session ended. Goodbye.");
+            break;
         }
-        retries++;
-
-        delay_ms(150);
-    }
-
-    if (!sdAvailable) {
-        Serial.println("[SD] SD unavailable after retries. Backup disabled.");
-        return;
-    }
-
-    string CurrDir = getSDBaseDir();
-    if (!SD.exists(CurrDir)) return;
-
-    if (loadLocationDataset()) {
-        Serial.println("[SD] FATAL: Failed to load dataset from SD.");
-        return;
-    }
-
-    if (isBackupDataSetRelevant()) {
-        Serial.println("[SD] Found valid backup data.");
-        if (promptUserAccuracyApprove()) {
-            if (updateCSV()) {
-                Serial.println("[SD] Using backup dataset.");
-                return;
-            } else {
-                Serial.println("[SD] updateCSV failed. Proceeding to rescan.");
-            }
-        } else {
-            Serial.println("[SD] User declined reuse.");
-        }
-    } else {
-        Serial.println("[SD] Backup not sufficient for reuse.");
-    }
-
-    if (resetStorage()) {
-        Serial.println("[SD] Initialized new backup folder.");
-        rssiDataSet.clear();
-        tofDataSet.clear();
-    } else {
-        Serial.println("[SD] Failed to create new backup storage.");
     }
 }
