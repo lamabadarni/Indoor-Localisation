@@ -3,20 +3,14 @@
 #include "core/utils/utilities.h"  
 #include "core/ui/logger.h"
 #include "tofScanner.h"
-#include "data.h"
-#include "predictionPhase.h"
+#include "core/dataManaging/data.h"
+#include "core/prediction/predictionPhase.h"
 #include "esp_wifi.h"
 
 static bool registered = false;
 static bool inProcess  = false;
-
 static bool scanComplete = false;
 
-static void resetTOFScanBuffer() {
-    for(int i = 0; i < NUMBER_OF_RESPONDERS; i++) {
-        accumulatedTOFs[i] = TOF_DEFAULT_DISTANCE_CM;
-    }
-}
 
 //Handler function used as call back function when responder sends back to initiator
 static void tofReportHandler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data) {
@@ -65,6 +59,8 @@ void performTOFScan() {
         
         TOFData scanData = createSingleTOFScan();
         saveData(scanData);
+        BufferedData::scanner = TOF_;
+        BufferedData::lastN++;
         
         LOG_DEBUG("TOF", "Scan %d for label %s", scan + 1, labels[currentLabel]);
 
@@ -75,6 +71,8 @@ void performTOFScan() {
     esp_event_handler_unregister(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler);
     registered = false;
     inProcess  = false;
+
+    doneCollectingData();
 }
 
 TOFData createSingleTOFScan() {
@@ -122,7 +120,7 @@ TOFData createSingleTOFScan() {
     }
 }
 
-
+/*
 int computeTOFPredictionMatches() {
     int matches = 0;
 
@@ -149,3 +147,5 @@ int computeTOFPredictionMatches() {
     
     return matches;
 }
+
+*/

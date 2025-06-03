@@ -1,15 +1,6 @@
-/**
- * @file verefier.cpp
- * @brief Implementation of scanning functions for verifying RSSI and TOF anchor coverage.
- */
-
-#include "../utils/utilities.h"
-#include "../ui/userUI.h"
-#include "../ui/verifier.h"
-#include "../ui/logger.h"
-#include "../scanning/rssiScanner.h"
-#include "../scanning/tofScanner.h"
-#include "../utils/platform.h"
+#include "verifier.h"
+#include "core/scanning/rssiScanner.h"
+#include "core/scanning/tofScanner.h"
 
 static void printStartLog() {
     LOG_INFO("COVERAGE", "------------------------------------------------------------");
@@ -35,9 +26,11 @@ bool interactiveScanCoverage() {
     if(!startCalled) {
         printStartLog();
         startCalled = true;
+        delay_ms(USER_PROMPTION_DELAY);
     }
     while (true) {
         promptLocationLabel();
+        delay_ms(USER_PROMPTION_DELAY);
         switch (currentSystemMode) {
             case MODE_TOF_DIAGNOSTIC:
             LOG_INFO("VERIFY", "Verifying TOF scan coverage");
@@ -48,17 +41,19 @@ bool interactiveScanCoverage() {
             performRSSIScanCoverage();
         }
 
-        if (promptAbortForImprovementAfterCoverage()) {
+        if (promptUserAbortToImproveEnvironment()) {
             LOG_WARN("VERIFY", "Aborting coverage diagnostic for improvement.");
             shouldAbort = true;
             return false;
         }
 
-        if (!promptVerifyScanCoverageAtAnotherLabel()) {
-            break;
+        promptUserAbortOrContinue();
+        
+        if(shouldAbort) {
+            return false;
         }
 
-        promptAbotOrContinue();
+        delay_ms(USER_PROMPTION_DELAY);
     }
 
     return true;

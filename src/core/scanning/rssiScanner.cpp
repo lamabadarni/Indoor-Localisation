@@ -1,16 +1,12 @@
 #include "rssiScanner.h"
-#include "../utils/platform.h"
-#include "../utils/utilities.h"
-#include "../prediction/predictionPhase.h"
-#include "../dataManaging/data.h"
-#include "../ui/logger.h"
+#include "core/utils/platform.h"
+#include "core/utils/utilities.h"
+#include "core/prediction/predictionPhase.h"
+#include "core/dataManaging/data.h"
+#include "core/ui/logger.h"
 #include "esp_wifi.h"
+#include "core/dataManaging/data.h"
 
-static void resetRssiBuffer() {
-    for(int i = 0; i < NUMBER_OF_ANCHORS; i++) {
-        accumulatedRSSIs[i] = RSSI_DEFAULT_VALUE;
-    }
-}
 
 void performRSSIScan() {
     //start scanning - make 15 scan, each scan contains 3 samples and calculate EMA
@@ -19,12 +15,16 @@ void performRSSIScan() {
         
         RSSIData scanData = createSingleRSSIScan();
         saveData(scanData);
+        BufferedData::scanner = STATICRSSI;
+        BufferedData::lastN++;
         
         LOG_DEBUG("RSSI", "Scan %d for label %s", scan + 1, labels[currentLabel]);
         for (int i = 0; i < NUMBER_OF_ANCHORS; ++i) {
             LOG_DEBUG("RSSI", "SSID[%s], RSSI[%d] = %d", anchorSSIDs[i], i, scanData.RSSIs[i]);
         }
     }
+
+    doneCollectingData();
 }
 
 RSSIData createSingleRSSIScan() {
@@ -58,8 +58,11 @@ RSSIData createSingleRSSIScan() {
     for (int i = 0; i < NUMBER_OF_ANCHORS; i++) {
         scanData.RSSIs[i] = accumulatedRSSIs[i];
     }
+
+    return scanData;
 }
 
+/*
 int computeRSSIPredictionMatches() {
 
     if(rssiDataSet.empty()) return 0;
@@ -72,7 +75,9 @@ int computeRSSIPredictionMatches() {
         if(predictedLabel == currentLabel) {
             matches++;
             //Add each scan to scan data if the predection succeeded
-            saveToBuffer();
+            saveData(scanData);
+            BufferedData::scanner = STATICRSSI;
+            BufferedData::lastN++;
         }
         else {
             mismatch[predictedLabel] = true;
@@ -82,6 +87,8 @@ int computeRSSIPredictionMatches() {
             sampleToPredict + 1, labels[predictedLabel], labels[currentLabel]);
          
     } 
+
+    doneCollectingData();
 
     if(matches == VALIDATION_MAX_ATTEMPTS) {
         LOG_INFO("RSSI", "All predictions matched expected %s.", labels[currentLabel]);
@@ -98,3 +105,5 @@ int computeRSSIPredictionMatches() {
 
     return matches;
 }
+
+*/

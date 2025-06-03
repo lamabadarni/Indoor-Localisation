@@ -10,9 +10,8 @@ void runUserSystemSetup(); // <- wrapper for logger + mode + enablements
 void promptUserLocationLabel();
 
 // ========== Scan Feedback ==========
-bool promptUserApproveScanAccuracy();
 bool promptUserRescanAfterInvalidation();
-bool promptUserRetryValidation();
+bool promptUserRetryPrediction();
 bool promptUserCoverageSufficient();
 bool promptUserProceedToNextLabel();
 bool promptUserAbortToImproveEnvironment();
@@ -25,6 +24,8 @@ Label promptUserChooseBetweenPredictions(Label rssi, Label tof);
 // ========== Reuse or Abort Prompts ==========
 char promptUserReuseDecision();
 char promptUserRunCoverageDiagnostic();
-void promptUserAbortOrContinue(bool allowAbort);
+void promptUserAbortOrContinue();
+
+bool promptUserForClearingDataAfterManyPredectionFailure();
 
 #endif // USER_UI_H

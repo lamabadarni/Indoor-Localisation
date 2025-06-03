@@ -19,7 +19,7 @@ void runScanningPhase() {
         delay_ms(DELAY_BETWEEN_PHASES);
 
         promptUserLocationLabel();  // Sets currentLabel
-        if (reuseFromSD[currentLabel]) {
+        if (reuseFromMemory[currentLabel]) {
             LOG_INFO("SCAN", "Backup data available for label: %s", labels[currentLabel].c_str());
             char input = promptUserReuseDecision();
             if (input == 'N' || input == 'n') continue;
@@ -50,7 +50,7 @@ bool startLabelScanningSession() {
 
     if (!dontAskAgain) {
         char input = promptUserRunCoverageDiagnostic();
-        if (input == 'Y' || input == 'y') scanStaticRSSI();
+        if (input == 'Y' || input == 'y') performRSSIScan();
         if (input == 'D' || input == 'd') dontAskAgain = true;
     }
 
@@ -60,7 +60,9 @@ bool startLabelScanningSession() {
         collectMeasurements();
 
         LOG_INFO("SCAN", "Validating scan accuracy...");
-        validScan = validateScanAccuracy();
+        startLabelValidationSession();
+
+        bool validScan = (getAccuracy() > VALIDATION_PASS_THRESHOLD);
 
         if (validScan) {
             LOG_INFO("SCAN", "Scan successful for label: %s", labels[currentLabel].c_str());
@@ -104,16 +106,62 @@ void collectMeasurements() {
     }
 }
 
-void scanStaticRSSI() {
-    LOG_INFO("SCAN", "Running static RSSI scan coverage check...");
-    performRSSIScan();
+void createSingleScan() {
+    switch (SystemSetup::currentSystemScannerMode) {
+        case STATIC_RSSI:
+            LOG_INFO("SCAN", "System Mode: STATIC_RSSI");
+            createSingleRSSIScan();
+            break;
+
+        case TOF:
+            LOG_INFO("SCAN", "System Mode: TOF");
+            createSingleTOFScan();
+            break;
+
+        case STATIC_RSSI_TOF:
+            LOG_INFO("SCAN", "System Mode: STATIC_RSSI_TOF");
+            createSingleRSSIScan();
+            createSingleTOFScan();
+            break;
+
+        default:
+            LOG_WARN("SCAN", "Unsupported system state: %d", SystemSetup::currentSystemScannerMode);
+            break;
+    }
 }
 
-void scanTOF() {
-    LOG_INFO("SCAN", "Running TOF scan...");
-    performTOFScan();
+void rescan() {
+
+    LOG_INFO("SCAN", "Rescanning after failed invalidation for label: %s", labels[currentLabel].c_str());
+
+    //ward :: here , should we delete the meas that failed?
+
+    collectMeasurements();
+
+    LOG_INFO("SCAN", "Done rescanning after failed invalidation for label: %s", labels[currentLabel].c_str());
+
+    return;
 }
 
-void scanDynamicRSSI() {
-    LOG_INFO("SCAN", "Dynamic RSSI scanning not implemented yet.");
+/*
+double computeScanAccuracy() {
+    int matchesRSSI = -1;
+    int matchesTOF = -1;
+    double accuracy = 0;
+
+    switch (SystemSetup::currentSystemScannerMode) {
+        case STATIC_RSSI:
+            matchesRSSI = computeRSSIPredictionMatches();
+            accuracy    = matchesRSSI / VALIDATION_MAX_ATTEMPTS;
+            break;
+        case TOF :
+            matchesTOF = computeTOFPredictionMatches();
+            accuracy   = matchesTOF / VALIDATION_MAX_ATTEMPTS;
+        case STATIC_RSSI_TOF:
+            matchesRSSI = computeRSSIPredictionMatches();
+            matchesTOF  = computeTOFPredictionMatches();
+            accuracy    = (matchesRSSI + matchesTOF) / VALIDATION_MAX_ATTEMPTS;
+            break;
+    }
 }
+*/

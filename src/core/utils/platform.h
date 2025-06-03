@@ -1,16 +1,21 @@
 #pragma once
+
 #ifdef __cplusplus
 #include <string>
 #include <cstring>
 #include <vector>
 #include <cstdarg>
 #include <cstdio>
+#include <cstdio> 
 #endif
 #include <stdio.h>
 #include <sys/select.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <math.h>
-
+#include <errno.h>
+#include <dirent.h>
+#include <fcntl.h>
 
 #ifdef ESP_PLATFORM
 #include "freertos/FreeRTOS.h"

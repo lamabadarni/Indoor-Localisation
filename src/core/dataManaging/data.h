@@ -1,4 +1,9 @@
-#include "../utils/utilities.h"
+#pragma once
+
+#include "core/utils/platform.h"
+#include "core/utils/utilities.h"
+#include "core/ui/logger.h"
+#include "core/ui/userUI.h" 
 
 /**
  * @brief buffers the RSSI scan data for later saving.
@@ -37,3 +42,5 @@ bool filterNonValidData(const bool validMap[LABELS_COUNT]);
  * @return true if the reset was successful, false otherwise.
  */
 bool resetCSV(void);
+
+void doneCollectingData();

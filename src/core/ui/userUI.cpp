@@ -4,23 +4,15 @@
 #include "userUI.h"
 
 // ========== SYSTEM SETUP ==========
-static LogLevel promptUserLoggerConfiguration() {
+static void promptUserLoggerConfiguration() {
     delay_ms(USER_PROMPTION_DELAY);
     LOG_INFO("SETUP", "[USER] > Choose log level ");
-    LOG_INFO("SETUP", "E - ERROR logs ");
-    LOG_INFO("SETUP", "W - ERROR and WARN log ");
     LOG_INFO("SETUP", "I - ERROR , WARN and INFO logs ");
     LOG_INFO("SETUP", "D - ERROR , WARN , INFO and DEBUG logs ");
 
     char choosen = readCharFromUser();
     delay_ms(USER_PROMPTION_DELAY);
-    if(choosen == 'e' || choosen == 'E') {
-        SystemSetup::logLevel = LogLevel::LOG_LEVEL_ERROR;
-    }
-    else if(choosen == 'w' || choosen == 'W') {
-        SystemSetup::logLevel = LogLevel::LOG_LEVEL_WARN;
-    }
-    else if(choosen == 'i' || choosen == 'I') {
+    if(choosen == 'i' || choosen == 'I') {
         SystemSetup::logLevel = LogLevel::LOG_LEVEL_INFO;
     }
     else if(choosen == 'd' || choosen == 'D') {
@@ -77,9 +69,15 @@ void runUserSystemSetup() {
     }
 }
 
+void promptUserShowDebugLogs() {
+    LOG_INFO("FEEDBACK", "[USER] > Show debug logs during rescan? (y/n): ");
+    char c = readCharFromUser();
+    SystemSetup::logLevel = (c == 'y' || c == 'Y') ? LogLevel::LOG_LEVEL_DEBUG : SystemSetup::logLevel;
+}
+
 // ========== LABEL ==========
 void promptUserLocationLabel() {
-    LOG_INFO("LABEL", "[USER] > Select label by index:");
+    LOG_INFO("LABEL", "[USER] > Select label by index: ");
     for (int i = 0; i < LABELS_COUNT; ++i) {
         LOG_INFO("LABEL", "  %d - %s", i + 1, labels[i].c_str());
     }
@@ -88,47 +86,54 @@ void promptUserLocationLabel() {
     currentLabel = static_cast<Label>(sel - 1);
 }
 
-// ========== FEEDBACK ==========
-bool promptUserApproveScanAccuracy() {
-    LOG_INFO("FEEDBACK", "[USER] > Approve scan accuracy? (y/n): ");
-    char c = readCharFromUser();
-    return c == 'y' || c == 'Y';
-}
-
-bool promptUserRescanAfterInvalidation() {
-    LOG_INFO("FEEDBACK", "[USER] > Rescan after failed validation? (y/n): ");
-    char c = readCharFromUser();
-    return c == 'y' || c == 'Y';
-}
-
-bool promptUserRetryValidation() {
-    LOG_INFO("FEEDBACK", "[USER] > Retry prediction? (y/n): ");
-    char c = readCharFromUser();
-    return c == 'y' || c == 'Y';
-}
-
-bool promptUserCoverageSufficient() {
-    LOG_INFO("FEEDBACK", "[USER] > Is coverage sufficient? (y/n): ");
-    char c = readCharFromUser();
-    return c == 'y' || c == 'Y';
+void promptLabelsValidToPredection() {
+    LOG_INFO("LABEL", "[USER] Labels valid for predection: ");
+    for (int i = 0; i < LABELS_COUNT; ++i) {
+        LOG_INFO("LABEL", "  %d - %s", i + 1, labels[i].c_str());
+    }
 }
 
 bool promptUserProceedToNextLabel() {
-    LOG_INFO("FEEDBACK", "[USER] > Proceed to next label? (y/n): ");
+    LOG_INFO("LABEL", "[USER] > Proceed to another label? (y/n): ");
     char c = readCharFromUser();
-    return c == 'y' || c == 'Y';
+    if(c == 'y' || c == 'Y') return true;
+    else promptUserAbortOrContinue();
+    return shouldAbort ? false : true;
 }
+
+// ==========  COVERAGE ==========
 
 bool promptUserAbortToImproveEnvironment() {
-    LOG_INFO("FEEDBACK", "[USER] > Abort to improve environment? (y/n): ");
+    LOG_INFO("COVERAGE", "[USER] > Abort to improve environment? (y/n): ");
     char c = readCharFromUser();
     return c == 'y' || c == 'Y';
 }
 
-void promptUserShowDebugLogs() {
-    LOG_INFO("FEEDBACK", "[USER] > Show debug logs during rescan? (y/n): ");
+// ==========  BACKUP  ==========
+
+char promptUserReuseDecision() {
+    LOG_INFO("BACKUP", "[USER] > Reuse saved scan?");
+    LOG_INFO("UI", "Y - Yes, reuse");
+    LOG_INFO("UI", "V - Validate first");
+    LOG_INFO("UI", "N - No, rescan");
+    return readCharFromUser();
+}
+
+// ========== SCANNING ==========
+char promptUserRunCoverageDiagnostic() {
+    LOG_INFO("SCAN", "[USER] > Run scan coverage diagnostic before scanning?");
+    LOG_INFO("UI", "Y - Yes");
+    LOG_INFO("UI", "N - No");
+    LOG_INFO("UI", "D - Don't ask again");
+    return readCharFromUser();
+}
+
+// ========== Validation ==========
+
+bool promptUserRescanAfterInvalidation() {
+    LOG_INFO("VALIDATE", "[USER] > Rescan after failed validation? (y/n): ");
     char c = readCharFromUser();
-    SystemSetup::logLevel = (c == 'y' || c == 'Y') ? LogLevel::LOG_LEVEL_DEBUG : SystemSetup::logLevel;
+    return c == 'y' || c == 'Y';
 }
 
 // ========== PREDICTION ==========
@@ -142,28 +147,29 @@ Label promptUserChooseBetweenPredictions(Label rssi, Label tof) {
     LOG_INFO("PREDICT", "[USER] > Choose between predictions:");
     LOG_INFO("PREDICT", "1 - RSSI (%s)", labels[rssi].c_str());
     LOG_INFO("PREDICT", "2 - TOF  (%s)", labels[tof].c_str());
+    LOG_INFO("PREDICT", "X - Both predicted labels are invalid");
     int sel = readIntFromUser();
-    return (sel == 2) ? tof : rssi;
+    if(sel == 1 ) return rssi;
+    if(sel == 2 ) return tof;
+    return LABELS_COUNT;
 }
 
-// ========== REUSE / ABORT ==========
-char promptUserReuseDecision() {
-    LOG_INFO("UI", "[USER] > Reuse saved scan?");
-    LOG_INFO("UI", "Y - Yes, reuse");
-    LOG_INFO("UI", "V - Validate again");
-    LOG_INFO("UI", "N - No, rescan");
-    return readCharFromUser();
+bool promptUserRetryPrediction() {
+    LOG_INFO("PREDICT", "[USER] > Retry prediction? (y/n): ");
+    char c = readCharFromUser();
+    return c == 'y' || c == 'Y';
 }
 
-char promptUserRunCoverageDiagnostic() {
-    LOG_INFO("UI", "[USER] > Run RSSI coverage diagnostic?");
-    LOG_INFO("UI", "Y - Yes");
-    LOG_INFO("UI", "N - No");
-    LOG_INFO("UI", "D - Don't ask again");
-    return readCharFromUser();
+// Lama :: needs implementation
+bool promptUserForClearingDataAfterManyPredectionFailure() {
+    return true;
 }
 
-void promptUserAbortOrContinue(bool allowAbort) {
+
+// ==========  ABORT ==========
+
+
+void promptUserAbortOrContinue() {
     LOG_INFO("SYSTEM", "[USER] > Press 'c' to continue...");
 
     char input = getCharFromUserWithTimeout(10000);
@@ -180,4 +186,7 @@ void promptUserAbortOrContinue(bool allowAbort) {
         LOG_INFO("SYSTEM", "User aborted full session.");
         shouldAbort = true;
     }
+
+    LOG_INFO("SYSTEM", "No input detected. Saving data and returning to main menu");
+
 }

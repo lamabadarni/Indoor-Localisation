@@ -1,5 +1,9 @@
-#include "../utils/platform.h"
-#include "../utils/utilities.h"
+#pragma once 
+
+#include "core/utils/platform.h"
+#include "core/utils/utilities.h"
+#include "core/ui/logger.h"
+#include "core/ui/userUI.h"
 
 static constexpr char META_FILENAME[]        = "meta_";
 static constexpr char RSSI_FILENAME[]        = "rssi_scan_data_";

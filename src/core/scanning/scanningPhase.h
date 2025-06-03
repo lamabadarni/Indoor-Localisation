@@ -24,21 +24,14 @@ bool startLabelScanningSession();
  */
 void collectMeasurements();
 
-/**
- * @brief Performs static RSSI scanning from fixed anchors.
- */
-void scanStaticRSSI();
 
-/**
- * @brief Scans additional RSSI sources (future: dynamic RSSI).
- */
-void scanDynamicRSSI();
-
-
-/**
- * @brief Scans Time-of-Flight (TOF) distances from responders.
- */
 void scanTOF();
+
+void rescan();
+
+//double computeScanAccuracy();
+
+void createSingleScan();
 
 
 #endif //IOT_INDOOR_LOCALISATION_SCANNING_H

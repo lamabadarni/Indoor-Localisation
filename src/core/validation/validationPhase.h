@@ -1,6 +1,11 @@
 #ifndef IOT_INDOOR_LOCALISATION_VALIDATION_PHASE_H
 #define IOT_INDOOR_LOCALISATION_VALIDATION_PHASE_H 
 
+#include "core/utils/platform.h"
+#include "core/utils/utilities.h"
+#include "core/ui/logger.h"
+#include "core/ui/userUI.h" 
+
 /**
  * @brief Runs the interactive validation phase for all defined labels.
  *

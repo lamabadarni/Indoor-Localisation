@@ -1,9 +1,10 @@
-
- #include <../core/utils/utilities.h>  
-
 #ifndef _IOT_INDOOR_LOCALISATION_PREDICTION_PHASE_H_
 #define _IOT_INDOOR_LOCALISATION_PREDICTION_PHASE_H_
 
+#include "core/utils/platform.h"
+#include "core/utils/utilities.h"
+#include "core/ui/logger.h"
+#include "core/ui/userUI.h"  
 
 /**
  * @brief this function predicts the current label based on RSSI and ToF values accumualted in real time.
@@ -21,6 +22,16 @@ Label rssiPredict();
     * @return: predicted location
 */
 Label tofPredict();
+
+Label predict();
+
+bool startLabelPredectionSession();
+
+bool clearDataAfterPredectionFailure();
+
+Label createSamplePredict();
+
+void printPredictionSummary();
 
 
 #endif // IOT_INDOOR_LOCALISATION_PREDICTION_PHASE_H

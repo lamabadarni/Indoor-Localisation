@@ -2,7 +2,10 @@
 #ifndef VEREFIER_H
 #define VEREFIER_H
 
-#include <../utils/utilities.h>  
+#include "core/utils/platform.h"
+#include "core/utils/utilities.h"
+#include "core/ui/logger.h"
+#include "core/ui/userUI.h"
 
 typedef struct {
     int    seen    = 0;

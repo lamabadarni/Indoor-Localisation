@@ -33,6 +33,6 @@ void performRSSIScan();
  *        Adds successful prediction samples to the dataset.
  * @return Number of correct predictions.
  */
-int computeRSSIPredictionMatches();
+//int computeRSSIPredictionMatches();
 
 #endif // RSSI_SCANNER_H

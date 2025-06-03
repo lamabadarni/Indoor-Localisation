@@ -15,8 +15,9 @@ SystemScannerMode  SystemSetup::currentSystemScannerMode = SYSTEM_SCANNER_MODES_
 SystemBootMode     SystemSetup::currentSystemBootMode    = SYSTEM_BOOT_MODES_NUM; 
 
 // == Features ==
-bool SystemSetup::enableBackup   = false;
-bool SystemSetup::enableRestore  = false;
+bool SystemSetup::enableBackup          = false;
+bool SystemSetup::enableRestore         = false;
+bool SystemSetup::enableValidationPhase = false;
 
 // == Logging ==
 LogLevel SystemSetup::logLevel   = LOG_LEVEL_ERROR;
@@ -24,10 +25,25 @@ LogLevel SystemSetup::logLevel   = LOG_LEVEL_ERROR;
 
 // ======================   Globals    ======================
 
-bool    reuseFromSD[LABELS_COUNT]  = {false};
-double  accuracy                   = -1;
-bool    shouldAbort                = false;
-bool    reconfigure                = true;
+Label  currentLabel = LABELS_COUNT;
+bool   shouldAbort  = false;
+bool   reconfigure  = true;
+
+bool   reuseFromMemory[LABELS_COUNT] = {0};
+bool   validForPredection[LABELS_COUNT];
+double tofAccuracy[LABELS_COUNT] = {0};
+double rssiAccuracy[LABELS_COUNT] = {0};
+
+ScannerFlag BufferedData::scanner  = NONE;
+int         BufferedData::lastN    = 0;
+
+std::vector<RSSIData>  rssiDataSet = {};
+std::vector<TOFData>   tofDataSet  = {};
+
+double  accumulatedRSSIs[NUMBER_OF_ANCHORS];
+double  accumlatedTOFS[NUMBER_OF_RESPONDERS];
+uint8_t responderMacs[NUMBER_OF_RESPONDERS][TOF_NUMBER_OF_MAC_BYTES];
+
 
 // ======================  CONST Globals    ======================
 
@@ -41,6 +57,13 @@ const std::string anchorSSIDs[NUMBER_OF_ANCHORS] = {
     "Lobby",
     "Balcony",
     "Offices"
+};
+
+const std::string tofSSIDs[NUMBER_OF_ANCHORS] = {
+    "RESP1",
+    "RESP2",
+    "RESP3",
+    "RESP4"
 };
 
 const std::string labels[LABELS_COUNT] = {
@@ -62,17 +85,17 @@ const std::string labels[LABELS_COUNT] = {
     "BALCONY_ENTRANCE"
 };
 
-const std::string systemStates[SYSTEM_SCANNER_MODES_NUM] = {
-    "STATIC_RSSI",
-    "TOF",
-    "STATIC_RSSI_TOF"
-};
-
 const std::string systemModes[MODES_NUM] = {
     "MODE_SYSTEM_BOOT",
     "MODE_SCANNING_SESSION",
     "MODE_PREDICTION_SESSION",
     "MODE_FULL_SESSION"
+};
+
+const std::string systemScannerModes[SYSTEM_SCANNER_MODES_NUM] {
+    "STATIC_RSSI",
+    "TOF",
+    "STATIC_RSSI_TOF"
 };
 
 const std::string systemBootModes[SYSTEM_BOOT_MODES_NUM] {
@@ -82,11 +105,12 @@ const std::string systemBootModes[SYSTEM_BOOT_MODES_NUM] {
     "MODE_SD_CARD_TEST"
 };
 
-const std::string systemScannerModes[SYSTEM_SCANNER_MODES_NUM] {
+const std::string systemStates[SYSTEM_SCANNER_MODES_NUM] = {
     "STATIC_RSSI",
     "TOF",
     "STATIC_RSSI_TOF"
 };
+
 
 // ====================== Utility Functions ======================
 
@@ -127,10 +151,27 @@ char getCharFromUserWithTimeout(int timeoutMs) {
     return '\0';  // timeout or no input
 }
 
-bool isRSSIActive() {
-    return SystemScannerMode::STATIC_RSSI || SystemScannerMode::STATIC_RSSI_TOF ;
+void resetRssiBuffer() {
+    for(int i = 0; i < NUMBER_OF_ANCHORS; i++) {
+        accumulatedRSSIs[i] = RSSI_DEFAULT_VALUE;
+    }
 }
 
-bool isTOFActive() {
-    return SystemScannerMode::TOF || SystemScannerMode::STATIC_RSSI_TOF ;
+void resetTOFScanBuffer() {
+    for(int i = 0; i < NUMBER_OF_RESPONDERS; i++) {
+        accumulatedTOFs[i] = TOF_DEFAULT_DISTANCE_CM;
+    }
+}
+
+void setValidForPredection() {
+    for (int i = 0; i < LABELS_COUNT; i++) {
+        validForPredection[i] = true;
+    }
+}
+
+float getAccuracy() {
+    if (BufferedData::scanner == STATICRSSI) return rssiAccuracy[currentLabel];
+    if (BufferedData::scanner == TOF_)       return tofAccuracy[currentLabel];
+    if (BufferedData::scanner == BOTH)       return (rssiAccuracy[currentLabel] + tofAccuracy[currentLabel]) / 2.0;
+    return 0.0;
 }

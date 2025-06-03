@@ -6,6 +6,6 @@ void performTOFScan();
 
 TOFData createSingleTOFScan();
 
-int computeTOFPredictionMatches();
+//int computeTOFPredictionMatches();
 
 #endif // TOF_SCANNER_H
