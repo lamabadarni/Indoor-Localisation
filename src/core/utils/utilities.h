@@ -34,7 +34,7 @@
 #define VALIDATION_PASS_THRESHOLD    (0.6)
 
 // == Predection ==
-#define ALPHA                        (0.7f)
+#define ALPHA                        (0.7)
 #define K_RSSI                       (4) 
 #define K_TOF                        (2)
 #define MIN_VALID_DATA_SET_SIZE      (K_RSSI * 10) 
