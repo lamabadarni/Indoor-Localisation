@@ -27,6 +27,10 @@ extern "C" void app_main() {
     delay_ms(10000);  // Optional startup delay
 
     while (true) {
+        
+        reconfigure = false;
+        shouldAbort = false;
+
         runUserSystemSetup();  // Prompts user for system mode and settings
 
         switch (SystemSetup::currentSystemMode) {
