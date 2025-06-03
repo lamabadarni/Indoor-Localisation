@@ -15,9 +15,6 @@ void runPredictionPhase(void) {
     LOG_INFO("PREDICT", " ");
     LOG_INFO("PREDICT", "=============== Prediction Phase Started ===============");
 
-    if(!SystemSetup::enableValidationPhase) {
-        setValidForPredection();
-    }
 
     if (SystemSetup::currentSystemMode == MODES_NUM) {
         LOG_ERROR("PREDICT", "System state is invalid. Cannot proceed.");
@@ -26,34 +23,35 @@ void runPredictionPhase(void) {
 
     int invalidLabels = 0;
 
-    while ( !shouldAbort ) {
-
+    while (!shouldAbort) {
         if(invalidLabels > PREDICTION_MAX_LABEL_FAILURE) {
             LOG_INFO("PREDICT", "Encountered failure at %d different labels", PREDICTION_MAX_LABEL_FAILURE);
             bool clearData = promptUserForClearingDataAfterManyPredectionFailure();
             clearDataAfterPredectionFailure();
+            break;
         }
 
         LOG_INFO("PREDICT", "[PREDICT] >> Press Enter to start predicting...");
+
         readCharFromUser();
 
         bool retry = true;
         int count  = 1;
 
-        while(retry) {
-
-            bool success = startLabelScanningSession();
+        while (retry) {
+            bool success = startLabelPredectionSession();
 
             if(success) {
                  LOG_INFO("PREDICT", "Prediction Label Success :)");
                 break;
             }
             else {
-                
                 if(count > PREDICTION_MAX_RETRIES) {
                     LOG_INFO("PREDICT", "Predection failed %d times", count);
                     LOG_INFO("PREDICT", "Move to another label to check overall data validity ...");
+
                     invalidLabels++;
+
                     break;
                 }
                 else {
@@ -69,6 +67,7 @@ void runPredictionPhase(void) {
             
             if(retry) {
                 LOG_INFO("PREDICT", "Retrying label predection after failure ...");
+
                 count++;
             }
             else {
@@ -77,7 +76,9 @@ void runPredictionPhase(void) {
         }
 
         bool cont = promptUserProceedToNextLabel();
+
         LOG_INFO("PREDICT", "Move to next label to start predecting ...");
+
         doneCollectingData();
         delay_ms(USER_PROMPTION_DELAY);
     }
@@ -103,7 +104,6 @@ bool startLabelPredectionSession() {
 
     Label predictLabel = predict();
 
-    //user didnt approve predection
     if((int)predict == LABELS_COUNT) {
        LOG_INFO("PREDICT", "Prediction failed ..,");
        if(flag == NONE) {
@@ -192,10 +192,10 @@ Label predict() {
 
 Label createSamplePredict() {
     Label samples[PREDICTION_SAMPLES];
-    int c = 0;
+    int c = 1;
     for(int i = 0; i < PREDICTION_SAMPLES; i++) {
         samples[i] = predict_();
-        if(samples[i] == samples[i-1]) c++;
+        if(i > 0 && samples[i] == samples[i-1]) c++;
         if(c > PREDICTION_SAMPLES_THRESHOLD) return samples[i];
     }
 

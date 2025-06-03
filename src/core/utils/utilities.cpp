@@ -116,7 +116,7 @@ const std::string systemStates[SYSTEM_SCANNER_MODES_NUM] = {
 
 int applyEMA(int prevRSSI, int newRSSI) {
     if (prevRSSI == RSSI_DEFAULT_VALUE) return newRSSI;
-    return (int)(ALPHA * prevRSSI + (1.0f - ALPHA) * newRSSI);
+    return (int)(ALPHA * prevRSSI + (1.0 - ALPHA) * newRSSI);
 }
 
 char readCharFromUser() {

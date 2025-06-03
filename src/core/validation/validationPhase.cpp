@@ -14,19 +14,19 @@ void runValidationPhase() {
 
     setValidForPredection();
 
-    while( !shouldAbort ) {
-        LOG_INFO("VALIDATE", "Please stand still at a labels, press enter when you're ready");
+    while (!shouldAbort) {
+        LOG_INFO("VALIDATE", "Please stand still at a label, press enter when you're ready");
 
         promptUserLocationLabel();
-
         startLabelValidationSession();
-        
+
         if (!validForPredection[currentLabel]) {
             delay_ms(USER_PROMPTION_DELAY);
             LOG_ERROR("VALIDATE", "Predection failure at: %s", labels[currentLabel]);
             bool _rescan = promptUserRescanAfterInvalidation();
             if(_rescan) {
                 LOG_INFO("VALIDATE", "Rescanning...");
+
                 if(SystemSetup::logLevel < LogLevel::LOG_LEVEL_DEBUG) {
                     promptUserShowDebugLogs();
                 }
@@ -38,6 +38,7 @@ void runValidationPhase() {
             }
         }
     }
+
     printFinalValidationSummary(); 
 }
 
@@ -63,9 +64,9 @@ void startLabelValidationSession() {
 
         LOG_ERROR("VALIDATE", "Predicted location: %s - Expected location: %s", labels[predicted], labels[currentLabel]);
         delay_ms(DELAY_BETWEEN_PHASES);
-        
+
         retry = promptUserRetryPrediction();
-        
+
         if(retryCount >= VALIDATION_MAX_ATTEMPTS) {
             LOG_ERROR("VALIDATE", "Data set seems invalid for: %s", labels[predicted]);
             validForPredection[currentLabel] = false;
@@ -79,12 +80,16 @@ void startLabelValidationSession() {
 void printFinalValidationSummary() {
     LOG_INFO("VALIDATE", " ");
     LOG_INFO("VALIDATE", "=============== Validation Summary ===============");
+
     for (int i = 0; i < LABELS_COUNT; ++i) {
         currentLabel = (Label)i;
         const char* result = validForPredection[i] ? "VALIDATED" : "NOT VALIDATED";
+
         LOG_INFO("VALIDATE", "Label %d - %s: %s, with accuracyL %d", i, labels[i], result, getAccuracy());
     }
-    currentLabel = (Label) LABELS_COUNT;
+
+    currentLabel = (Label)LABELS_COUNT;
+
     LOG_INFO("VALIDATE", "==================================================");
     LOG_INFO("VALIDATE", " ");
 }
