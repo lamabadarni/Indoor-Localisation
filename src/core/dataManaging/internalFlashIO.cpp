@@ -1,6 +1,6 @@
 
 #include "internalFlashIO.h"
-#include "../ui/logger.h"
+#include "../utils/logger.h"
 
 
 /* SD card and FAT filesystem example.

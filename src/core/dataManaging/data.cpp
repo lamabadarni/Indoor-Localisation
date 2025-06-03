@@ -56,6 +56,7 @@ static bool saveTOFScan(const TOFData& row) {
     {
         fprintf(f, "%.2f,", row.TOFs[i]);
     }
+
     fprintf(f, "%d\n", row.label);
     fclose(f);
 
@@ -91,35 +92,52 @@ void doneCollectingData() {
     BufferedData::lastN   = 0;
 }
 
-bool loadDataset() {
+bool loadDataset()
+{
     bool ok = true;
 
     if (isRSSIActive()) {
         FILE* f = fopen(getRSSIFilePath().c_str(), "r");
-        if (f) {
+
+        if (f)
+        {
             LOG_INFO("FLASH", "Loading RSSI dataset...");
+
             std::string line;
-            while (_readLineFromFile(f, line)) {
+
+            while (_readLineFromFile(f, line))
+            {
                 _fromCSVRssiToVector(line);
             }
+
             fclose(f);
-        } else {
+        } else
+        {
             LOG_WARN("FLASH", "RSSI file not found.");
+
             ok = false;
         }
     }
 
-    if (isTOFActive()) {
+    if (isTOFActive())
+    {
         FILE* f = fopen(getTOFFilePath().c_str(), "r");
-        if (f) {
+        if (f)
+        {
             LOG_INFO("FLASH", "Loading TOF dataset...");
+
             std::string line;
-            while(_readLineFromFile(f, line)) {
+
+            while(_readLineFromFile(f, line))
+            {
                 _fromCSVTofToVector(line);
             }
+
             fclose(f);
-        } else {
+        } else
+        {
             LOG_WARN("FLASH", "TOF file not found.");
+
             ok = false;
         }
     }
@@ -181,7 +199,7 @@ bool formatStorage(void) {
         }
         break;
 
-        default :
+        default:
         break;
     }
 
@@ -215,6 +233,9 @@ bool filterNonValidData(const bool validMap[LABELS_COUNT]) {
 
         std::string line;
 
+        // read first line since it contains anchor names
+        _readLineFromFile(in, line);
+
         while (_readLineFromFile(in, line)) {
             _splitBySeparator(line, ',');
 
@@ -228,7 +249,7 @@ bool filterNonValidData(const bool validMap[LABELS_COUNT]) {
         fclose(in);
         fclose(out);
         remove(getRSSIFilePath().c_str());
-        rename((getBaseDir() + RSSI_FILENAME + TMP_SUFFIX).c_str(), getRSSIFilePath());
+        rename((getBaseDir() + RSSI_FILENAME + TMP_SUFFIX).c_str(), getRSSIFilePath().c_str());
 
         LOG_INFO("FLASH", "RSSI CSV cleaned.");
     }
@@ -257,6 +278,9 @@ bool filterNonValidData(const bool validMap[LABELS_COUNT]) {
         fprintf(out, "Label\n");
 
         std::string line;
+
+        // read first line since it contains anchor names
+        _readLineFromFile(in, line);
 
         while (_readLineFromFile(in, line)) {
             _splitBySeparator(line, ',');
@@ -343,34 +367,44 @@ static bool _readLineFromFile(FILE* file, std::string& outLine) {
     return !outLine.empty();
 }
 
-static bool _createRssiFile(void) {
-    File f = fopen(rssiPath, "w");
-    if (!f) {
+static bool _createRssiFile(void)
+{
+    FILE *f = fopen(getRSSIFilePath().c_str(), "w");
+
+    if (!f)
+    {
         LOG_ERROR("DATA", "Failed to create RSSI CSV.");
         return false;
     }
-    for (int i = 1; i <= NUMBER_OF_ANCHORS; ++i) {
-        f.print(i);
-        f.print("_rssi,");
+
+    for (int i = 1; i <= NUMBER_OF_ANCHORS; ++i)
+    {
+        fprintf(f, "%d_rssi,", i);
     }
-    f.println("Label");
-    f.close();
+
+    fprintf(f, "Label\n");
+    fclose(f);
 
     return true;
 }
 
-static bool _createTofFile(void) {
-    File f = fopen(tofPath, "w");
-    if (!f) {
+static bool _createTofFile(void)
+{
+    FILE *f = fopen(getTOFFilePath().c_str(), "w");
+
+    if (!f)
+    {
         LOG_ERROR("Failed to create TOF CSV.");
         return false;
     }
-    for (int j = 1; j <= NUMBER_OF_RESPONDERS; ++j) {
-        f.print(j);
-        f.print("_tof,");
+
+    for (int j = 1; j <= NUMBER_OF_RESPONDERS; ++j)
+    {
+        fprintf(f, "%d_tof,", j);
     }
-    f.println("Label");
-    f.close();
+
+    fprintf(f, "Label\n");
+    fclose(f);
 
     return true;
 }
@@ -405,7 +439,7 @@ static bool _deleteDirectory(const char* path)
         if (entry->d_type == DT_DIR)
         {
             // recurse into subdirectory
-            deleteDirectory(fullPath.c_str());
+            _deleteDirectory(fullPath.c_str());
         } else
         {
             // remove file

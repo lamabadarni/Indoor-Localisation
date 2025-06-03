@@ -3,7 +3,7 @@
 #include "core/utils/utilities.h"
 #include "core/prediction/predictionPhase.h"
 #include "core/dataManaging/data.h"
-#include "core/ui/logger.h"
+#include "core/utils/logger.h"
 #include "esp_wifi.h"
 #include "core/dataManaging/data.h"
 

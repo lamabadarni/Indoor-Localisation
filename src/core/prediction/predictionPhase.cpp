@@ -75,8 +75,6 @@ void runPredictionPhase(void) {
             }
         }
 
-        bool cont = promptUserProceedToNextLabel();
-
         LOG_INFO("PREDICT", "Move to next label to start predecting ...");
 
         doneCollectingData();

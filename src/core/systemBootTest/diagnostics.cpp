@@ -1,4 +1,4 @@
-#include "verifier.h"
+#include "diagnostics.h"
 #include "core/scanning/rssiScanner.h"
 #include "core/scanning/tofScanner.h"
 
@@ -29,6 +29,7 @@ bool interactiveScanCoverage() {
         delay_ms(USER_PROMPTION_DELAY);
     }
     while (true) {
+        // Lama: check new name of this function
         promptLocationLabel();
         delay_ms(USER_PROMPTION_DELAY);
         switch (currentSystemMode) {
@@ -71,7 +72,7 @@ void performRSSIScanCoverage() {
     if (result.visibleAnchors < MIN_ANCHORS_VISIBLE) {
         LOG_WARN("VERIFY", "Advice: Increase anchor density in this location.");
     }
-    if (result.averageRSSI < MIN_AVERAGE_RSSI_DBM) {
+    if (result.averageRSSI < MIN_AVERAGE_RSSI) {
         LOG_WARN("VERIFY", "Advice: Move anchors closer or reduce interference.");
     }
 }
@@ -90,7 +91,7 @@ void performRSSIScanCoverage() {
         }
     }
 
-    result.average = (result.senn > 0)
+    result.average = (result.seen > 0)
                         ? (rssiSum / result.visibleAnchors)
                         : RSSI_DEFAULT_VALUE;
 
@@ -100,7 +101,9 @@ void performRSSIScanCoverage() {
 // ================= TOF =================
 
 void performTOFScanCoverage() {
+    // Lama: update struct name and logs if needed
     RSSICoverageResult result = scanRSSICoverage();
+
     LOG_INFO("VERIFY", "----- RSSI Coverage Report -----");
     LOG_INFO("VERIFY", "Location: %s", labels[currentLabel]);
     LOG_INFO("VERIFY", "Visible Responders: %d", result.visibleAnchors);
@@ -112,7 +115,7 @@ void performTOFScanCoverage() {
         LOG_WARN("VERIFY", "Advice: Increase responders density in this location.");
     }
 
-    if (result.averageRSSI < MIN_AVERAGE_RSSI_DBM) {
+    if (result.averageRSSI < MIN_AVERAGE_RSSI) {
         LOG_WARN("VERIFY", "Advice: Move responders closer or reduce interference.");
     }
     
@@ -123,6 +126,7 @@ Coverage scanTOFCoverage() {
     int totalCm = 0;
     Coverage result;
 
+    // Lama: check what this call should be replaced by
     TOFData scanData = createTOFScanToMakePrediction();
 
     for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
