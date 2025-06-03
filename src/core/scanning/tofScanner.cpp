@@ -1,7 +1,7 @@
 #include "scanningPhase.h"
 #include "core/utils/platform.h"
 #include "core/utils/utilities.h"  
-#include "core/ui/logger.h"
+#include "core/utils/logger.h"
 #include "tofScanner.h"
 #include "core/dataManaging/data.h"
 #include "core/prediction/predictionPhase.h"
@@ -89,7 +89,7 @@ TOFData createSingleTOFScan() {
             .burst_period = 2
         };
 
-        cfg.channel = 0 ; // Wi-fi channel to use for FTM - 0 since it's unknown
+        cfg.channel = 0; // Wi-fi channel to use for FTM - 0 since it's unknown
 
         scanComplete = false;
         accumulatedTOFs[i] = TOF_DEFAULT_DISTANCE_CM;
