@@ -1,6 +1,7 @@
-
 #include "internalFlashIO.h"
 #include "../utils/logger.h"
+#include "driver/gpio.h"
+#include "soc/gpio_num.h"
 
 #include <string.h>
 #include <sys/unistd.h>
@@ -14,12 +15,11 @@ static const char *TAG = "example";
 
 #define MOUNT_POINT "/sdcard"
 
-// Pin assignments can be set in menuconfig, see "SD SPI Example Configuration" menu.
-// You can also change the pin assignments here by changing the following 4 lines.
-#define PIN_NUM_MISO  CONFIG_EXAMPLE_PIN_MISO
-#define PIN_NUM_MOSI  CONFIG_EXAMPLE_PIN_MOSI
-#define PIN_NUM_CLK   CONFIG_EXAMPLE_PIN_CLK
-#define PIN_NUM_CS    CONFIG_EXAMPLE_PIN_CS
+// Pin assignments for ESP32-S2
+#define PIN_NUM_MISO  GPIO_NUM_19
+#define PIN_NUM_MOSI  GPIO_NUM_33
+#define PIN_NUM_CLK   GPIO_NUM_15 
+#define PIN_NUM_CS    GPIO_NUM_5
 
 void initSDCard(void)
 {
@@ -52,12 +52,18 @@ void initSDCard(void)
         .mosi_io_num = PIN_NUM_MOSI,
         .miso_io_num = PIN_NUM_MISO,
         .sclk_io_num = PIN_NUM_CLK,
-        .quadwp_io_num = -1,
-        .quadhd_io_num = -1,
+        .quadwp_io_num = static_cast<int>(GPIO_NUM_NC),
+        .quadhd_io_num = static_cast<int>(GPIO_NUM_NC),
+        .data4_io_num = static_cast<int>(GPIO_NUM_NC),
+        .data5_io_num = static_cast<int>(GPIO_NUM_NC),
+        .data6_io_num = static_cast<int>(GPIO_NUM_NC),
+        .data7_io_num = static_cast<int>(GPIO_NUM_NC),
+        .data_io_default_level = false,
         .max_transfer_sz = 20000,
+        .flags = (u_int32_t)0,
     };
 
-    ret = spi_bus_initialize(host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
+    ret = spi_bus_initialize(static_cast<spi_host_device_t>(host.slot), &bus_cfg, SDSPI_DEFAULT_DMA);
     if (ret != ESP_OK) {
         LOG_DEBUG(TAG, "Failed to initialize bus.");
         return;
@@ -67,7 +73,7 @@ void initSDCard(void)
     // Modify slot_config.gpio_cd and slot_config.gpio_wp if your board has these signals.
     sdspi_device_config_t slot_config = SDSPI_DEVICE_CONFIG_DEFAULT();
     slot_config.gpio_cs = PIN_NUM_CS;
-    slot_config.host_id = host.slot;
+    slot_config.host_id = static_cast<spi_host_device_t>(host.slot);
 
     ESP_LOGI(TAG, "Mounting filesystem");
     ret = esp_vfs_fat_sdspi_mount(mount_point, &host, &slot_config, &mount_config, &card);
