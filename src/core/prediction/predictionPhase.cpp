@@ -32,13 +32,13 @@ void runPredictionPhase(void) {
         }
 
         LOG_INFO("PREDICT", "[PREDICT] >> Press Enter to start predicting...");
-
         readCharFromUser();
 
         bool retry = true;
         int count  = 1;
 
-        while (retry) {
+        while(retry) {
+
             bool success = startLabelPredectionSession();
 
             if(success) {
@@ -46,12 +46,11 @@ void runPredictionPhase(void) {
                 break;
             }
             else {
+                
                 if(count > PREDICTION_MAX_RETRIES) {
                     LOG_INFO("PREDICT", "Predection failed %d times", count);
                     LOG_INFO("PREDICT", "Move to another label to check overall data validity ...");
-
                     invalidLabels++;
-
                     break;
                 }
                 else {
@@ -67,7 +66,6 @@ void runPredictionPhase(void) {
             
             if(retry) {
                 LOG_INFO("PREDICT", "Retrying label predection after failure ...");
-
                 count++;
             }
             else {
@@ -75,8 +73,8 @@ void runPredictionPhase(void) {
             }
         }
 
+        bool cont = promptUserProceedToNextLabel();
         LOG_INFO("PREDICT", "Move to next label to start predecting ...");
-
         doneCollectingData();
         delay_ms(USER_PROMPTION_DELAY);
     }
