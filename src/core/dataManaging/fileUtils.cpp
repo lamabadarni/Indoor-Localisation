@@ -1,8 +1,10 @@
-
 #include "fileUtils.h"
 
+// (1) We guarantee a trailing slash here
 std::string getBaseDir() {
-    return std::string("/") + systemScannerModes[SystemSetup::currentSystemScannerMode];
+    return std::string(MOUNT_POINT) + "/" 
+         + systemScannerModes[SystemSetup::currentSystemScannerMode]
+         + "/";
 }
 
 std::string getMetaFilePath() {
