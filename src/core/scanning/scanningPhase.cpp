@@ -4,7 +4,7 @@
 #include "../ui/userUI.h"
 #include "../validation/validationPhase.h"
 #include "../utils/utilities.h"
-#include "../ui/logger.h"
+#include "../utils/logger.h"
 
 static bool dontAskAgain = false;
 
