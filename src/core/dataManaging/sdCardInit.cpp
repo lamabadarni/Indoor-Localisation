@@ -1,6 +1,5 @@
-/*
+
 #include "../utils/logger.h"
-#include "driver/gpio.h"
 #include "soc/gpio_num.h"
 
 #include <string.h>
@@ -11,17 +10,17 @@
 
 #define EXAMPLE_MAX_CHAR_SIZE    64
 
-static const char *TAG = "example";
+static const char *TAG = "SD CARD";
 
 #define MOUNT_POINT "/sdcard"
 
 // Pin assignments for ESP32-S2
-#define PIN_NUM_MISO  GPIO_NUM_19
-#define PIN_NUM_MOSI  GPIO_NUM_33
-#define PIN_NUM_CLK   GPIO_NUM_15 
+#define PIN_NUM_MISO  GPIO_NUM_39
+#define PIN_NUM_MOSI  GPIO_NUM_35
+#define PIN_NUM_CLK   GPIO_NUM_37
 #define PIN_NUM_CS    GPIO_NUM_5
 
-void initSDCard(void)
+bool initSDCard(void)
 {
     esp_err_t ret;
 
@@ -52,21 +51,15 @@ void initSDCard(void)
         .mosi_io_num = PIN_NUM_MOSI,
         .miso_io_num = PIN_NUM_MISO,
         .sclk_io_num = PIN_NUM_CLK,
-        .quadwp_io_num = static_cast<int>(GPIO_NUM_NC),
-        .quadhd_io_num = static_cast<int>(GPIO_NUM_NC),
-        .data4_io_num = static_cast<int>(GPIO_NUM_NC),
-        .data5_io_num = static_cast<int>(GPIO_NUM_NC),
-        .data6_io_num = static_cast<int>(GPIO_NUM_NC),
-        .data7_io_num = static_cast<int>(GPIO_NUM_NC),
-        .data_io_default_level = false,
-        .max_transfer_sz = 20000,
-        .flags = (u_int32_t)0,
+        .quadwp_io_num = -1,
+        .quadhd_io_num = -1,
+        .max_transfer_sz = 4000,
     };
 
     ret = spi_bus_initialize(static_cast<spi_host_device_t>(host.slot), &bus_cfg, SDSPI_DEFAULT_DMA);
     if (ret != ESP_OK) {
         LOG_DEBUG(TAG, "Failed to initialize bus.");
-        return;
+        return false;
     }
 
     // This initializes the slot without card detect (CD) and write protect (WP) signals.
@@ -86,12 +79,12 @@ void initSDCard(void)
             LOG_DEBUG(TAG, "Failed to initialize the card (%s). "
                      "Make sure SD card lines have pull-up resistors in place.", esp_err_to_name(ret));
         }
-        return;
+        return false;
     }
     LOG_DEBUG(TAG, "Filesystem mounted");
 
     // Card has been initialized, print its properties
     sdmmc_card_print_info(stdout, card);
-}
 
-*/
+    return true;
+}

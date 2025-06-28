@@ -3,6 +3,7 @@
 
 #include <dirent.h>    // <-- needed for opendir/readdir
 #include <unistd.h>    // <-- needed for unlink()/rmdir()
+#include "sdCardInit.h"
 
 static std::vector<std::string> splittedString;
 static void _splitBySeparator(const std::string &data, char separator);
@@ -18,7 +19,7 @@ static void _fromCSVTofToVector(std::string &line);
 //-----------------------------------------------------------------------------
 
 bool initDataBackup() {
-    return true;
+    return initSDCard();
 }
 void saveData(const RSSIData &scanData) {
     if ((BufferedData::scanner != STATICRSSI) &&
