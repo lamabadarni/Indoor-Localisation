@@ -18,7 +18,6 @@ static void tofReportHandler(void* arg, esp_event_base_t event_base, int32_t eve
     //(MAC address of the responder, Which responder this is (index), Round-trip time in nanoseconds, 
     //Estimated distance in millimeters, Whether it worked or failed)
     auto* report = (wifi_event_ftm_report_t*)event_data;
-    uint8_t* mac = report->peer_mac;
     int i = NUMBER_OF_RESPONDERS + 1;
 
     for (int j = 0; j < NUMBER_OF_RESPONDERS; ++j) {
@@ -118,6 +117,13 @@ TOFData createSingleTOFScan() {
     if(inProcess) {
         esp_event_handler_unregister(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler);
     }
+
+    TOFData scanData;
+    scanData.label = currentLabel;
+    for (int i = 0; i < NUMBER_OF_RESPONDERS; i++) {
+        scanData.TOFs[i] = accumulatedTOFs[i];
+    }
+    return scanData;
 }
 
 /*

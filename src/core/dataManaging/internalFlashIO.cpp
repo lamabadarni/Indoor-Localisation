@@ -1,3 +1,4 @@
+/*
 #include "internalFlashIO.h"
 #include "../utils/logger.h"
 #include "esp_littlefs.h" // Use this for the ESP-IDF LittleFS component
@@ -87,3 +88,4 @@ bool initInternalFlash()
     LOG_INFO("FLASH", "Recovery successful; LittleFS mounted at '%s'.", MOUNT_POINT);
     return true;
 }
+    */

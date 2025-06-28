@@ -1,6 +1,6 @@
-#include "../utils/platform.h"
-#include "../utils/utilities.h"
-#include "../ui/logger.h"
+#include "core/utils/platform.h"
+#include "core/utils/utilities.h"
+#include "core/utils/logger.h"
 #include "userUI.h"
 
 // ========== SYSTEM SETUP ==========

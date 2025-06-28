@@ -1,7 +1,6 @@
-
-#include "../utils/platform.h"
-#include "../ui/logger.h"
-#include "../ui/verifier.h"
+#include "core/utils/platform.h"
+#include "core/utils/logger.h"
+#include "core/systemBootTest/diagnostics.h"
 
 #define RESPONDER_ID 1  // Change this before flashing each responder
 /*

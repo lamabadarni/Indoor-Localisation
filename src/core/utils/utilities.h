@@ -1,4 +1,6 @@
-#pragma once
+#ifndef UTILITIES_H
+#define UTILITIES_H
+
 #include "platform.h"
 // ====================== Constants ======================
 
@@ -181,3 +183,5 @@ void resetTOFScanBuffer();
 void setValidForPredection();
 
 float getAccuracy();
+
+#endif // UTILITIES_H

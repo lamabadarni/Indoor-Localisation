@@ -59,7 +59,7 @@ const std::string anchorSSIDs[NUMBER_OF_ANCHORS] = {
     "Offices"
 };
 
-const std::string tofSSIDs[NUMBER_OF_ANCHORS] = {
+const std::string tofSSIDs[NUMBER_OF_RESPONDERS] = {
     "RESP1",
     "RESP2",
     "RESP3",

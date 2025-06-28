@@ -10,7 +10,7 @@
  * @author Lama Badarni
  */
 
-#include "../utils/utilities.h"
+#include "core/utils/utilities.h"
 
 #ifndef RSSI_SCANNER_H
 #define RSSI_SCANNER_H

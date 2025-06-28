@@ -5,6 +5,8 @@
 #include "core/utils/logger.h"
 #include "core/ui/userUI.h" 
 
+bool initDataBackup();
+
 /**
  * @brief buffers the RSSI scan data for later saving.
  * @param scanData The RSSI scan data to be buffered.

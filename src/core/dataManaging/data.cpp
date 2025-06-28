@@ -17,6 +17,9 @@ static void _fromCSVTofToVector(std::string &line);
 // Public APIs
 //-----------------------------------------------------------------------------
 
+bool initDataBackup() {
+    return true;
+}
 void saveData(const RSSIData &scanData) {
     if ((BufferedData::scanner != STATICRSSI) &&
         (BufferedData::scanner != BOTH)) {
