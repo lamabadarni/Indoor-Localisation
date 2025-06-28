@@ -1,4 +1,4 @@
-#include "diagnostics.h"
+#include "core/systemBootTest/diagnostics.h"
 #include "core/scanning/rssiScanner.h"
 #include "core/scanning/tofScanner.h"
 
@@ -11,7 +11,7 @@ static void printStartLog() {
     
     LOG_INFO("COVERAGE", "IMPORTANT:");
     LOG_INFO("COVERAGE", "DO NOT change the environment (e.g., walk away, close doors,");
-    LOG_INFO("COVERAGE", "or move anchors) while scanning or running predictions.");
+    LOG_INFO("COVERAGE", "or move anchors while scanning or running predictions.");
     LOG_INFO("COVERAGE", "Changing the environment in the middle of a scan will cause");
     LOG_INFO("COVERAGE", "inaccurate results and misleading coverage analysis.");
     
@@ -30,9 +30,9 @@ bool interactiveScanCoverage() {
     }
     while (true) {
         // Lama: check new name of this function
-        promptLocationLabel();
+        promptUserLocationLabel();
         delay_ms(USER_PROMPTION_DELAY);
-        switch (currentSystemMode) {
+        switch (SystemSetup::currentSystemBootMode) {
             case MODE_TOF_DIAGNOSTIC:
             LOG_INFO("VERIFY", "Verifying TOF scan coverage");
             performTOFScanCoverage();
@@ -40,6 +40,12 @@ bool interactiveScanCoverage() {
             case MODE_RSSI_DIAGNOSTIC:
             LOG_INFO("VERIFY", "Verifying RSSI scan coverage");
             performRSSIScanCoverage();
+            case MODE_RESTORE_DATA_TEST:
+            case MODE_COLLECT_TOF_RESPONDERS_MAC:
+            return false;
+            case SYSTEM_BOOT_MODES_NUM:
+            //TODO: should have assert or something
+            return false;
         }
 
         if (promptUserAbortToImproveEnvironment()) {
@@ -62,22 +68,7 @@ bool interactiveScanCoverage() {
 
 // ================= RSSI =================
 
-void performRSSIScanCoverage() {
-    Coverage result = scanRSSICoverage();
-    LOG_INFO("VERIFY", "----- RSSI Coverage Report -----");
-    LOG_INFO("VERIFY", "Location: %s", labels[currentLabel]);
-    LOG_INFO("VERIFY", "Visible Anchors: %d", result.seen);
-    LOG_INFO("VERIFY", "Average RSSI: %d ", result.average);
-
-    if (result.visibleAnchors < MIN_ANCHORS_VISIBLE) {
-        LOG_WARN("VERIFY", "Advice: Increase anchor density in this location.");
-    }
-    if (result.averageRSSI < MIN_AVERAGE_RSSI) {
-        LOG_WARN("VERIFY", "Advice: Move anchors closer or reduce interference.");
-    }
-}
-
- Coverage scanRSSIForCoverage() {
+Coverage scanRSSIForCoverage() {
 
     Coverage result;
     int sum = 0;
@@ -92,42 +83,36 @@ void performRSSIScanCoverage() {
     }
 
     result.average = (result.seen > 0)
-                        ? (rssiSum / result.visibleAnchors)
+                        ? (sum / result.seen)
                         : RSSI_DEFAULT_VALUE;
 
     return result;
 }
 
-// ================= TOF =================
-
-void performTOFScanCoverage() {
-    // Lama: update struct name and logs if needed
-    RSSICoverageResult result = scanRSSICoverage();
-
+void performRSSIScanCoverage() {
+    Coverage result = scanRSSIForCoverage();
     LOG_INFO("VERIFY", "----- RSSI Coverage Report -----");
     LOG_INFO("VERIFY", "Location: %s", labels[currentLabel]);
-    LOG_INFO("VERIFY", "Visible Responders: %d", result.visibleAnchors);
-    LOG_INFO("VERIFY", "Average TOF Distances: %d ", result.averageRSSI);F
+    LOG_INFO("VERIFY", "Visible Anchors: %d", result.seen);
+    LOG_INFO("VERIFY", "Average RSSI: %d ", result.average);
 
-    delay_ms(USER_PROMPTION_DELAY);
-    
-    if (result.visibleAnchors < MIN_ANCHORS_VISIBLE) {
-        LOG_WARN("VERIFY", "Advice: Increase responders density in this location.");
+    if (result.seen < MIN_ANCHORS_VISIBLE) {
+        LOG_WARN("VERIFY", "Advice: Increase anchor density in this location.");
     }
-
-    if (result.averageRSSI < MIN_AVERAGE_RSSI) {
-        LOG_WARN("VERIFY", "Advice: Move responders closer or reduce interference.");
+    if (result.average < MIN_AVERAGE_RSSI) {
+        LOG_WARN("VERIFY", "Advice: Move anchors closer or reduce interference.");
     }
-    
 }
 
-Coverage scanTOFCoverage() {
+// ================= TOF =================
+
+Coverage scanTOFForCoverage() {
 
     int totalCm = 0;
     Coverage result;
 
     // Lama: check what this call should be replaced by
-    TOFData scanData = createTOFScanToMakePrediction();
+    performTOFScan();
 
     for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
         if(accumulatedTOFs[i] != TOF_DEFAULT_DISTANCE_CM) {
@@ -141,5 +126,25 @@ Coverage scanTOFCoverage() {
                              : TOF_DEFAULT_DISTANCE_CM;
 
     return result;
+}
+
+void performTOFScanCoverage() {
+    Coverage result = scanTOFForCoverage();
+
+    LOG_INFO("VERIFY", "----- TOF Coverage Report -----");
+    LOG_INFO("VERIFY", "Location: %s", labels[currentLabel]);
+    LOG_INFO("VERIFY", "Visible Responders: %d", result.seen);
+    LOG_INFO("VERIFY", "Average TOF Distances: %d ", result.average);
+
+    delay_ms(USER_PROMPTION_DELAY);
+    
+    if (result.seen < MIN_ANCHORS_VISIBLE) {
+        LOG_WARN("VERIFY", "Advice: Increase responders density in this location.");
+    }
+
+    if (result.average < MIN_AVERAGE_RSSI) {
+        LOG_WARN("VERIFY", "Advice: Move responders closer or reduce interference.");
+    }
+    
 }
         

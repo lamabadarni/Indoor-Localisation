@@ -1,8 +1,8 @@
 
 #include "scanningSessionHandler.h"
-#include "../core/ui/userUI.h"
-#include "../core/scanning/scanningPhase.h"
-#include "../core/ui/logger.h"
+#include "core/ui/userUI.h"
+#include "core/scanning/scanningPhase.h"
+#include "core/utils/logger.h"
 
 void handleScanningSession() {
     if (!SystemSetup::enableBackup) {

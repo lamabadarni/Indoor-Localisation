@@ -12,35 +12,14 @@ typedef struct {
     double average = 0;
 } Coverage;
 
-// ====================== RSSI Verification ======================
-
 bool interactiveScanCoverage();
 
-/**
- * @brief Perform RSSI scan for a given label.
- * @return Result struct with per-anchor RSSI data.
- */
-Coverage scanRSSICoverage();
+void performTOFScanCoverage();
 
-/**
- * @brief Verifies anchor coverage via user feedback loop for RSSI.
- * @return true if user completed all checks, false if aborted.
- */
-bool verifyRSSIScanCoverage();
+void performRSSIScanCoverage();
 
+Coverage scanRSSIForCoverage();
 
-// ====================== TOF Verification ======================
-
-/**
- * @brief Measures TOF distance for each responder from the current label.
- * @return TOFCoverageResult with distances and visibility per responder.
- */
-Coverage scanTOFCoverage();
-
-/**
- * @brief Verifies TOF responder visibility with user feedback.
- * @return true if user approves coverage at all tested labels.
- */
-bool verifyTOFScanCoverage();
+Coverage scanTOFForCoverage();
 
 #endif // VEREFIER_H

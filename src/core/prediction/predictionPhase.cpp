@@ -22,12 +22,15 @@ void runPredictionPhase(void) {
     }
 
     int invalidLabels = 0;
+     bool cont = true;
 
-    while (!shouldAbort) {
+    while (!shouldAbort && cont) {
         if(invalidLabels > PREDICTION_MAX_LABEL_FAILURE) {
             LOG_INFO("PREDICT", "Encountered failure at %d different labels", PREDICTION_MAX_LABEL_FAILURE);
             bool clearData = promptUserForClearingDataAfterManyPredectionFailure();
-            clearDataAfterPredectionFailure();
+            if(clearData) {
+                clearDataAfterPredectionFailure();
+            }
             break;
         }
 
@@ -73,7 +76,7 @@ void runPredictionPhase(void) {
             }
         }
 
-        bool cont = promptUserProceedToNextLabel();
+        cont = promptUserProceedToNextLabel();
         LOG_INFO("PREDICT", "Move to next label to start predecting ...");
         doneCollectingData();
         delay_ms(USER_PROMPTION_DELAY);
@@ -135,43 +138,47 @@ Label predict() {
     Label label = LABELS_COUNT;
 
     switch (SystemSetup::currentSystemScannerMode) {
-    case STATIC_RSSI:
-    flag  = STATICRSSI;
-    label =  createSamplePredict();
-    break;
+        case STATIC_RSSI: {
+            flag  = STATICRSSI;
+            label =  createSamplePredict();
+            break;
+        }
 
-    case TOF:
-    flag  = TOF_;
-    label =  createSamplePredict();
-    break;
+        case TOF: {
+            flag  = TOF_;
+            label =  createSamplePredict();
+            break;
+        }
 
-    case STATIC_RSSI_TOF:
-    flag = STATICRSSI;
-    Label rssiLabel = createSamplePredict();
-    flag = TOF_;
-    Label tofLabel  = createSamplePredict();
+        case STATIC_RSSI_TOF: {
+            flag = STATICRSSI;
+            Label rssiLabel = createSamplePredict();
+            flag = TOF_;
+            Label tofLabel  = createSamplePredict();
 
-    if(rssiLabel == tofLabel) {
-        label = rssiLabel;
-        flag = BOTH;
-        break;
-    }
-    
-    // Ward :: here , should we add weighting ?? 
-    LOG_ERROR("PREDICT", " !! CONFLICT !! RSSI and TOF predictions differ:");
-    LOG_ERROR("PREDICT", " ! RSSI Prediction: %s, with accuracy: %d", labels[rssiLabel], rssiAccuracy[rssiLabel]);
-    LOG_ERROR("PREDICT", " ! TOF  Prediction: %s, with accuracy: %d", labels[tofLabel],  tofAccuracy[tofLabel]);
+            if(rssiLabel == tofLabel) {
+                label = rssiLabel;
+                flag = BOTH;
+                break;
+            }
         
-    Label user = promptUserChooseBetweenPredictions(rssiLabel, tofLabel);
-    if(user == rssiLabel)      { flag = STATICRSSI; tofAccuracy[tofLabel]   = 0;}
-    else if(user == tofLabel)  { flag = TOF_;        rssiAccuracy[rssiLabel] = 0;}
-    else { flag = NONE; tofAccuracy[tofLabel] = 0; rssiAccuracy[rssiLabel] = 0;}
-    return user;
+            // Ward :: here , should we add weighting ?? 
+            LOG_ERROR("PREDICT", " !! CONFLICT !! RSSI and TOF predictions differ:");
+            LOG_ERROR("PREDICT", " ! RSSI Prediction: %s, with accuracy: %d", labels[rssiLabel], rssiAccuracy[rssiLabel]);
+            LOG_ERROR("PREDICT", " ! TOF  Prediction: %s, with accuracy: %d", labels[tofLabel],  tofAccuracy[tofLabel]);
+                
+            Label user = promptUserChooseBetweenPredictions(rssiLabel, tofLabel);
+            if(user == rssiLabel)      { flag = STATICRSSI; tofAccuracy[tofLabel]   = 0;}
+            else if(user == tofLabel)  { flag = TOF_;        rssiAccuracy[rssiLabel] = 0;}
+            else { flag = NONE; tofAccuracy[tofLabel] = 0; rssiAccuracy[rssiLabel] = 0;}
+            label = user;
+            break;
+        }
 
-    case SYSTEM_SCANNER_MODES_NUM :
-    LOG_WARN("PREDECTION", "Unsupported system state: %d", SystemSetup::currentSystemScannerMode);
-    break;
+        case SYSTEM_SCANNER_MODES_NUM:
+            break;
     }
+
 
     if(label != LABELS_COUNT) {
         LOG_INFO("PREDICT", " Predicted label: %s", labels[label]);
@@ -183,14 +190,14 @@ Label predict() {
     }
 
     accuracy_[label] = 0;
-    return LABELS_COUNT;
+    return label;
 }
 
 Label createSamplePredict() {
     Label samples[PREDICTION_SAMPLES];
     int c = 1;
     for(int i = 0; i < PREDICTION_SAMPLES; i++) {
-        samples[i] = predict_();
+        samples[i] = flag == STATICRSSI ? rssiPredict() : tofPredict() ;
         if(i > 0 && samples[i] == samples[i-1]) c++;
         if(c > PREDICTION_SAMPLES_THRESHOLD) return samples[i];
     }

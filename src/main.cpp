@@ -1,8 +1,8 @@
 
-#include "../core/utils/platform.h"
-#include "../core/utils/utilities.h"
-#include "../core/ui/userUI.h"
-#include "../core/ui/logger.h"
+#include "core/utils/platform.h"
+#include "core/utils/utilities.h"
+#include "core/utils/logger.h"
+#include "core/ui/userUI.h"
 
 #include "systemStateHandler/bootHandler.h"
 #include "systemStateHandler/scanningSessionHandler.h"

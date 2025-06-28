@@ -1,9 +1,9 @@
 
 #include "bootHandler.h"
-#include "../core/ui/logger.h"
-#include "../core/utils/utilities.h"
-#include "../core/utils/platform.h"
-#include "../core/ui/verifier.h"
+#include "core/utils/logger.h"
+#include "core/utils/utilities.h"
+#include "core/utils/platform.h"
+#include "core/systemBootTest/diagnostics.h"
 
 static bool isMACUnset(const uint8_t mac[6]) {
     for (int i = 0; i < 6; ++i) {
@@ -50,7 +50,7 @@ static void collectResponderMACs() {
 
     delay_ms(USER_PROMPTION_DELAY);
 
-    int found = verifyTOFScanCoverage();
+    int found = scanTOFForCoverage().seen;
 
     if (found == 0) {
         LOG_WARN("MAC", " No FTM-capable responders found.");
@@ -81,10 +81,10 @@ static void collectResponderMACs() {
 void handleSystemBoot() {
     switch (SystemSetup::currentSystemBootMode) {
         case MODE_TOF_DIAGNOSTIC:
-            verifyTOFScanCoverage();
+            performTOFScanCoverage();
             break;
         case MODE_RSSI_DIAGNOSTIC:
-            verifyRSSIScanCoverage();
+            performRSSIScanCoverage();
             break;
         case MODE_COLLECT_TOF_RESPONDERS_MAC:
             collectResponderMACs();

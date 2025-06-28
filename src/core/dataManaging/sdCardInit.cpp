@@ -1,4 +1,4 @@
-#include "internalFlashIO.h"
+/*
 #include "../utils/logger.h"
 #include "driver/gpio.h"
 #include "soc/gpio_num.h"
@@ -93,3 +93,5 @@ void initSDCard(void)
     // Card has been initialized, print its properties
     sdmmc_card_print_info(stdout, card);
 }
+
+*/
