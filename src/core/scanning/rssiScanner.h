@@ -1,38 +1,40 @@
 /**
  * @file rssiScanner.h
- * @brief Interface for RSSI-based scanning, prediction input construction, and validation data collection.
+ * @brief RSSI-based scanning module for training and prediction input generation.
  *
- * Supports batch collection using exponential moving average (EMA) smoothing,
- * and generates data entries used in kNN prediction and offline training.
+ * Handles single and batched RSSI scans using Exponential Moving Average (EMA).
+ * Populates global RSSI buffers and stores data for model training or inference.
  * 
- * Used in both static scanning and validation scenarios.
+ * Used in both scanning and validation phases.
  * 
- * @author Lama Badarni
- */
+*/
 
+#include "core/utils/platform.h"
 #include "core/utils/utilities.h"
+#include "core/utils/logger.h"
+#include "esp_wifi.h"
 
 #ifndef RSSI_SCANNER_H
 #define RSSI_SCANNER_H
 
+#include "core/utils/utilities.h"
+
 /**
- * @brief Creates a single RSSI scan.
- *        This scan uses EMA across RSSI_SCAN_SAMPLE_PER_BATCH samples.
- *        and fills accumlatedRSSIs global with sampled RSSIs
+ * @brief Performs a single RSSI scan with EMA smoothing.
+ * 
+ * Scans visible APs, matches known anchors, and computes EMA values.
+ * Fills `accumulatedRSSIs` with smoothed values.
+ * 
+ * @return RSSIData containing current label and all anchor RSSIs.
  */
 RSSIData createSingleRSSIScan();
 
 /**
- * @brief Performs a batch of RSSI scans and stores them into the global dataset.
- *        Each scan is a smoothed sample using EMA across N RSSI samples.
+ * @brief Collects a batch of RSSI scans and saves them to internal storage.
+ * 
+ * Each scan is EMA-smoothed, stored, and logged.
+ * Used for both training data collection and real-time prediction input.
  */
 void performRSSIScan();
-
-/**
- * @brief Performs NUM_OF_VALIDATION_SCANS predictions and compares them to the current label.
- *        Adds successful prediction samples to the dataset.
- * @return Number of correct predictions.
- */
-//int computeRSSIPredictionMatches();
 
 #endif // RSSI_SCANNER_H

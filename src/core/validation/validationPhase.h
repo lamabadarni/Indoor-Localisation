@@ -1,3 +1,15 @@
+/**
+ * @file validationPhase.h
+ * @brief Interface for validating predicted location labels via user confirmation.
+ *
+ * This module verifies the accuracy of prediction mechanisms (RSSI/ToF)
+ * by comparing predicted labels to user-selected ground truth.
+ * 
+ * Includes:
+ * - Full validation loop (`runValidationPhase`)
+ * - Single-label retry/rescan validation (`startLabelValidationSession`)
+ */
+
 #ifndef IOT_INDOOR_LOCALISATION_VALIDATION_PHASE_H
 #define IOT_INDOOR_LOCALISATION_VALIDATION_PHASE_H 
 
@@ -7,34 +19,17 @@
 #include "core/ui/userUI.h" 
 
 /**
- * @brief Runs the interactive validation phase for all defined labels.
- *
- * Prompts the user to select each label, performs scanning and prediction,
- * validates the prediction accuracy through user feedback, and summarizes the results.
- * This function iterates over all location labels and is typically used in training or testing modes.
+ * @brief Validates all labels interactively, one by one.
+ * 
+ * Logs results and tracks validation status in `validForPredection[]`.
  */
 void runValidationPhase();
 
+/**
+ * @brief Predicts current label and asks user to confirm or retry.
+ * 
+ * Updates `validForPredection[currentLabel]` and logs results.
+ */
 void startLabelValidationSession();
-
-/**
- * @brief Internal: print final summary with all validation statuses.
- */
-void printFinalValidationSummary();
-
-/**
- * @brief Validates the scan results by checking how many predictions match the label.
- *        Uses both RSSI and TOF modules if enabled. If failed, offers fallback.
- */
-bool validateScanAccuracy();
-
-/*
-    * @brief Determines the relevance of the backup dataset.
-    *        Evaluates the dataset based on prediction accuracy.
-    *        only called at setup() assumes that dataset is already filled
-    *        with the backup dataset.
-    * @return: True if the backup dataset meets the relevance criteria, false otherwise.
-*/
-bool isBackupDataSetRelevant(void);
 
 #endif // IOT_INDOOR_LOCALISATION_VALIDATION_PHASE_H

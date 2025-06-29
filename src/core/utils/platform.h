@@ -22,10 +22,6 @@
 #include "freertos/task.h"
 #include "esp_log.h"
 #include "esp_timer.h"
-//#include "esp_event.h"
-//#include "nvs_flash.h"
-//#include "sdmmc_cmd.h"
-//#include "driver/sdmmc_host.h"
 
 #define delay_ms(ms) vTaskDelay((ms) / portTICK_PERIOD_MS)
 #define millis_since_boot() (esp_timer_get_time() / 1000)

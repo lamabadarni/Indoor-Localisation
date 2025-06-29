@@ -1,11 +1,15 @@
-#include "scanningPhase.h"
-#include "core/utils/platform.h"
-#include "core/utils/utilities.h"  
-#include "core/utils/logger.h"
+/**
+ * @file tofScanner.cpp
+ * @brief ToF (Time-of-Flight) scanning using Wi-Fi FTM sessions with registered responders.
+ *
+ * Measures round-trip time and computes distance for each known responder.
+ * Each scan is handled via ESP-IDF FTM events and logged to internal structures.
+ * Supports both batch scanning (`performTOFScan`) and single scan execution.
+ */
+
 #include "tofScanner.h"
 #include "core/dataManaging/data.h"
 #include "core/prediction/predictionPhase.h"
-#include "esp_wifi.h"
 
 static bool registered = false;
 static bool inProcess  = false;
@@ -125,33 +129,3 @@ TOFData createSingleTOFScan() {
     }
     return scanData;
 }
-
-/*
-int computeTOFPredictionMatches() {
-    int matches = 0;
-
-    for (int v = 0; v < TOF_SCAN_SAMPLE_PER_BATCH; ++v) {
-        createSingleTOFScan();
-        Label predicted = tofPredict();
-
-        if (predicted == currentLabel) {
-            matches++;
-
-            TOFData data;
-            data.label = currentLabel;
-            for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
-                data.TOFs[i] = accumulatedTOFs[i];
-            }
-            tofDataSet.push_back(data);
-            saveData(data);
-        }
-
-        LOG_DEBUG("TOF", "[VALIDATION] #%d: Predicted %s | Actual %s",
-            v + 1, labels[predicted], labels[currentLabel]);
-    }
-
-    
-    return matches;
-}
-
-*/

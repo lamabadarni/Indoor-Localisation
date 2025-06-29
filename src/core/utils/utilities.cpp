@@ -27,7 +27,6 @@ LogLevel SystemSetup::logLevel   = LOG_LEVEL_ERROR;
 
 Label  currentLabel = LABELS_COUNT;
 bool   shouldAbort  = false;
-bool   reconfigure  = true;
 
 bool   reuseFromMemory[LABELS_COUNT] = {0};
 bool   validForPredection[LABELS_COUNT];
@@ -37,8 +36,9 @@ double rssiAccuracy[LABELS_COUNT] = {0};
 ScannerFlag BufferedData::scanner  = NONE;
 int         BufferedData::lastN    = 0;
 
-std::vector<RSSIData>  rssiDataSet = {};
-std::vector<TOFData>   tofDataSet  = {};
+std::vector<Label>     skippedLabels = {};
+std::vector<RSSIData>  rssiDataSet   = {};
+std::vector<TOFData>   tofDataSet    = {};
 
 double  accumulatedRSSIs[NUMBER_OF_ANCHORS];
 double  accumlatedTOFS[NUMBER_OF_RESPONDERS];
@@ -165,6 +165,9 @@ void resetTOFScanBuffer() {
 
 void setValidForPredection() {
     for (int i = 0; i < LABELS_COUNT; i++) {
+        for(auto label : skippedLabels) {
+            if(label == i) continue;
+        }
         validForPredection[i] = true;
     }
 }
