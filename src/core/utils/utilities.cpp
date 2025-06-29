@@ -178,3 +178,13 @@ float getAccuracy() {
     if (BufferedData::scanner == BOTH)       return (rssiAccuracy[currentLabel] + tofAccuracy[currentLabel]) / 2.0;
     return 0.0;
 }
+
+bool isRSSIActive() {
+    return SystemSetup::currentSystemScannerMode == STATIC_RSSI ||
+           SystemSetup::currentSystemScannerMode == STATIC_RSSI_TOF;
+}
+
+bool isTOFActive() {
+    return SystemSetup::currentSystemScannerMode == TOF ||
+           SystemSetup::currentSystemScannerMode == STATIC_RSSI_TOF;
+}
