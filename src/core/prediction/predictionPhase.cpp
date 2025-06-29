@@ -1,6 +1,7 @@
 #include "predictionPhase.h"
 #include "core/scanning/scanningPhase.h"
 #include "core/dataManaging/data.h"
+#include "core/utils/utilities.h"
 
 static double _euclidean(const double* a, const double* b, int size);
 static void _preparePointRSSI(double toBeNormalised[NUMBER_OF_ANCHORS]);
