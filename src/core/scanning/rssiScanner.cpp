@@ -1,14 +1,17 @@
+/**
+ * @file rssiScanner.cpp
+ * @brief RSSI scanning logic using Wi-Fi APs and Exponential Moving Average (EMA).
+ *
+ * Implements batched RSSI collection across known anchor SSIDs.
+ * Each scan consists of multiple EMA-sampled values to smooth noise.
+ * Populates global `accumulatedRSSIs` and writes `RSSIData` to buffer.
+ */
+
 #include "rssiScanner.h"
-#include "core/utils/platform.h"
-#include "core/utils/utilities.h"
 #include "core/prediction/predictionPhase.h"
-#include "core/dataManaging/data.h"
-#include "core/utils/logger.h"
-#include "esp_wifi.h"
 #include "core/dataManaging/data.h"
 
 #define EXPECTED_NUM_NEAR_APS 30
-
 
 void performRSSIScan() {
     //start scanning - make 15 scan, each scan contains 3 samples and calculate EMA
@@ -16,9 +19,9 @@ void performRSSIScan() {
     for (int scan = 0; scan < RSSI_SCAN_BATCH_SIZE; scan++) {
         
         RSSIData scanData = createSingleRSSIScan();
-        saveData(scanData);
         BufferedData::scanner = STATICRSSI;
         BufferedData::lastN++;
+        saveData(scanData);
 
         LOG_DEBUG("RSSI", "Scan %d for label %s", scan + 1, labels[currentLabel]);
         for (int i = 0; i < NUMBER_OF_ANCHORS; ++i) {
@@ -50,9 +53,8 @@ RSSIData createSingleRSSIScan() {
             for (int k = 0; k < NUMBER_OF_ANCHORS; ++k) {
                 if (sample > 0 && strcmp((const char*)ap_records[j].ssid, anchorSSIDs[k].c_str()) == 0) {
                     accumulatedRSSIs[k] = applyEMA(accumulatedRSSIs[k], ap_records[j].rssi);
-                }
-                else {
-                    accumulatedRSSIs[k] = ap_records[j].rssi;
+                } else {
+                    accumulatedRSSIs[k] = RSSI_DEFAULT_VALUE;
                 }
             }
         }
@@ -68,49 +70,3 @@ RSSIData createSingleRSSIScan() {
 
     return scanData;
 }
-
-/*
-int computeRSSIPredictionMatches() {
-
-    if(rssiDataSet.empty()) return 0;
-
-    int matches = 0;
-    bool mismatch[LABELS_COUNT] = {false};
-    for(int sampleToPredict = 0; sampleToPredict < VALIDATION_MAX_ATTEMPTS; sampleToPredict++) {
-        RSSIData scanData     = createSingleRSSIScan();
-        Label predictedLabel  = rssiPredict();
-        if(predictedLabel == currentLabel) {
-            matches++;
-            //Add each scan to scan data if the predection succeeded
-            saveData(scanData);
-            BufferedData::scanner = STATICRSSI;
-            BufferedData::lastN++;
-        }
-        else {
-            mismatch[predictedLabel] = true;
-        }
-
-        LOG_DEBUG("RSSI", "[VALIDATION] #%d: Predicted %s | Actual %s",
-            sampleToPredict + 1, labels[predictedLabel], labels[currentLabel]);
-         
-    } 
-
-    doneCollectingData();
-
-    if(matches == VALIDATION_MAX_ATTEMPTS) {
-        LOG_INFO("RSSI", "All predictions matched expected %s.", labels[currentLabel]);
-        return;
-    }
-
-    LOG_INFO("RSSI", "Mismatched labels:");
-    for(int m = 0; m < LABELS_COUNT; m++) {
-        if(mismatch[m]) {
-            LOG_INFO("SSID", " - %s.", labels[m]);
-        }
-        return;
-    }
-
-    return matches;
-}
-
-*/

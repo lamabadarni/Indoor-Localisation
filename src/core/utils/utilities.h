@@ -80,7 +80,8 @@ typedef enum {
     MODE_TOF_DIAGNOSTIC = 0,
     MODE_COLLECT_TOF_RESPONDERS_MAC,
     MODE_RSSI_DIAGNOSTIC,
-    MODE_RESTORE_DATA_TEST,
+    MODE_INITIATOR_RESPONDER_TEST,
+    MODE_RESTORE_BACKUP_DATA_TEST,
     SYSTEM_BOOT_MODES_NUM
 } SystemBootMode;
 
@@ -136,10 +137,8 @@ struct SystemSetup {
 
 // ====================== Globals ======================
 
-extern Label  currentLabel;
-extern bool   shouldAbort;
-extern bool   reconfigure;
-
+extern Label   currentLabel;
+extern bool    shouldAbort;
 extern bool    reuseFromMemory[LABELS_COUNT];
 extern bool    validForPredection[LABELS_COUNT];
 extern double  accumulatedRSSIs[NUMBER_OF_ANCHORS];
@@ -148,6 +147,7 @@ extern uint8_t responderMacs[NUMBER_OF_RESPONDERS][TOF_NUMBER_OF_MAC_BYTES];
 extern double  tofAccuracy[LABELS_COUNT];
 extern double  rssiAccuracy[LABELS_COUNT];
 
+extern std::vector<Label>     skippedLabels;
 extern std::vector<RSSIData>  rssiDataSet;
 extern std::vector<TOFData>   tofDataSet;
 

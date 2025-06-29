@@ -1,4 +1,4 @@
-#include "core/systemBootTest/diagnostics.h"
+#include "core/systemBootModeHandlers/diagnostics.h"
 #include "core/scanning/rssiScanner.h"
 #include "core/scanning/tofScanner.h"
 
@@ -40,8 +40,9 @@ bool interactiveScanCoverage() {
             case MODE_RSSI_DIAGNOSTIC:
             LOG_INFO("VERIFY", "Verifying RSSI scan coverage");
             performRSSIScanCoverage();
-            case MODE_RESTORE_DATA_TEST:
+            case MODE_RESTORE_BACKUP_DATA_TEST:
             case MODE_COLLECT_TOF_RESPONDERS_MAC:
+            case MODE_INITIATOR_RESPONDER_TEST:
             return false;
             case SYSTEM_BOOT_MODES_NUM:
             //TODO: should have assert or something

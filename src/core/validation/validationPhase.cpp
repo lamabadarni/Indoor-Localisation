@@ -1,3 +1,18 @@
+/**
+ * @file validationPhase.cpp
+ * @brief Implements the validation phase where the system predicts user location
+ *        and confirms correctness via user input.
+ *
+ * Each label undergoes one or more prediction attempts.
+ * The user confirms prediction results or chooses to rescan or abort.
+ * Valid labels are tracked in `validForPredection[]` and scored using `getAccuracy()`.
+ *
+ * Key Flow:
+ * - Run full validation phase (`runValidationPhase`)
+ * - Validate individual labels (`startLabelValidationSession`)
+ */
+
+
 #include "validationPhase.h"
 #include "core/scanning/scanningPhase.h"
 #include "core/prediction/predictionPhase.h"
@@ -12,7 +27,7 @@ void runValidationPhase() {
     LOG_INFO("VALIDATE", "You will be asked to confirm whether the prediction is correct.");
     LOG_INFO("VALIDATE", "Validation phase will continue until running validation phase at all labels or you decide to abort.");
 
-    setValidForPredection();
+    setValidForPredection(); // by default all the unskipped labels are set to true
 
     while (!shouldAbort) {
         LOG_INFO("VALIDATE", "Please stand still at a label, press enter when you're ready");
@@ -39,7 +54,20 @@ void runValidationPhase() {
         }
     }
 
-    printFinalValidationSummary(); 
+    LOG_INFO("VALIDATE", " ");
+    LOG_INFO("VALIDATE", "=============== Validation Summary ===============");
+
+    for (int i = 0; i < LABELS_COUNT; ++i) {
+        currentLabel = (Label)i;
+        const char* result = validForPredection[i] ? "VALIDATED" : "NOT VALIDATED";
+
+        LOG_INFO("VALIDATE", "Label %d - %s: %s, with accuracyL %.2f%%", i, labels[i], result, getAccuracy()*100);
+    }
+
+    currentLabel = (Label)LABELS_COUNT;
+
+    LOG_INFO("VALIDATE", "==================================================");
+    LOG_INFO("VALIDATE", " ");
 }
 
 void startLabelValidationSession() {
@@ -47,7 +75,6 @@ void startLabelValidationSession() {
     int retryCount = 0;
 
     while (retry) {
-
         retry = false; 
         retryCount++;
 
@@ -65,31 +92,17 @@ void startLabelValidationSession() {
         LOG_ERROR("VALIDATE", "Predicted location: %s - Expected location: %s", labels[predicted], labels[currentLabel]);
         delay_ms(DELAY_BETWEEN_PHASES);
 
-        retry = promptUserRetryPrediction();
 
         if(retryCount >= VALIDATION_MAX_ATTEMPTS) {
             LOG_ERROR("VALIDATE", "Data set seems invalid for: %s", labels[predicted]);
-            validForPredection[currentLabel] = false;
-            return;
+            break;
         }
+
+        retry = promptUserRetryPrediction();
 
         delay_ms(DELAY_BETWEEN_PHASES);
     }
-}
 
-void printFinalValidationSummary() {
-    LOG_INFO("VALIDATE", " ");
-    LOG_INFO("VALIDATE", "=============== Validation Summary ===============");
-
-    for (int i = 0; i < LABELS_COUNT; ++i) {
-        currentLabel = (Label)i;
-        const char* result = validForPredection[i] ? "VALIDATED" : "NOT VALIDATED";
-
-        LOG_INFO("VALIDATE", "Label %d - %s: %s, with accuracyL %d", i, labels[i], result, getAccuracy());
-    }
-
-    currentLabel = (Label)LABELS_COUNT;
-
-    LOG_INFO("VALIDATE", "==================================================");
-    LOG_INFO("VALIDATE", " ");
+    validForPredection[currentLabel] = false;
+    return;
 }

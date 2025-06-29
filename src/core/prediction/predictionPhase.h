@@ -11,17 +11,6 @@
  */
 void runPredictionPhase(void);
 
-/*
-    * @brief Predicts the location using the kNN algorithm based on input RSSI values.
-    * @return: predicted location
-*/
-Label rssiPredict();
-
-/*
-    * @brief Predicts the location using the kNN algorithm based on input TOF values.
-    * @return: predicted location
-*/
-Label tofPredict();
 
 Label predict();
 
@@ -30,8 +19,6 @@ bool startLabelPredectionSession();
 bool clearDataAfterPredectionFailure();
 
 Label createSamplePredict();
-
-void printPredictionSummary();
 
 
 #endif // IOT_INDOOR_LOCALISATION_PREDICTION_PHASE_H
