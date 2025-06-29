@@ -1,31 +1,115 @@
+/**
+ * @file userUI.h
+ * @brief User Interface prompts and system configuration input handlers.
+ *
+ * This module encapsulates all user-facing prompts used throughout
+ * the system: system setup, label selection, scanning, prediction confirmation,
+ * and retry/abort flows. All user interaction logic is centralized here.
+ * 
+ * Designed to support structured flow control during scanning and prediction sessions.
+ * 
+ */
+
 #ifndef USER_UI_H
 #define USER_UI_H
 
-#include "../utils/utilities.h"
+#include "core/utils/utilities.h"
 
-// ========== System Setup ==========
-void runUserSystemSetup(); // <- wrapper for logger + mode + enablements
+// ======================== SYSTEM SETUP ========================
 
-// ========== Location Selection ==========
-void promptUserLocationLabel();
+/**
+ * @brief Runs initial user configuration sequence:
+ *        log level, system mode, scanner mode, and toggles.
+ */
+void runUserSystemSetup();
 
-// ========== Scan Feedback ==========
-bool promptUserRescanAfterInvalidation();
-bool promptUserRetryPrediction();
-bool promptUserCoverageSufficient();
-bool promptUserProceedToNextLabel();
-bool promptUserAbortToImproveEnvironment();
+/**
+ * @brief Prompts the user to show debug logs during rescan attempts.
+ */
 void promptUserShowDebugLogs();
 
-// ========== Prediction Feedback ==========
+// ======================== LOCATION LABELING ========================
+
+/**
+ * @brief Prompts the user to choose a label from the label list.
+ */
+void promptUserLocationLabel();
+
+/**
+ * @brief Displays all available labels before prediction begins.
+ */
+void promptLabelsValidToPredection();
+
+/**
+ * @brief Prompts whether to continue scanning other labels.
+ * @return true to continue, false to exit or abort.
+ */
+bool promptUserProceedToNextLabel();
+
+// ======================== BACKUP / RESTORE ========================
+
+/**
+ * @brief Prompts reuse decision for existing scan data.
+ * @return 'Y', 'V', or 'N' based on user's choice.
+ */
+char promptUserReuseDecision();
+
+// ======================== COVERAGE CHECK ========================
+
+/**
+ * @brief Asks the user whether to run coverage diagnostic scan.
+ * @return 'Y', 'N', or 'D' (Don't ask again).
+ */
+char promptUserRunCoverageDiagnostic();
+
+/**
+ * @brief Asks if user wants to abort to improve environment before scanning.
+ * @return true if abort is selected.
+ */
+bool promptUserAbortToImproveEnvironment();
+
+// ======================== VALIDATION FLOW ========================
+
+/**
+ * @brief Asks if the user wants to rescan after validation fails.
+ * @return true if rescan is approved.
+ */
+bool promptUserRescanAfterInvalidation();
+
+/**
+ * @brief Placeholder for prompt after multiple prediction failures.
+ * @return true if user confirms clearing data.
+ */
+bool promptUserForClearingDataAfterManyPredectionFailure(); // To be implemented
+
+// ======================== PREDICTION FLOW ========================
+
+/**
+ * @brief Asks user to approve prediction result.
+ * @return true if prediction is accepted.
+ */
 bool promptUserApprovePrediction();
+
+/**
+ * @brief Asks user to choose between two prediction options (RSSI vs ToF).
+ * @param rssi The RSSI-predicted label.
+ * @param tof The ToF-predicted label.
+ * @return Chosen label, or LABELS_COUNT if rejected.
+ */
 Label promptUserChooseBetweenPredictions(Label rssi, Label tof);
 
-// ========== Reuse or Abort Prompts ==========
-char promptUserReuseDecision();
-char promptUserRunCoverageDiagnostic();
-void promptUserAbortOrContinue();
+/**
+ * @brief Asks user whether to retry prediction after failure.
+ * @return true to retry; false otherwise.
+ */
+bool promptUserRetryPrediction();
 
-bool promptUserForClearingDataAfterManyPredectionFailure();
+// ======================== SYSTEM ABORT FLOW ========================
+
+/**
+ * @brief Handles user-driven abort or continue decision.
+ *        Waits for confirmation or timeout.
+ */
+void promptUserAbortOrContinue();
 
 #endif // USER_UI_H

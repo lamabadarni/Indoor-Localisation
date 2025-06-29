@@ -1,37 +1,60 @@
+/**
+ * @file scanningPhase.h
+ * @brief Orchestrates the full scanning phase across all labels.
+ *
+ * Handles label-wise scanning with validation, coverage diagnostics, and retry logic.
+ * Dispatches to RSSI/ToF scan modules depending on system scanner mode.
+ * Used in training, validation, and full sessions.
+ * 
+ */
 
-#ifndef _SCANNINGPHASE_
-#define _SCANNINGPHASE_
+#ifndef SCANNING_PHASE_H
+#define SCANNING_PHASE_H
+
+#include "core/ui/userUI.h"
+#include "core/utils/utilities.h"
+#include "core/utils/logger.h"
 
 /**
- * @brief Executes the scanning phase across all location labels.
+ * @brief Executes a full scan loop across all labels.
  *
- * For each label, prompts the user to begin scanning, collects RSSI and/or TOF data
- * based on the current system state, validates the scan, and repeats if necessary.
- * This function is typically used to gather training or prediction data for the localization model.
+ * - Prompts for each label.
+ * - Offers reuse/validate options.
+ * - Collects new scans and validates them.
+ * - Skips failed scans after retries.
  */
 void runScanningPhase();
 
 /**
- *  @brief Starts a scanning session at a given label with retries and validation.
- *  @param label The target label to scan at.
- *  @return true if scan was successful and accepted, false otherwise.
-*/
+ * @brief Performs a scan session at the current label.
+ *
+ * - Optionally runs coverage diagnostics.
+ * - Collects measurements and validates.
+ * - Retries until accepted or max retries reached.
+ *
+ * @return true if scan passed validation, false if skipped.
+ */
 bool startLabelScanningSession();
 
 /**
- * @brief Collects RSSI/TOF data based on the current system state.
- *        Dispatches to appropriate scanning functions.
+ * @brief Collects data using the active system scanner mode.
+ *
+ * Routes to either RSSI, ToF, or hybrid scanning logic.
  */
 void collectMeasurements();
 
-
-void scanTOF();
-
-void rescan();
-
-//double computeScanAccuracy();
-
+/**
+ * @brief Collects a single RSSI+ToF snapshot without validation.
+ *
+ * Useful for diagnostics or testing.
+ */
 void createSingleScan();
 
+/**
+ * @brief Triggers a rescan after validation failure.
+ *
+ * Logs reason and re-collects measurements.
+ */
+void rescan();
 
-#endif //IOT_INDOOR_LOCALISATION_SCANNING_H
+#endif // SCANNING_PHASE_H

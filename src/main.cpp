@@ -18,20 +18,28 @@ static void initLogger() {
 }
 
 static void handleSoftExit() {
-    
+
+    LOG_INFO("MAIN", "Session ended. Goodbye.");
 }
 
 
 extern "C" void app_main() {
-    initLogger();  // Replace Serial.begin() for ESP-IDF logging
+    initLogger();     // Replace Serial.begin() for ESP-IDF logging
     delay_ms(10000);  // Optional startup delay
 
     while (true) {
         
-        reconfigure = false;
         shouldAbort = false;
 
         runUserSystemSetup();  // Prompts user for system mode and settings
+
+        if(SystemSetup::enableBackup) {
+            //TODO: call init for backup
+        }
+
+        if(SystemSetup::enableRestore) {
+            //TODO: call init for 
+        }
 
         switch (SystemSetup::currentSystemMode) {
             case MODE_SYSTEM_BOOT:
@@ -55,16 +63,15 @@ extern "C" void app_main() {
                 break;
         }
 
-
-        if(reconfigure) break;
-        if(shouldAbort) handleSoftExit();
+        if(shouldAbort) break;
 
         LOG_INFO("MAIN", "Would you like to run another session?");
         LOG_INFO("MAIN", "(y - yes | n - no)");
         char again = readCharFromUser();
         if (again != 'y' && again != 'Y') {
-            LOG_INFO("MAIN", "Session ended. Goodbye.");
             break;
         }
     }
+
+    handleSoftExit();
 }

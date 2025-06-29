@@ -6,26 +6,21 @@ static double _euclidean(const double* a, const double* b, int size);
 static void _preparePointRSSI(double toBeNormalised[NUMBER_OF_ANCHORS]);
 static void _preparePointTOF(double TOF[NUMBER_OF_RESPONDERS], double toBeNormalised[NUMBER_OF_RESPONDERS]);
 static Label _predict(std::vector<double>& distances, std::vector<Label>& labels, int k);
+static Label rssiPredict();
+static Label tofPredict();
 
 static ScannerFlag flag = NONE;
-#define predict_  (flag == STATICRSSI ? rssiPredict : tofPredict) 
 #define accuracy_ (flag == STATICRSSI ? rssiAccuracy : tofAccuracy)
 
 void runPredictionPhase(void) {
     LOG_INFO("PREDICT", " ");
     LOG_INFO("PREDICT", "=============== Prediction Phase Started ===============");
 
-
-    if (SystemSetup::currentSystemMode == MODES_NUM) {
-        LOG_ERROR("PREDICT", "System state is invalid. Cannot proceed.");
-        return;
-    }
-
     int invalidLabels = 0;
-     bool cont = true;
+    bool cont = true;
 
     while (!shouldAbort && cont) {
-        if(invalidLabels > PREDICTION_MAX_LABEL_FAILURE) {
+        if(invalidLabels >= PREDICTION_MAX_LABEL_FAILURE) {
             LOG_INFO("PREDICT", "Encountered failure at %d different labels", PREDICTION_MAX_LABEL_FAILURE);
             bool clearData = promptUserForClearingDataAfterManyPredectionFailure();
             if(clearData) {
@@ -82,12 +77,9 @@ void runPredictionPhase(void) {
         delay_ms(USER_PROMPTION_DELAY);
     }
 
-    printPredictionSummary();
+    //TODO: should print predection summary
     LOG_INFO("PREDICT", "Aborting predection phase");
 }
-
-// Ward Lama :: need implementation
-void printPredictionSummary();
 
 // Ward Lama :: need implementation -- should update validForPredection and make user choose only from them
 // update data
@@ -103,7 +95,7 @@ bool startLabelPredectionSession() {
 
     Label predictLabel = predict();
 
-    if((int)predict == LABELS_COUNT) {
+    if((int)predictLabel == LABELS_COUNT) {
        LOG_INFO("PREDICT", "Prediction failed ..,");
        if(flag == NONE) {
         LOG_DEBUG("PREDICT", "Both rssi prediction and tof prediction failed");
@@ -172,7 +164,7 @@ Label predict() {
             else if(user == tofLabel)  { flag = TOF_;        rssiAccuracy[rssiLabel] = 0;}
             else { flag = NONE; tofAccuracy[tofLabel] = 0; rssiAccuracy[rssiLabel] = 0;}
             label = user;
-            break;
+            return label;
         }
 
         case SYSTEM_SCANNER_MODES_NUM:
@@ -188,8 +180,7 @@ Label predict() {
             return label;
         }
     }
-
-    accuracy_[label] = 0;
+    
     return label;
 }
 
@@ -202,7 +193,7 @@ Label createSamplePredict() {
         if(c > PREDICTION_SAMPLES_THRESHOLD) return samples[i];
     }
 
-    int most[LABELS_COUNT]; 
+    int most[LABELS_COUNT] = {0};
     for(int i = 0; i < PREDICTION_SAMPLES; i++) {
         most[samples[i]]++;
     }
@@ -225,11 +216,17 @@ Label createSamplePredict() {
         return LABELS_COUNT;
     }
 
-    accuracy_[maxIndex] = most[maxIndex] / PREDICTION_SAMPLES;
+    if(flag == STATIC_RSSI) {
+        rssiAccuracy[maxIndex] = most[maxIndex] / PREDICTION_SAMPLES;
+    }
+    else if (flag == TOF_) {
+        tofAccuracy[maxIndex] = most[maxIndex] / PREDICTION_SAMPLES;
+    }
+
     return (Label)maxIndex;
 }
 
-Label rssiPredict() {
+static Label rssiPredict() {
     int sizeOfDataSet = rssiDataSet.size();
     double normalisedInput[NUMBER_OF_ANCHORS];
     std::vector<double> distances(sizeOfDataSet, 0);
@@ -246,7 +243,7 @@ Label rssiPredict() {
     return _predict(distances, labels, K_RSSI);
 }
 
-Label tofPredict() {
+static Label tofPredict() {
     int sizeOfDataSet = tofDataSet.size();
     double normalisedInput[NUMBER_OF_RESPONDERS];
     std::vector<double> distances(sizeOfDataSet, 0);
