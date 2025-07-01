@@ -41,7 +41,7 @@ std::vector<RSSIData>  rssiDataSet   = {};
 std::vector<TOFData>   tofDataSet    = {};
 
 double  accumulatedRSSIs[NUMBER_OF_ANCHORS];
-double  accumlatedTOFS[NUMBER_OF_RESPONDERS];
+double  accumulatedTOFs[NUMBER_OF_RESPONDERS];
 uint8_t responderMacs[NUMBER_OF_RESPONDERS][TOF_NUMBER_OF_MAC_BYTES];
 
 
@@ -187,4 +187,13 @@ float getAccuracy() {
         vec.push_back(arr[i]);
     }
     return vec;
+    }
+bool isRSSIActive() {
+    return SystemSetup::currentSystemScannerMode == STATIC_RSSI ||
+           SystemSetup::currentSystemScannerMode == STATIC_RSSI_TOF;
+}
+
+bool isTOFActive() {
+    return SystemSetup::currentSystemScannerMode == TOF ||
+           SystemSetup::currentSystemScannerMode == STATIC_RSSI_TOF;
 }

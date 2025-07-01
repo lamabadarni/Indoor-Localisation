@@ -118,8 +118,7 @@ bool loadDataset() {
     bool ok = true;
 
     // This logic is based on the version you provided in the previous turn
-    if (SystemSetup::currentSystemScannerMode == SystemScannerMode::STATIC_RSSI ||
-        SystemSetup::currentSystemScannerMode == SystemScannerMode::STATIC_RSSI_TOF) {
+    if (isRSSIActive()) {
         FILE* f = fopen(getRSSIFilePath().c_str(), "r");
         if (f) {
             LOG_INFO("FLASH", "Loading RSSI dataset...");
@@ -139,8 +138,7 @@ bool loadDataset() {
         }
     }
 
-    if (SystemSetup::currentSystemScannerMode == SystemScannerMode::TOF ||
-        SystemSetup::currentSystemScannerMode == SystemScannerMode::STATIC_RSSI_TOF) {
+    if (isTOFActive()) {
         FILE* f = fopen(getTOFFilePath().c_str(), "r");
         if (f) {
             LOG_INFO("FLASH", "Loading TOF dataset...");
@@ -166,12 +164,6 @@ bool loadDataset() {
 bool formatStorage(void) {
     // Use the corrected getBaseDir() function to get the full path
     std::string baseDir = getBaseDir();
-
-    // getBaseDir() might return a path with a trailing slash, e.g., "/littlefs/STATIC_RSSI/".
-    // It's safer to remove it before calling mkdir.
-    if (!baseDir.empty() && baseDir.back() == '/') {
-        baseDir.pop_back();
-    }
 
     // 1) Recursively delete anything under baseDir
     _deleteDirectory(baseDir.c_str());

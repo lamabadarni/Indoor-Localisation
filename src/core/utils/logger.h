@@ -1,5 +1,7 @@
 #pragma once
 
+#include "utilities.h"
+
 #define ANSI_RESET  "\\033[0m"
 #define ANSI_GREEN  "\\033[1;32m"
 #define ANSI_YELLOW "\\033[1;33m"
