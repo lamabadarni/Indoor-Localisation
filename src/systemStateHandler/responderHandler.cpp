@@ -92,3 +92,61 @@ void collectResponderMACs() {
 }
 
 */
+/* Wi-Fi FTM Example
+
+   This example code is in the Public Domain (or CC0 licensed, at your option.)
+
+   Unless required by applicable law or agreed to in writing, this
+   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+   CONDITIONS OF ANY KIND, either express or implied.
+*/
+
+///////////////////////////////////******/////////////////////// we added this !!! ////////////
+/*
+#include <errno.h>
+#include <string.h>
+#include <inttypes.h>
+#include <stdio.h>
+#include "nvs_flash.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_event.h"
+#include "esp_log.h"
+#include "esp_err.h"
+#include "esp_wifi.h"
+
+
+
+void app_main(void)
+{ 
+    esp_err_t ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        ret = nvs_flash_init();
+    }
+
+
+    // start console REPL
+     wifi_config_t cfg = {
+   .ap = {
+    .ssid= "responder1",
+    .ssid_len=0,
+    .password="12345678",
+    .channel = 1,
+    .authmode = WIFI_AUTH_WPA2_PSK,
+    .max_connection =4,
+    .ftm_responder=true
+    
+
+   }
+
+    };
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_AP));
+    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_AP, &cfg));
+    ESP_ERROR_CHECK(esp_wifi_start());
+
+    for(;;){
+        vTaskDelay(pdMS_TO_TICKS(10000));
+    }
+}
+*/
