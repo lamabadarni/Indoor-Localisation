@@ -6,12 +6,13 @@
 #include "core/ui/userUI.h"
 
 static constexpr char META_FILENAME[]        = "meta_";       // This one is okay
-static constexpr char RSSI_FILENAME[]        = "rssi_data_";  // Shortened
-static constexpr char TOF_FILENAME[]         = "tof_data_";   // Shortened
-static constexpr char ACCURACY_FILENAME[]    = "acc_data_";   // Shortened
+static constexpr char STATIC_RSSI_FILENAME[] = "static_rssi_data";  // Shortened
+static constexpr char STATIC_RSSI_FILENAME[] = "dynamic_rssi_data";  // Shortened
+static constexpr char TOF_FILENAME[]         = "tof_data";   // Shortened
+static constexpr char ACCURACY_FILENAME[]    = "acc_data";   // Shortened
 static constexpr char TMP_SUFFIX[]           = ".tmp";
 static constexpr char CSV_SUFFIX[]           = ".csv";
-constexpr const char* MOUNT_POINT = "/littlefs";
+constexpr const char* MOUNT_POINT            = "/littlefs";
 
 /**
  * @brief Get the base directory for the current system state.

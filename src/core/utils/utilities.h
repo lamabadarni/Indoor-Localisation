@@ -14,16 +14,22 @@
 #define TOF_MIN_RESPONDERS_VISIBLE   (2)
 #define TOF_MAX_AVERAGE_DISTANCE_CM  (600)
 
-// == RSSI Scanner ==
-#define RSSI_SCAN_BATCH_SIZE         (15)
-#define RSSI_SCAN_SAMPLE_PER_BATCH   (3)
+#define MAX_RETRIES_FOR_RSSI         (3)
 #define RSSI_DEFAULT_VALUE           (-100)
 #define RSSI_SCAN_DELAY_MS           (150)
+#define MAC_ADDRESS_SIZE             (6)
+
+// == Static RSSI Scanner ==
+#define RSSI_SCAN_BATCH_SIZE         (15)
+#define RSSI_SCAN_SAMPLE_PER_BATCH   (3)
 #define NUMBER_OF_ANCHORS            (9)
-#define MAX_RETRIES_FOR_RSSI         (3)
+
+// == Dynamic RSSI Scanner ==
+#define DYNAMIC_RSSI_SCAN_BATCH_SIZE        (15)
+#define DYNAMIC_RSSI_SCAN_SAMPLE_PER_BATCH  (3)
+#define NUMBER_OF_DYNAMIC_APS               (9)
 
 // == TOF Scanner ==
-#define TOF_NUMBER_OF_MAC_BYTES      (6)
 #define TOF_SCAN_BATCH_SIZE          (15)
 #define TOF_SCAN_SAMPLE_PER_BATCH    (2)
 #define TOF_MAX_VALID_CM             (500.0)  // Adjustable max valid TOF reading
@@ -43,8 +49,8 @@
 #define MIN_DATA_PER_LABEL_SIZE      (K_RSSI * 3) 
 #define PREDICTION_MAX_RETRIES       (2)
 #define PREDICTION_MAX_LABEL_FAILURE (5)
-#define PREDICTION_SAMPLES           (5)
-#define PREDICTION_SAMPLES_THRESHOLD (3)
+#define PREDICTION_SAMPLES           (3)
+#define PREDICTION_SAMPLES_THRESHOLD (2)
 
 // Hardware pins
 #define PIN_BTN_UP      GPIO_NUM_34
@@ -117,8 +123,18 @@ typedef enum {
 
 // ====================== Data Structures ======================
 
-struct RSSIData {
+struct StaticRSSIData {
     int RSSIs[NUMBER_OF_ANCHORS];  
+    Label label;
+};
+
+struct DynamicRSSIData {
+    int RSSIs[NUMBER_OF_DYNAMIC_APS];  
+    Label label;
+};
+
+struct DynamicMacData {
+    uint8_t macAddresses[NUMBER_OF_DYNAMIC_APS][MAC_ADDRESS_SIZE];
     Label label;
 };
 
@@ -127,7 +143,12 @@ struct TOFData {
     Label label;
 };
 
-struct BufferedData {
+struct SaveBufferedData {
+   static ScannerFlag scanner;
+   static int lastN;
+};
+
+struct DeleteBufferedData {
    static ScannerFlag scanner;
    static int lastN;
 };
@@ -150,15 +171,19 @@ extern Label   currentLabel;
 extern bool    shouldAbort;
 extern bool    reuseFromMemory[LABELS_COUNT];
 extern bool    validForPredection[LABELS_COUNT];
-extern double  accumulatedRSSIs[NUMBER_OF_ANCHORS];
+extern double  accumulatedStaticRSSIs[NUMBER_OF_ANCHORS];
+extern double  accumulatedDynamicRSSIs[NUMBER_OF_DYNAMIC_APS];
 extern double  accumulatedTOFs[NUMBER_OF_RESPONDERS];
-extern uint8_t responderMacs[NUMBER_OF_RESPONDERS][TOF_NUMBER_OF_MAC_BYTES];
+extern uint8_t responderMacs[NUMBER_OF_RESPONDERS][MAC_ADDRESS_SIZE];
 extern double  tofAccuracy[LABELS_COUNT];
-extern double  rssiAccuracy[LABELS_COUNT];
+extern double  staticRSSIAccuracy[LABELS_COUNT];
+extern double  dynamicRSSIAccuracy[LABELS_COUNT];
 
-extern std::vector<Label>     skippedLabels;
-extern std::vector<RSSIData>  rssiDataSet;
-extern std::vector<TOFData>   tofDataSet;
+extern std::vector<Label>           skippedLabels;
+extern std::vector<StaticRSSIData>  staticRSSIDataSet;
+extern std::vector<DynamicRSSIData> dynamicRSSIDataSet;
+extern std::vector<DynamicMacData>  dynamicMacDataSet;
+extern std::vector<TOFData>         tofDataSet;
 
 extern const std::string   anchorSSIDs[NUMBER_OF_ANCHORS];
 extern const std::string   tofSSIDs[NUMBER_OF_RESPONDERS];
@@ -181,11 +206,17 @@ int readIntFromUser();
 
 char getCharFromUserWithTimeout(int timeoutMs);
 
-bool isRSSIActive();
+bool isStaticRSSIActive();
 
 bool isTOFActive();
 
-void resetRssiBuffer();
+bool isDynamicRSSIActive();
+
+void resetStaticRssiBuffer();
+
+void resetDynamicRssiBuffer();
+
+void resetDynamicMacBuffer();
 
 void resetTOFScanBuffer();
 
