@@ -46,6 +46,15 @@
 #define PREDICTION_SAMPLES           (5)
 #define PREDICTION_SAMPLES_THRESHOLD (3)
 
+// Hardware pins
+#define PIN_BTN_UP      GPIO_NUM_34
+#define PIN_BTN_DOWN    GPIO_NUM_35
+#define PIN_BTN_SELECT  GPIO_NUM_32
+
+// I²C pins for the OLED
+#define OLED_I2C_SDA    GPIO_NUM_21
+#define OLED_I2C_SCL    GPIO_NUM_22
+
 // ====================== Enums ======================
 
 typedef enum  {
@@ -183,5 +192,8 @@ void resetTOFScanBuffer();
 void setValidForPredection();
 
 float getAccuracy();
+
+ std::vector<std::string> arrayToVector(const std::string arr[], int size);
+
 
 #endif // UTILITIES_H
