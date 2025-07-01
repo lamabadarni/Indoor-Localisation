@@ -103,6 +103,7 @@ void startLabelValidationSession() {
         delay_ms(DELAY_BETWEEN_PHASES);
     }
 
+    // Lama TODO: Delete data
     validForPredection[currentLabel] = false;
     return;
 }

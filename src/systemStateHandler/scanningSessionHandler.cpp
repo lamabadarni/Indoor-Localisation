@@ -15,6 +15,4 @@ void handleScanningSession() {
     if(SystemSetup::enableValidationPhase) {
         runValidationPhase();
     }
-
-    
 }

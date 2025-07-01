@@ -20,6 +20,11 @@ void saveData(const RSSIData &scanData);
 void saveData(const TOFData &scanData);
 
 /**
+ * @brief delete buffered data based DeleteInvalidData
+ */
+void deleteInvalidData(void); 
+
+/**
  * @brief Loads the dataset according to the current system state into the global vectors.
  * @return true if the dataset was loaded successfully, false otherwise.
  */
@@ -45,4 +50,7 @@ bool filterNonValidData(const bool validMap[LABELS_COUNT]);
  */
 bool resetCSV(void);
 
+/**
+ * @brief Assumes there are n buffered samples in the dataset that need to be saved to the file.
+ */
 void doneCollectingData();
