@@ -118,6 +118,7 @@ int applyEMA(int prevRSSI, int newRSSI) {
     if (prevRSSI == RSSI_DEFAULT_VALUE) return newRSSI;
     return (int)(ALPHA * prevRSSI + (1.0 - ALPHA) * newRSSI);
 }
+/////////////////////////////////////////////////////// hala deleted due to oled ///////////////////////////////////////////
 
 char readCharFromUser() {
     char input[8];
@@ -150,6 +151,7 @@ char getCharFromUserWithTimeout(int timeoutMs) {
 
     return '\0';  // timeout or no input
 }
+    
 
 void resetRssiBuffer() {
     for(int i = 0; i < NUMBER_OF_ANCHORS; i++) {
@@ -179,6 +181,13 @@ float getAccuracy() {
     return 0.0;
 }
 
+ std::vector<std::string> arrayToVector(const std::string arr[], int size) {
+    std::vector<std::string> vec;
+    for (int i = 0; i < size; ++i) {
+        vec.push_back(arr[i]);
+    }
+    return vec;
+    }
 bool isRSSIActive() {
     return SystemSetup::currentSystemScannerMode == STATIC_RSSI ||
            SystemSetup::currentSystemScannerMode == STATIC_RSSI_TOF;
