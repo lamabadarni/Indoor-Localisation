@@ -286,8 +286,8 @@ static double _dynamicRSSIeuclidean(double rssi1[NUMBER_OF_DYNAMIC_APS],
 static Label dynamicRSSIPredict() {
     int sizeOfDataSet = dynamicRSSIDataSet.size();
     double normalisedInput[NUMBER_OF_DYNAMIC_APS];
-    std::vector<double> distances(sizeOfDataSet);
-    std::vector<Label> labels;
+    std::vector<double> distances(sizeOfDataSet, 0);
+    std::vector<Label> labels(sizeOfDataSet, LABELS_COUNT);
 
     memcpy(normalisedInput, accumulatedDynamicRSSIs, NUMBER_OF_DYNAMIC_APS);
     _preparePointRSSI(normalisedInput, NUMBER_OF_DYNAMIC_APS);
@@ -297,10 +297,12 @@ static Label dynamicRSSIPredict() {
 
         memcpy(normalisedPoint, dynamicRSSIDataSet[i].RSSIs, NUMBER_OF_DYNAMIC_APS);
         _preparePointRSSI(normalisedPoint, NUMBER_OF_DYNAMIC_APS);
-        distances[i] = _dynamicRSSIeuclidean(normalisedInput, normalisedPoint, )
+        distances[i] = _dynamicRSSIeuclidean(normalisedInput, normalisedPoint,
+                       accumulatedMacAddresses, dynamicMacDataSet[i].macAddresses);
+        labels[i] = staticRSSIDataSet[i].label;
     }
 
-    return LABELS_COUNT;
+    return _predict(distances, labels, K_RSSI);
 }
 
 static Label tofPredict() {
@@ -310,6 +312,7 @@ static Label tofPredict() {
     std::vector<Label> labels(sizeOfDataSet, LABELS_COUNT);
 
     _preparePointTOF(accumulatedTOFs, normalisedInput);
+
     for (int i = 0; i < sizeOfDataSet; ++i) {
         double normalisedPoint[NUMBER_OF_RESPONDERS];
         _preparePointTOF(tofDataSet[i].TOFs, normalisedPoint);
