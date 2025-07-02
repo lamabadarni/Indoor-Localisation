@@ -121,7 +121,7 @@ void promptUserShowDebugLogsOLED() {
 // 🟩 LABEL SELECTION
 // =======================================================
 
-void promptUserLocationLabelOLED() { //// for scaaaan 
+void promptUserLocationLabelForScanOLED() { //// for scaaaan 
     LOG_INFO("LABEL", "[USER] > Select label by index:");
     // The complex skipping logic is preserved in the logs, but simplified for the display menu.
     // You can add more complex logic after the display selection if needed.
@@ -227,13 +227,7 @@ bool promptUserRetryPredictionOLED() {
     return display_prompt_yes_no("Prediction Failed", "Retry prediction?");
 }
 
-bool promptUserForClearingDataAfterManyPredectionFailure() {
-    //HALA: ask user if to delete the data
-    return display_prompt_yes_no("Error", "Clear all data?");
-}
-
 char readCharFromUserOLED(){
-
     return display_wait_for_any_button();
 } 
 
@@ -251,8 +245,6 @@ bool promptUserRunAnotherSessionOLED(){
 }
 
 bool promptUserForClearingDataAfterManyPredectionFailureOLED() {
-
-
     bool choice = display_prompt_yes_no("PREDICT", " [USER] > Delete data for all labels after many failures? (y/n):"); // Pass the formatted string  
     return choice; 
 }

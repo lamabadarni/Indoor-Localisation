@@ -4,9 +4,7 @@
  */
 
 #include "responderMACsCollector.h"
-#include "core/diagnostics/diagnostics.h"
-#include "core/utils/logger.h"
-#include "core/ui/userUI.h"
+#include "diagnostics.h"
 
 bool isMACUnset(const uint8_t* mac) {
     for (int i = 0; i < MAC_ADDRESS_SIZE; ++i) {
@@ -21,11 +19,11 @@ void clearResponderMacs() {
     }
 }
 
-String formatMac(const uint8_t* mac) {
+std::string formatMac(const uint8_t* mac) {
     char buf[18];
     snprintf(buf, sizeof(buf), "%02X:%02X:%02X:%02X:%02X:%02X",
              mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-    return String(buf);
+    return std::string(buf);
 }
 
 void collectResponderMACs() {

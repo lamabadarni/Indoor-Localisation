@@ -45,7 +45,7 @@ Coverage scanDynamicForCoverage() {
     int count = 0;
     double sum = 0;
     for (const auto& r : accumulatedDynamicRSSIs) {
-        sum += r.second;
+        sum += r;
         count++;
     }
 
@@ -95,7 +95,7 @@ void performTOFScanCoverage() {
 
 void interactiveScanCoverage() {
     while (!shouldAbort) {
-        promptUserLocationLabel();
+        promptUserLocationLabelForScan();
 
         switch (SystemSetup::currentSystemBootMode) {
             case MODE_ANCHORS_RSSI_DIAGNOSTIC:

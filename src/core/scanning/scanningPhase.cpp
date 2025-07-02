@@ -40,7 +40,7 @@ void runScanningPhase() {
 
     for (int i = 0; i < LABELS_COUNT; ++i) {
         delay_ms(DELAY_BETWEEN_PHASES);
-        promptUserLocationLabel();  // Sets currentLabel
+        promptUserLocationLabelForScan();  // Sets currentLabel
         LOG_INFO("SCAN", "Selected label: %s", labels[currentLabel].c_str());
 
         // Backup data validation path

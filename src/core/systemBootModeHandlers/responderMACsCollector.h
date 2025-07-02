@@ -2,6 +2,9 @@
 #define RESPONDER_MACS_COLLECTOR_H
 
 #include "core/utils/utilities.h"
+#include "core/utils/platform.h"
+#include "core/utils/logger.h"
+#include "core/ui/userUI.h"
 
 /**
  * @brief Prompt the user to collect FTM responder MAC addresses interactively.
@@ -21,6 +24,6 @@ void clearResponderMacs();
 /**
  * @brief Convert a MAC address into a formatted string.
  */
-String formatMac(const uint8_t* mac);
+std::string formatMac(const uint8_t* mac);
 
 #endif // RESPONDER_MACS_COLLECTOR_H

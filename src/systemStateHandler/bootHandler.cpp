@@ -24,7 +24,7 @@ void handleSystemBoot() {
             //LAMA: after adding the data add the test here
             break;
         default:
-            LOG_WARN("BOOT", "Unsupported boot sub-mode.");
+            LOG_ERROR("BOOT", "Unsupported boot sub-mode.");
             break;
     }
 }

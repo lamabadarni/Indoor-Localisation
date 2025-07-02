@@ -5,55 +5,55 @@
 // ====================== Constants ======================
 
 // == User UI ==
-#define USER_PROMPTION_DELAY         (100)
-#define DELAY_BETWEEN_PHASES         (500)
+#define USER_PROMPTION_DELAY               (100)
+#define DELAY_BETWEEN_PHASES               (500)
 
 // == Coverage ==
-#define MIN_ANCHORS_VISIBLE          (3)
-#define MIN_APS_VISIBLE              (3)
-#define TOF_MIN_RESPONDERS_VISIBLE   (2)
-#define MIN_AVERAGE_RSSI             (-75)
-#define TOF_MAX_AVERAGE_DISTANCE_CM  (600)
+#define MIN_ANCHORS_VISIBLE                (3)
+#define MIN_APS_VISIBLE                    (3)
+#define TOF_MIN_RESPONDERS_VISIBLE         (2)
+#define MIN_AVERAGE_RSSI                   (-75)
+#define TOF_MAX_AVERAGE_DISTANCE_CM        (600)
 
 // == Scanner Defines ==
-#define MAX_RETRIES_FOR_RSSI         (3)
-#define RSSI_DEFAULT_VALUE           (-100)
-#define RSSI_SCAN_DELAY_MS           (150)
-#define MAC_ADDRESS_SIZE             (6)
+#define MAX_RETRIES_FOR_RSSI               (3)
+#define RSSI_DEFAULT_VALUE                 (-100)
+#define RSSI_SCAN_DELAY_MS                 (150)
+#define MAC_ADDRESS_SIZE                   (6)
 
 // == Static RSSI Scanner ==
-#define STATIC_RSSI_SCAN_BATCH_SIZE         (15)
-#define STATIC_RSSI_SCAN_SAMPLE_PER_BATCH   (3)
-#define NUMBER_OF_ANCHORS            (9)
+#define STATIC_RSSI_SCAN_BATCH_SIZE        (15)
+#define STATIC_RSSI_SCAN_SAMPLE_PER_BATCH  (3)
+#define NUMBER_OF_ANCHORS                  (9)
 
 // == Dynamic RSSI Scanner ==
-#define DYNAMIC_RSSI_SCAN_BATCH_SIZE        (15)
-#define DYNAMIC_RSSI_SCAN_SAMPLE_PER_BATCH  (3)
-#define NUMBER_OF_DYNAMIC_APS               (9)
+#define DYNAMIC_RSSI_SCAN_BATCH_SIZE       (15)
+#define DYNAMIC_RSSI_SCAN_SAMPLE_PER_BATCH (3)
+#define NUMBER_OF_DYNAMIC_APS              (9)
 
 // == TOF Scanner ==
-#define TOF_SCAN_BATCH_SIZE          (15)
-#define TOF_SCAN_SAMPLE_PER_BATCH    (2)
-#define TOF_MAX_VALID_CM             (500.0)  // Adjustable max valid TOF reading
-#define TOF_DEFAULT_DISTANCE_CM      (1500.0)
-#define TOF_SCAN_DELAY_MS            (20)
-#define NUMBER_OF_RESPONDERS         (4)
+#define TOF_SCAN_BATCH_SIZE                (15)
+#define TOF_SCAN_SAMPLE_PER_BATCH          (2)
+#define TOF_MAX_VALID_CM                   (500.0)  // Adjustable max valid TOF reading
+#define TOF_DEFAULT_DISTANCE_CM            (1500.0)
+#define TOF_SCAN_DELAY_MS                  (20)
+#define NUMBER_OF_RESPONDERS               (4)
 
 // == Validation == 
-#define VALIDATION_MAX_ATTEMPTS      (5)
-#define VALIDATION_PASS_THRESHOLD    (0.6)
+#define VALIDATION_MAX_ATTEMPTS            (5)
+#define VALIDATION_PASS_THRESHOLD          (0.6)
 
 // == Predection ==
-#define ALPHA                        (0.7)
-#define K_RSSI                       (4) 
-#define K_TOF                        (2)
-#define MIN_VALID_DATA_SET_SIZE      (K_RSSI * 10) 
-#define MIN_DATA_PER_LABEL_SIZE      (K_RSSI * 3) 
-#define PREDICTION_MAX_RETRIES       (2)
-#define PREDICTION_MAX_LABEL_FAILURE (5)
-#define PREDICTION_SAMPLES           (3)
-#define PREDICTION_SAMPLES_THRESHOLD (2)
-#define MAX_LOG_LINES                (7) // Adjust this value based on your display and font size
+#define ALPHA                              (0.7)
+#define K_RSSI                             (4) 
+#define K_TOF                              (2)
+#define MIN_VALID_DATA_SET_SIZE            (K_RSSI * 10) 
+#define MIN_DATA_PER_LABEL_SIZE            (K_RSSI * 3) 
+#define PREDICTION_MAX_RETRIES             (2)
+#define PREDICTION_MAX_LABEL_FAILURE       (5)
+#define PREDICTION_SAMPLES                 (3)
+#define PREDICTION_SAMPLES_THRESHOLD       (2)
+#define MAX_LOG_LINES                      (7) // Adjust this value based on your display and font size
 
 // Hardware pins
 #define PIN_BTN_UP      GPIO_NUM_9
@@ -196,6 +196,7 @@ extern Label   currentLabel;
 extern bool    shouldAbort;
 extern double  accumulatedStaticRSSIs[NUMBER_OF_ANCHORS];
 extern double  accumulatedDynamicRSSIs[NUMBER_OF_DYNAMIC_APS];
+extern uint8_t accumulatedMacAddresses[NUMBER_OF_DYNAMIC_APS][MAC_ADDRESS_SIZE];
 extern double  accumulatedTOFs[NUMBER_OF_RESPONDERS];
 extern uint8_t responderMacs[NUMBER_OF_RESPONDERS][MAC_ADDRESS_SIZE];
 extern double  tofAccuracy[LABELS_COUNT];
@@ -207,7 +208,7 @@ extern std::vector<StaticRSSIData>  staticRSSIDataSet;
 extern std::vector<DynamicRSSIData> dynamicRSSIDataSet;
 extern std::vector<DynamicMacData>  dynamicMacDataSet;
 extern std::vector<TOFData>         tofDataSet;
-extern std::vector<std::string> log_buffer;
+extern std::vector<std::string>     log_buffer;
 
 extern const std::string   anchorSSIDs[NUMBER_OF_ANCHORS];
 extern const std::string   tofSSIDs[NUMBER_OF_RESPONDERS];

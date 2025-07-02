@@ -115,6 +115,16 @@ void promptUserShowDebugLogsSerial() {
     }
 }
 
+bool promptUserRunAnotherSessionSerial() {
+        LOG_INFO("MAIN", "Would you like to run another session?");
+        LOG_INFO("MAIN", "(y - yes | n - no)");
+        char again = readCharFromUser();
+        if (again != 'y' && again != 'Y') {
+            return true;
+        }
+return false;
+}
+
 // =======================================================
 // 🟩 LABEL SELECTION
 // =======================================================
@@ -244,12 +254,10 @@ bool promptUserForClearingDataAfterManyPredectionFailureSerial() {
     return c == 'y' || c == 'Y'; 
 }
 
-bool promptUserRunAnotherSessionSerial() {
-        LOG_INFO("MAIN", "Would you like to run another session?");
-        LOG_INFO("MAIN", "(y - yes | n - no)");
-        char again = readCharFromUser();
-        if (again != 'y' && again != 'Y') {
-            return true;
-        }
-return false;
+// ======================== UTILS ========================
+
+char readCharFromUserSerial() {
+    char input[8];
+    fgets(input, sizeof(input), stdin);
+    return input[0];
 }

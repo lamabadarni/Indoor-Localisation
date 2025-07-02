@@ -4,7 +4,6 @@
 #include "core/utils/utilities.h"
 #include "core/utils/logger.h"
 #include "core/ui/userUI.h"
-#include "core/ui/userUIOled.h"
 
 static constexpr char STATIC_RSSI_FILENAME[] = "static_rssi_data";
 static constexpr char DYNAMIC_RSSI_FILENAME[] = "dynamic_rssi_data";
