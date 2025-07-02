@@ -109,12 +109,6 @@ void promptUserShowDebugLogsSerial() {
 void promptUserLocationLabelForScanSerial() {
     LOG_INFO("LABEL", "[USER] > Select label by index:");
     for (int i = 0; i < LABELS_COUNT; ++i) {
-        for(auto label : skippedLabels) {
-            if(label == i) {
-                LOG_INFO("LABEL", "  %d - %s was skipped", i + 1, labels[i].c_str());
-                continue;
-            }
-        }
         LOG_INFO("LABEL", "  %d - %s", i + 1, labels[i].c_str());
     }
 

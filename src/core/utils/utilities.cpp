@@ -186,9 +186,6 @@ void resetDynamicRssiBuffer() {
 
 void setValidForPredection() {
     for (int i = 0; i < LABELS_COUNT; i++) {
-        for(auto label : skippedLabels) {
-            if(label == i) continue;
-        }
         validForPredection[i] = true;
     }
 }
@@ -207,36 +204,6 @@ float getAccuracyForValidation() {
         default:
         break;
     } 
-    return 0.0;
-}
-
-float getAccuracyForPrediction() {
-    switch ( SystemSetup::currentSystemPredictionMode ) {
-    case SystemPredictionMode::STATICRSSI {
-        return staticRSSIAccuracy[currentLabel];
-    }
-    case SystemPredictionMode::DYNAMICRSSI {
-        return dynamicRSSIAccuracy[currentLabel];
-    }
-    case SystemPredictionMode::TOfF {
-        return tofAccuracy[currentLabel];
-    }
-    case SystemPredictionMode::STATIC_RSSI_DYNAMIC_RSSI {
-        return (staticRSSIAccuracy[currentLabel] + dynamicRSSIAccuracy[currentLabel]) / 2 ;
-    }
-    case SystemPredictionMode::STATIC_RSSI_TOF {
-        return (staticRSSIAccuracy[currentLabel] + tofAccuracy[currentLabel]) / 2 ;
-    }
-    case SystemPredictionMode::DYNAMIC_RSSI_TOF {
-        return (tofAccuracy[currentLabel] + dynamicRSSIAccuracy[currentLabel]) / 2 ;
-    }
-    case SystemPredictionMode::STATIC_RSSI_DYNAMIC_RSSI_TOF {
-        return (staticRSSIAccuracy[currentLabel] + dynamicRSSIAccuracy[currentLabel] + tofAccuracy[currentLabel]) / 3 ;
-    }
-    default:
-        break;
-    } 
-    
     return 0.0;
 }
 
