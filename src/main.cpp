@@ -32,7 +32,7 @@ extern "C" void app_main() {
         
         shouldAbort = false;
 
-        runUserSystemSetup();  // Prompts user for system mode and settings
+        runUserSystemSetupOLED();  // Prompts user for system mode and settings
 
         if(SystemSetup::enableBackup) {
             //TODO: call init for backup
