@@ -205,7 +205,7 @@ extern const std::string   tofSSIDs[NUMBER_OF_RESPONDERS];
 extern const std::string   labels[LABELS_COUNT];
 extern const std::string   systemModes[MODES_NUM];
 extern const std::string   systemScannerModes[SYSTEM_SCANNER_MODES_NUM];
-extern const std::string   systemPredictionModes[SYSTEM_SCANNER_MODES_NUM];
+extern const std::string   systemPredictionModes[SYSTEM_PREDICTION_NODES_NUM];
 extern const std::string   systemBootModes[SYSTEM_BOOT_MODES_NUM];
 extern const UI            systemUI;
 
@@ -237,7 +237,6 @@ void setValidForPredection();
 
 float getAccuracyForValidation();
 
-float getAccuracyForPrediction();
 
 std::vector<std::string> arrayToVector(const std::string arr[], int size);
 
