@@ -1,23 +1,10 @@
-/**
- * @file rssiScanner.h
- * @brief RSSI-based scanning module for training and prediction input generation.
- *
- * Handles single and batched RSSI scans using Exponential Moving Average (EMA).
- * Populates global RSSI buffers and stores data for model training or inference.
- * 
- * Used in both scanning and validation phases.
- * 
-*/
+#ifndef DYNAMIC_RSSI_SCANNER_H
+#define DYNAMIC_RSSI_SCANNER_H
 
 #include "core/utils/platform.h"
 #include "core/utils/utilities.h"
 #include "core/utils/logger.h"
 #include "esp_wifi.h"
-
-#ifndef RSSI_SCANNER_H
-#define RSSI_SCANNER_H
-
-#include "core/utils/utilities.h"
 
 /**
  * @brief Performs a single RSSI scan with EMA smoothing.
@@ -27,7 +14,7 @@
  * 
  * @return RSSIData containing current label and all anchor RSSIs.
  */
-RSSIData createSingleRSSIScan();
+DynamicRSSIData createSingleDynamicRSSIScan();
 
 /**
  * @brief Collects a batch of RSSI scans and saves them to internal storage.
@@ -35,6 +22,6 @@ RSSIData createSingleRSSIScan();
  * Each scan is EMA-smoothed, stored, and logged.
  * Used for both training data collection and real-time prediction input.
  */
-void performRSSIScan();
+void performDynamicRSSIScan();
 
 #endif // RSSI_SCANNER_H

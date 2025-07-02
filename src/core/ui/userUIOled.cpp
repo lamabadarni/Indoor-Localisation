@@ -159,7 +159,7 @@ bool promptUserRescanAfterInvalidation() {
 }
 
 bool promptUserForClearingDataAfterManyPredectionFailure() {
-    //TODO: ask user if to delete the data
+    //HALA: ask user if to delete the data
     return display_prompt_yes_no("Error", "Clear all data?");
 }
 
