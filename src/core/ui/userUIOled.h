@@ -30,7 +30,7 @@ void promptLabelsValidToPredectionOLED();
  * @brief Prompts whether to continue scanning other labels.
  * @return true to continue, false to exit or abort.
  */
-bool promptUserProceedToNextLabelOLED();
+void promptUserProceedToNextLabelOLED();
 
 // ======================== BACKUP / RESTORE ========================
 
@@ -38,7 +38,7 @@ bool promptUserProceedToNextLabelOLED();
  * @brief Prompts reuse decision for existing scan data.
  * @return 'Y', 'V', or 'N' based on user's choice.
  */
-char promptUserReuseDecisionOLED();
+bool promptUserReuseDecisionOLED();
 
 // ======================== COVERAGE CHECK ========================
 
@@ -97,3 +97,7 @@ bool promptUserRetryPredictionOLED();
  *        Waits for confirmation or timeout.
  */
 void promptUserAbortOrContinueOLED();
+
+char readCharFromUserOLED();
+
+bool promptUserRunAnotherSessionOLED();

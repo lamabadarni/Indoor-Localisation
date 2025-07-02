@@ -7,7 +7,7 @@
  */
 
 #include "userUISerial.h"
-
+#include "userUI.h"
 // =======================================================
 // 🟦 SYSTEM SETUP PROMPTS
 // =======================================================
@@ -209,4 +209,15 @@ bool promptUserForClearingDataAfterManyPredectionFailureSerial(Label label) {
     LOG_INFO("PREDICT", "[USER] > Delete data for label %s after many failures? (y/n): ", labels[label].c_str());
     char c = readCharFromUser();
     return c == 'y' || c == 'Y'; 
+}
+
+bool promptUserRunAnotherSessionSerial() {
+
+        LOG_INFO("MAIN", "Would you like to run another session?");
+        LOG_INFO("MAIN", "(y - yes | n - no)");
+        char again = readCharFromUser();
+        if (again != 'y' && again != 'Y') {
+            return true;
+        }
+return false;
 }

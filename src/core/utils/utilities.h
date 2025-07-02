@@ -56,7 +56,7 @@
 #define MAX_LOG_LINES                (7) // Adjust this value based on your display and font size
 
 // Hardware pins
-#define PIN_BTN_UP      GPIO_NUM_16
+#define PIN_BTN_UP      GPIO_NUM_9
 #define PIN_BTN_DOWN    GPIO_NUM_12
 #define PIN_BTN_SELECT  GPIO_NUM_11
 
@@ -201,14 +201,14 @@ extern const std::string   labels[LABELS_COUNT];
 extern const std::string   systemModes[MODES_NUM];
 extern const std::string   systemScannerModes[SYSTEM_SCANNER_MODES_NUM];
 extern const std::string   systemPredictionModes[SYSTEM_SCANNER_MODES_NUM];
-extern const std::string   systemBootMode[SYSTEM_BOOT_MODES_NUM];
+extern const std::string   systemBootModes[SYSTEM_BOOT_MODES_NUM];
 extern const UI            systemUI;
 
 // ====================== Utility Functions ======================
 
 int applyEMA(int prevRSSI, int newRSSI);
 
-char readCharFromUser();
+char readCharFromUserSerial();
 
 int readIntFromUser();
 

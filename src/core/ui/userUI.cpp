@@ -9,7 +9,6 @@
 #include "userUI.h"
 #include "userUISerial.h"
 #include "userUIOled.h"
-
 // =======================================================
 // 🟦 SYSTEM SETUP PROMPTS
 // =======================================================
@@ -147,4 +146,28 @@ bool promptUserForClearingDataAfterManyPredectionFailure(Label label) {
     if(systemUI == SERIAL) {
        promptUserForClearingDataAfterManyPredectionFailureSerial();
     }
+}
+
+char readCharFromUser(){
+
+    if(systemUI == OLED) {
+      return readCharFromUserOLED();
+    }
+    if(systemUI == SERIAL) {
+       return readCharFromUserSerial();
+    }
+
+
+}
+
+bool promptUserRunAnotherSession(){
+
+    if(systemUI == OLED) {
+      return promptUserRunAnotherSessionOLED();
+    }
+    if(systemUI == SERIAL) {
+       return promptUserRunAnotherSessionSerial();
+    }
+
+
 }

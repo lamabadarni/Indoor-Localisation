@@ -90,4 +90,6 @@ Label promptUserChooseBetweenPredictionsSerial(Label rssi, Label tof);
 
 bool promptUserRetryPredictionSerial();
 
-bool promptUserForClearingDataAfterManyPredectionFailureSerial(Label label) 
+bool promptUserForClearingDataAfterManyPredectionFailureSerial(Label label);
+
+bool promptUserRunAnotherSessionSerial();

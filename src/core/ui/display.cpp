@@ -161,3 +161,22 @@ bool is_oled_functional(){
 
     return oled_is_functional;
 }
+
+char display_wait_for_any_button() { // message parameter kept, but not used for display
+    display_clear();
+
+    display_update(); // Always update to ensure the screen is cleared (if no message drawn)
+
+    // Loop indefinitely until any button is pressed
+    while (true) {
+        // Check all button states
+        if (!gpio_get_level(PIN_BTN_UP) ||        // If UP button is pressed
+            !gpio_get_level(PIN_BTN_DOWN) ||      // Or DOWN button is pressed
+            !gpio_get_level(PIN_BTN_SELECT)) {    // Or SELECT button is pressed
+            delay_ms(200); // Debounce delay
+            return 'Y'; // Exit the function as soon as a button is detected
+        }
+        delay_ms(50); // Small delay to reduce CPU usage while waiting
+    }
+    return 'N';
+}

@@ -47,6 +47,7 @@ void runScanningPhase() {
         }
 
         // Fresh scan path
+        /// its better to add also a prombt function 
         LOG_INFO("SCAN", "Selected label: %s", labels[currentLabel].c_str());
         LOG_INFO("SCAN", "Press any key to start scanning...");
         readCharFromUser();

@@ -37,5 +37,7 @@ void display_add_log_line(const std::string& log_line);
 
 bool is_oled_functional();
 
+char display_wait_for_any_button();
+
     
 #endif // DISPLAY_H

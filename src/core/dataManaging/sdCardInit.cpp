@@ -18,7 +18,7 @@ static const char *TAG = "SD CARD";
 #define PIN_NUM_MISO  GPIO_NUM_39
 #define PIN_NUM_MOSI  GPIO_NUM_35
 #define PIN_NUM_CLK   GPIO_NUM_37
-#define PIN_NUM_CS    GPIO_NUM_5
+#define PIN_NUM_CS    GPIO_NUM_16
 
 bool initSDCard(void)
 {

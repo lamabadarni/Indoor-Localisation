@@ -100,6 +100,10 @@ Label promptUserChooseBetweenPredictions(Label rssi, Label tof);
 
 bool promptUserRetryPrediction();
 
-bool promptUserForClearingDataAfterManyPredectionFailure(Label label) 
+bool promptUserForClearingDataAfterManyPredectionFailure(Label label);
+
+char readCharFromUser();
+
+bool promptUserRunAnotherSession();
 
 #endif // USER_UI_H
