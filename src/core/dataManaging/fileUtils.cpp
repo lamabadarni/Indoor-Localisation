@@ -1,17 +1,15 @@
 #include "fileUtils.h"
 
-// (1) We guarantee a trailing slash here
 std::string getBaseDir() {
-    return std::string(MOUNT_POINT) + "/" 
-         + systemScannerModes[SystemSetup::currentSystemScannerMode];
+    return std::string(MOUNT_POINT);
 }
 
-std::string getMetaFilePath() {
-    return getBaseDir()+ "/" + "meta_";
+std::string getStaticRSSIFilePath() {
+    return getBaseDir() + "/" + STATIC_RSSI_FILENAME + CSV_SUFFIX;
 }
 
-std::string getRSSIFilePath() {
-    return getBaseDir() + "/" + RSSI_FILENAME + CSV_SUFFIX;
+std::string getDynamicRSSIFilePath() {
+    return getBaseDir() + "/" + DYNAMIC_RSSI_FILENAME;
 }
 
 std::string getTOFFilePath() {
