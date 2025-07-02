@@ -200,6 +200,7 @@ extern std::vector<StaticRSSIData>  staticRSSIDataSet;
 extern std::vector<DynamicRSSIData> dynamicRSSIDataSet;
 extern std::vector<DynamicMacData>  dynamicMacDataSet;
 extern std::vector<TOFData>         tofDataSet;
+extern std::vector<std::string> log_buffer;
 
 extern const std::string   anchorSSIDs[NUMBER_OF_ANCHORS];
 extern const std::string   tofSSIDs[NUMBER_OF_RESPONDERS];

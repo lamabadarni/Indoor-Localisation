@@ -272,6 +272,7 @@ bool isDataLoaded() {
     default:
         break;
     }
+        return DataLoaded::Static;
 }
 
 std::vector<std::string> arrayToVector(const std::string arr[], int size) {
