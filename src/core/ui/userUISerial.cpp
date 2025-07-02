@@ -64,7 +64,15 @@ static SystemScannerMode promptUserScannerMode() {
 }
 
 static SystemPredictionMode promptUserPredictionMode() {
-    //LAMA TODO
+    delay_ms(USER_PROMPTION_DELAY);
+    LOG_INFO("SETUP", "[USER] > Select Prediction Mode:");
+    for (int i = 0; i < SYSTEM_PREDICTION_NODES_NUM; ++i) {
+        LOG_INFO("SETUP", "  %d - %s", i + 1, systemPredictionModes[i].c_str());
+    }
+
+    int sel = -1;
+    while (sel < 1 || sel > SYSTEM_PREDICTION_NODES_NUM) sel = readIntFromUser();
+    return static_cast<SystemPredictionMode>(sel - 1);
 }
 
 void runUserSystemSetupSerial() {
@@ -79,6 +87,11 @@ void runUserSystemSetupSerial() {
     if( SystemSetup::currentSystemMode == MODE_SCANNING_SESSION || 
         SystemSetup::currentSystemMode == MODE_FULL_SESSION ) {
             SystemSetup::currentSystemScannerMode = promptUserScannerMode();
+    }
+
+    if (SystemSetup::currentSystemMode == MODE_PREDICTION_SESSION ||
+        SystemSetup::currentSystemMode == MODE_FULL_SESSION) {
+            SystemSetup::currentSystemPredictionMode = promptUserPredictionMode();
     }
 
     struct {
@@ -193,14 +206,30 @@ bool promptUserApprovePredictionSerial() {
 
 Label promptUserChooseBetweenPredictionsSerial(Label left, Label right) {
     LOG_INFO("PREDICT", "[USER] > Choose the correct prediction:");
-    LOG_INFO("PREDICT", "  1 - left (%s)", labels[left].c_str());
-    LOG_INFO("PREDICT", "  2 - right  (%s)", labels[right].c_str());
+    LOG_INFO("PREDICT", "  1 -  (%s)", labels[left].c_str());
+    LOG_INFO("PREDICT", "  2 -  (%s)", labels[right].c_str());
     LOG_INFO("PREDICT", "  X - Both predictions are invalid");
 
     int sel = readIntFromUser();
     if (sel == 1) return left;
     if (sel == 2) return right;
     return LABELS_COUNT;
+}
+
+Label promptUserChooseBetweenTriplePredictionsSerial(Label first, Label second, Label third) {
+    LOG_INFO("PREDICT", "[USER] > Choose the correct prediction:");
+    LOG_INFO("PREDICT", "  1 - (%s)", labels[first].c_str());
+    LOG_INFO("PREDICT", "  2 - (%s)", labels[second].c_str());
+    LOG_INFO("PREDICT", "  3 - (%s)", labels[third].c_str());
+    LOG_INFO("PREDICT", "  X - None of these");
+
+    char choice = readCharFromUser();
+    switch (choice) {
+        case '1': return first;
+        case '2': return second;
+        case '3': return third;
+        default:  return LABELS_COUNT;
+    }
 }
 
 bool promptUserRetryPredictionSerial() {

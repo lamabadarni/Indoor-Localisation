@@ -1,157 +1,105 @@
 /**
  * @file userUI.cpp
- * @brief Handles all user prompts for system configuration, scanning, validation, prediction, and abort flow.
- *
- * Each function is responsible for a specific interactive prompt and updates global config or state accordingly.
- * 
+ * @brief Central dispatcher for user interaction prompts (serial or OLED).
  */
 
 #include "userUI.h"
 #include "userUISerial.h"
 #include "userUIOled.h"
-// =======================================================
-// 🟦 SYSTEM SETUP PROMPTS
-// =======================================================
+
+// ======================== SYSTEM SETUP ========================
 
 void runUserSystemSetup() {
-    if(systemUI == OLED) {
-        runUserSystemSetupOLED();
-    }
-    if(systemUI == SERIAL) {
-        runUserSystemSetupSerial();
-    }
+    if(systemUI == OLED)   runUserSystemSetupOLED();
+    if(systemUI == SERIAL) runUserSystemSetupSerial();
 }
 
 void promptUserShowDebugLogs() {
-    if(systemUI == OLED) {
-        promptUserShowDebugLogsOLED();
-    }
-    if(systemUI == SERIAL) {
-        promptUserShowDebugLogsSerial();
-    }
+    if(systemUI == OLED)   promptUserShowDebugLogsOLED();
+    if(systemUI == SERIAL) promptUserShowDebugLogsSerial();
 }
 
-// =======================================================
-// 🟩 LABEL SELECTION
-// =======================================================
+// ======================== LOCATION LABELING ========================
 
 void promptUserLocationLabel() {
-    if(systemUI == OLED) {
-        promptUserLocationLabelOLED();
-    }
-    if(systemUI == SERIAL) {
-        promptUserLocationLabelSerial();
-    }
+    if(systemUI == OLED)   promptUserLocationLabelOLED();
+    if(systemUI == SERIAL) promptUserLocationLabelSerial();
 }
 
 void promptLabelsValidToPredection() {
-    if(systemUI == OLED) {
-        promptLabelsValidToPredectionOLED();
-    }
-    if(systemUI == SERIAL) {
-        promptLabelsValidToPredectionSerial();
-    }
+    if(systemUI == OLED)   promptLabelsValidToPredectionOLED();
+    if(systemUI == SERIAL) promptLabelsValidToPredectionSerial();
 }
 
 void promptUserProceedToNextLabel() {
-     if(systemUI == OLED) {
-         promptUserProceedToNextLabelOLED();
-    }
-    if(systemUI == SERIAL) {
-         promptUserProceedToNextLabelSerial();
-    }
+    if(systemUI == OLED)   promptUserProceedToNextLabelOLED();
+    if(systemUI == SERIAL) promptUserProceedToNextLabelSerial();
 }
 
-// =======================================================
-// 🟨 BACKUP & REUSE
-// =======================================================
+// ======================== BACKUP / RESTORE ========================
 
-bool promptUserReuseDecision() {
-    if(systemUI == OLED) 
-        return promptUserReuseDecisionOLED();
-return promptUserReuseDecisionSerial();
-    
+char promptUserReuseDecision() {
+    if(systemUI == OLED)   return promptUserReuseDecisionOLED();
+    if(systemUI == SERIAL) return promptUserReuseDecisionSerial();
+    return 'N';
 }
-// =======================================================
-// 🟧 COVERAGE DIAGNOSTICS
-// =======================================================
+
+// ======================== COVERAGE CHECK ========================
 
 char promptUserRunCoverageDiagnostic() {
-    if(systemUI == OLED) 
-        return promptUserRunCoverageDiagnosticOLED();
-     return promptUserRunCoverageDiagnosticSerial();
+    if(systemUI == OLED)   return promptUserRunCoverageDiagnosticOLED();
+    if(systemUI == SERIAL) return promptUserRunCoverageDiagnosticSerial();
+    return 'N';
 }
 
 bool promptUserAbortToImproveEnvironment() {
-    if(systemUI == OLED) 
-        return promptUserAbortToImproveEnvironmentOLED();
-return promptUserAbortToImproveEnvironmentSerial();
-    
-}
-
-// =======================================================
-// 🟥 VALIDATION PHASE
-// =======================================================
-
-bool promptUserRescanAfterInvalidation() {
-    if(systemUI == OLED) {
-        return promptUserRescanAfterInvalidationOLED();
-    }
-     return promptUserRescanAfterInvalidationSerial();
-    
-}
-
-// =======================================================
-// 🟪 PREDICTION PHASE
-// =======================================================
-
-bool promptUserApprovePrediction() {
-    if(systemUI == OLED) {
-       return  promptUserApprovePredictionOLED();
-    }
-    return promptUserApprovePredictionSerial();
-    
-}
-
-Label promptUserChooseBetweenPredictions(Label left, Label right) {
-    if(systemUI == OLED) 
-        return promptUserChooseBetweenPredictionsOLED(left,right);
-
-    return promptUserChooseBetweenPredictionsSerial(left,right);
-    
-}
-
-bool promptUserRetryPredictionl() {
-    if(systemUI == OLED) {
-        return promptUserRetryPredictionOLED();
-    }
-       return promptUserRetryPredictionSerial(); 
-}
-
-bool promptUserForClearingDataAfterManyPredectionFailure() {
-    if(systemUI == OLED) {
-        return promptUserForClearingDataAfterManyPredectionFailureOLED();
-    }
-    if(systemUI == SERIAL) {
-       return promptUserForClearingDataAfterManyPredectionFailureSerial();
-    }
+    if(systemUI == OLED)  return promptUserAbortToImproveEnvironmentOLED();
+    if(systemUI == SERIAL) return promptUserAbortToImproveEnvironmentSerial();
     return false;
 }
 
-char readCharFromUser(){
+// ======================== VALIDATION FLOW ========================
 
-    if(systemUI == OLED) {
-      return readCharFromUserOLED();
-    }
-       return readCharFromUserSerial();
+bool promptUserRescanAfterInvalidation() {
+    if(systemUI == OLED)   return promptUserRescanAfterInvalidationOLED();
+    if(systemUI == SERIAL) return promptUserRescanAfterInvalidationSerial();
+    return false;
 }
 
-bool promptUserRunAnotherSession(){
-    if(systemUI == OLED) {
-      return promptUserRunAnotherSessionOLED();
-    }
-    if(systemUI == SERIAL) {
-       return promptUserRunAnotherSessionSerial();
-    }
-return false;
+bool promptUserRetryValidation() {
+    if(systemUI == OLED)   return promptUserRetryValidationOLED();
+    if(systemUI == SERIAL) return promptUserRetryValidationSerial();
+    return false;
+}
+
+// ======================== PREDICTION FLOW ========================
+
+bool promptUserApprovePrediction() {
+    if(systemUI == OLED)  return promptUserApprovePredictionOLED();
+    if(systemUI == SERIAL) return promptUserApprovePredictionSerial();
+    return false;
+}
+
+Label promptUserChooseBetweenPredictions(Label left, Label right) {
+    if(systemUI == OLED)  return promptUserChooseBetweenPredictionsOLED(left, right);
+    if(systemUI == SERIAL) return promptUserChooseBetweenPredictionsSerial(left, right);
+    return LABELS_COUNT;
+}
+
+Label promptUserChooseBetweenTriplePredictions(Label first, Label second, Label third) {
+    if(systemUI == OLED)  return promptUserChooseBetweenTriplePredictionsOLED(first, second, third);
+    if(systemUI == SERIAL) return promptUserChooseBetweenTriplePredictionsSerial(first, second, third);
+    return LABELS_COUNT;
+}
+
+bool promptUserRetryPrediction() {
+    if(systemUI == OLED)  return promptUserRetryPredictionOLED();
+    if(systemUI == SERIAL) return promptUserRetryPredictionSerial();
+    return false;
+}
+
+bool promptUserForClearingDataAfterManyPredectionFailure() {
+    if(systemUI == OLED)  return promptUserForClearingDataAfterManyPredectionFailureOLED();
+    if(systemUI == SERIAL) return promptUserForClearingDataAfterManyPredectionFailureSerial(currentLabel);
+    return false;
 }

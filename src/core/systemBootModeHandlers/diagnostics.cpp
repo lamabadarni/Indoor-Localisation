@@ -77,9 +77,9 @@ Coverage scanRSSIForCoverage() {
     RSSIData scanData = createSingleRSSIScan();
 
     for (int i = 0; i < NUMBER_OF_ANCHORS; i++) {
-        if(accumulatedRSSIs[i] != RSSI_DEFAULT_VALUE) {
+        if(accumulatedStaticRSSIs[i] != RSSI_DEFAULT_VALUE) {
             result.seen++;
-            sum += accumulatedRSSIs[i];
+            sum += accumulatedStaticRSSIs[i];
         }
     }
 
