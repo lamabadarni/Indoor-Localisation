@@ -12,6 +12,7 @@
 #define SCANNING_PHASE_H
 
 #include "core/ui/userUI.h"
+#include "core/ui/userUIOled.h"
 #include "core/utils/utilities.h"
 #include "core/utils/logger.h"
 

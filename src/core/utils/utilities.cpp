@@ -44,6 +44,7 @@ std::vector<StaticRSSIData>  rssiDataSet        = {};
 std::vector<DynamicMacData>  dynamicMacDataSet  = {};
 std::vector<DynamicRSSIData> dynamicRSSIDataSet = {};
 std::vector<TOFData>         tofDataSet         = {};
+std::vector<std::string> log_buffer;
 
 double  accumulatedRSSIs[NUMBER_OF_ANCHORS];
 double  accumulatedTOFs[NUMBER_OF_RESPONDERS];
@@ -132,7 +133,7 @@ int applyEMA(int prevRSSI, int newRSSI) {
     return (int)(ALPHA * prevRSSI + (1.0 - ALPHA) * newRSSI);
 }
 
-char readCharFromUser() {
+char readCharFromUserSerial() {
     char input[8];
     fgets(input, sizeof(input), stdin);
     return input[0];
@@ -238,6 +239,7 @@ bool isDataLoaded() {
     default:
         break;
     }
+        return DataLoaded::Static;
 }
 
 std::vector<std::string> arrayToVector(const std::string arr[], int size) {

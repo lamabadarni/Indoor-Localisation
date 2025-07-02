@@ -53,15 +53,16 @@
 #define PREDICTION_MAX_LABEL_FAILURE (5)
 #define PREDICTION_SAMPLES           (3)
 #define PREDICTION_SAMPLES_THRESHOLD (2)
+#define MAX_LOG_LINES                (7) // Adjust this value based on your display and font size
 
 // Hardware pins
-#define PIN_BTN_UP      GPIO_NUM_34
-#define PIN_BTN_DOWN    GPIO_NUM_35
-#define PIN_BTN_SELECT  GPIO_NUM_32
+#define PIN_BTN_UP      GPIO_NUM_9
+#define PIN_BTN_DOWN    GPIO_NUM_12
+#define PIN_BTN_SELECT  GPIO_NUM_11
 
 // I²C pins for the OLED
-#define OLED_I2C_SDA    GPIO_NUM_21
-#define OLED_I2C_SCL    GPIO_NUM_22
+#define OLED_I2C_SDA    GPIO_NUM_33
+#define OLED_I2C_SCL    GPIO_NUM_18
 
 // ====================== Enums ======================
 
@@ -199,6 +200,7 @@ extern std::vector<StaticRSSIData>  staticRSSIDataSet;
 extern std::vector<DynamicRSSIData> dynamicRSSIDataSet;
 extern std::vector<DynamicMacData>  dynamicMacDataSet;
 extern std::vector<TOFData>         tofDataSet;
+extern std::vector<std::string> log_buffer;
 
 extern const std::string   anchorSSIDs[NUMBER_OF_ANCHORS];
 extern const std::string   tofSSIDs[NUMBER_OF_RESPONDERS];
@@ -213,7 +215,7 @@ extern const UI            systemUI;
 
 int applyEMA(int prevRSSI, int newRSSI);
 
-char readCharFromUser();
+char readCharFromUserSerial();
 
 int readIntFromUser();
 

@@ -7,7 +7,7 @@
  */
 
 #include "userUISerial.h"
-
+#include "userUI.h"
 // =======================================================
 // 🟦 SYSTEM SETUP PROMPTS
 // =======================================================
@@ -43,12 +43,12 @@ static SystemBootMode promptUserSystemBootMode() {
     delay_ms(USER_PROMPTION_DELAY);
     LOG_INFO("SETUP", "[USER] > Select System Boot Mode:");
     for (int i = 0; i < SYSTEM_BOOT_MODES_NUM; ++i) {
-        LOG_INFO("SETUP", "  %d - %s", i + 1, SystemBootMode[i].c_str());
+        LOG_INFO("SETUP", "  %d - %s", i + 1, systemBootModes[i].c_str());
     }
 
     int sel = -1;
     while (sel < 1 || sel > SYSTEM_BOOT_MODES_NUM) sel = readIntFromUser();
-    return static_cast<SystemScannerMode>(sel - 1);
+    return static_cast<SystemBootMode>(sel - 1);
 }
 
 static SystemScannerMode promptUserScannerMode() {
@@ -209,8 +209,19 @@ bool promptUserRetryPredictionSerial() {
     return c == 'y' || c == 'Y';
 }
 
-bool promptUserForClearingDataAfterManyPredectionFailureSerial(Label label) {
-    LOG_INFO("PREDICT", "[USER] > Delete data for label %s after many failures? (y/n): ", labels[label].c_str());
+bool promptUserForClearingDataAfterManyPredectionFailureSerial() {
+    LOG_INFO("PREDICT", "[USER] > Delete data for all labels after many failures? (y/n): ");
     char c = readCharFromUser();
     return c == 'y' || c == 'Y'; 
+}
+
+bool promptUserRunAnotherSessionSerial() {
+
+        LOG_INFO("MAIN", "Would you like to run another session?");
+        LOG_INFO("MAIN", "(y - yes | n - no)");
+        char again = readCharFromUser();
+        if (again != 'y' && again != 'Y') {
+            return true;
+        }
+return false;
 }

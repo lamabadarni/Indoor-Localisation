@@ -32,9 +32,15 @@ extern "C" void app_main() {
         
         shouldAbort = false;
 
-        runUserSystemSetup();  // Prompts user for system mode and settings
+        runUserSystemSetupOLED();  // Prompts user for system mode and settings
 
-        // TODO: call init data
+        if(SystemSetup::enableBackup) {
+            //TODO: call init for backup
+        }
+
+        if(SystemSetup::enableRestore) {
+            //TODO: call init for 
+        }
 
         switch (SystemSetup::currentSystemMode) {
             case MODE_SYSTEM_BOOT:
@@ -60,10 +66,8 @@ extern "C" void app_main() {
 
         if(shouldAbort) break;
 
-        LOG_INFO("MAIN", "Would you like to run another session?");
-        LOG_INFO("MAIN", "(y - yes | n - no)");
-        char again = readCharFromUser();
-        if (again != 'y' && again != 'Y') { // TODO: fix!!!!!!
+        char again = promptUserRunAnotherSession();
+        if (again) {
             break;
         }
     }
