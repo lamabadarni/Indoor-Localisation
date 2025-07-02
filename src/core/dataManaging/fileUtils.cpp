@@ -9,7 +9,7 @@ std::string getStaticRSSIFilePath() {
 }
 
 std::string getRSSIFilePath() {
-   return getBaseDir() + "/" + RSSI_FILENAME + CSV_SUFFIX;
+    return getBaseDir() + "/" + DYNAMIC_RSSI_FILENAME + CSV_SUFFIX;
 }
 
 std::string getTOFFilePath() {
