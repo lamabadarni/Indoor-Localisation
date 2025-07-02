@@ -34,7 +34,7 @@ void promptLabelsValidToPredectionSerial();
  * @brief Prompts whether to continue scanning other labels.
  * @return true to continue, false to exit or abort.
  */
-void promptUserProceedToNextLabelSerial()
+void promptUserProceedToNextLabelSerial();
 
 // ======================== BACKUP / RESTORE ========================
 
@@ -42,7 +42,8 @@ void promptUserProceedToNextLabelSerial()
  * @brief Prompts reuse decision for existing scan data.
  * @return 'Y', 'V', or 'N' based on user's choice.
  */
-char promptUserReuseDecisionSerial();
+
+bool promptUserReuseDecisionSerial();
 
 // ======================== COVERAGE CHECK ========================
 
@@ -83,11 +84,11 @@ bool promptUserApprovePredictionSerial();
  * @param tof The ToF-predicted label.
  * @return Chosen label, or LABELS_COUNT if rejected.
  */
-Label promptUserChooseBetweenPredictionsSerial(Label rssi, Label tof);
+Label promptUserChooseBetweenPredictionsSerial(Label left, Label right);
 
 bool promptUserRetryPredictionSerial();
 
-bool promptUserForClearingDataAfterManyPredectionFailureSerial(Label label);
-bool promptUserForClearingDataAfterManyPredectionFailureSerial(Label label);
+bool promptUserForClearingDataAfterManyPredectionFailureSerial();
 
 bool promptUserRunAnotherSessionSerial();
+#endif 

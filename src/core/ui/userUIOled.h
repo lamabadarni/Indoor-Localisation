@@ -82,7 +82,7 @@ bool promptUserApprovePredictionOLED();
  * @param tof The ToF-predicted label.
  * @return Chosen label, or LABELS_COUNT if rejected.
  */
-Label promptUserChooseBetweenPredictionsOLED(Label rssi, Label tof);
+Label promptUserChooseBetweenPredictionsOLED(Label left, Label right);
 
 /**
  * @brief Asks user whether to retry prediction after failure.
@@ -101,3 +101,5 @@ void promptUserAbortOrContinueOLED();
 char readCharFromUserOLED();
 
 bool promptUserRunAnotherSessionOLED();
+
+bool promptUserForClearingDataAfterManyPredectionFailureOLED();

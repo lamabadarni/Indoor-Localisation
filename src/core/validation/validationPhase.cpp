@@ -48,7 +48,7 @@ void runValidationPhase() {
 
                 rescan();
             }
-            promptUserProceedToNextLabelSerial();
+            promptUserProceedToNextLabel();
         }
     }
 

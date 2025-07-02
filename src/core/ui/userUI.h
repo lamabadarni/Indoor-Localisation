@@ -44,7 +44,7 @@ void promptLabelsValidToPredection();
  * @brief Prompts whether to continue scanning other labels.
  * @return true to continue, false to exit or abort.
  */
-bool promptUserProceedToNextLabel();
+void promptUserProceedToNextLabel();
 
 // ======================== BACKUP / RESTORE ========================
 
@@ -52,7 +52,7 @@ bool promptUserProceedToNextLabel();
  * @brief Prompts reuse decision for existing scan data.
  * @return 'Y', 'V', or 'N' based on user's choice.
  */
-char promptUserReuseDecision();
+bool promptUserReuseDecision();
 
 // ======================== COVERAGE CHECK ========================
 
@@ -92,11 +92,11 @@ bool promptUserApprovePrediction();
  * @param tof The ToF-predicted label.
  * @return Chosen label, or LABELS_COUNT if rejected.
  */
-Label promptUserChooseBetweenPredictions(Label rssi, Label tof);
+Label promptUserChooseBetweenPredictions(Label left, Label right);
 
 bool promptUserRetryPrediction();
 
-bool promptUserForClearingDataAfterManyPredectionFailure(Label label);
+bool promptUserForClearingDataAfterManyPredectionFailure();
 
 char readCharFromUser();
 

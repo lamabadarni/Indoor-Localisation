@@ -53,12 +53,12 @@ void promptLabelsValidToPredection() {
     }
 }
 
-bool promptUserProceedToNextLabel() {
+void promptUserProceedToNextLabel() {
      if(systemUI == OLED) {
-        promptUserProceedToNextLabelOLED();
+         promptUserProceedToNextLabelOLED();
     }
     if(systemUI == SERIAL) {
-        promptUserProceedToNextLabelSerial();
+         promptUserProceedToNextLabelSerial();
     }
 }
 
@@ -66,33 +66,27 @@ bool promptUserProceedToNextLabel() {
 // 🟨 BACKUP & REUSE
 // =======================================================
 
-char promptUserReuseDecisionSerial() {
-    LOG_INFO("BACKUP", "[USER] > Reuse saved scan?");
-    LOG_INFO("UI", "  Y - Yes, reuse");
-    LOG_INFO("UI", "  N - No, rescan");
-    return readCharFromUser();
+bool promptUserReuseDecision() {
+    if(systemUI == OLED) 
+        return promptUserReuseDecisionOLED();
+return promptUserReuseDecisionSerial();
+    
 }
-
 // =======================================================
 // 🟧 COVERAGE DIAGNOSTICS
 // =======================================================
 
 char promptUserRunCoverageDiagnostic() {
-    if(systemUI == OLED) {
-        promptUserRunCoverageDiagnosticOLED();
-    }
-    if(systemUI == SERIAL) {
-        promptUserRunCoverageDiagnosticSerial();
-    }
+    if(systemUI == OLED) 
+        return promptUserRunCoverageDiagnosticOLED();
+     return promptUserRunCoverageDiagnosticSerial();
 }
 
 bool promptUserAbortToImproveEnvironment() {
-    if(systemUI == OLED) {
-        promptUserAbortToImproveEnvironmentOLED();
-    }
-    if(systemUI == SERIAL) {
-        promptUserAbortToImproveEnvironmentSerial();
-    }
+    if(systemUI == OLED) 
+        return promptUserAbortToImproveEnvironmentOLED();
+return promptUserAbortToImproveEnvironmentSerial();
+    
 }
 
 // =======================================================
@@ -101,11 +95,10 @@ bool promptUserAbortToImproveEnvironment() {
 
 bool promptUserRescanAfterInvalidation() {
     if(systemUI == OLED) {
-        promptUserRescanAfterInvalidationOLED();
+        return promptUserRescanAfterInvalidationOLED();
     }
-    if(systemUI == SERIAL) {
-        promptUserRescanAfterInvalidationSerial();
-    }
+     return promptUserRescanAfterInvalidationSerial();
+    
 }
 
 // =======================================================
@@ -114,38 +107,35 @@ bool promptUserRescanAfterInvalidation() {
 
 bool promptUserApprovePrediction() {
     if(systemUI == OLED) {
-        promptUserApprovePredictionOLED();
+       return  promptUserApprovePredictionOLED();
     }
-    if(systemUI == SERIAL) {
-        promptUserApprovePredictionSerial();
-    }
+    return promptUserApprovePredictionSerial();
+    
 }
 
 Label promptUserChooseBetweenPredictions(Label left, Label right) {
-    if(systemUI == OLED) {
-        promptUserChooseBetweenPredictionsOLED();
-    }
-    if(systemUI == SERIAL) {
-        promptUserChooseBetweenPredictionsSerial();
-    }
+    if(systemUI == OLED) 
+        return promptUserChooseBetweenPredictionsOLED(left,right);
+
+    return promptUserChooseBetweenPredictionsSerial(left,right);
+    
 }
 
 bool promptUserRetryPredictionl() {
     if(systemUI == OLED) {
-        promptUserRetryPredictionlOLED();
+        return promptUserRetryPredictionOLED();
     }
-    if(systemUI == SERIAL) {
-        promptUserRetryPredictionlSerial();
-    }
+       return promptUserRetryPredictionSerial(); 
 }
 
 bool promptUserForClearingDataAfterManyPredectionFailure() {
     if(systemUI == OLED) {
-        promptUserForClearingDataAfterManyPredectionFailureOLED();
+        return promptUserForClearingDataAfterManyPredectionFailureOLED();
     }
     if(systemUI == SERIAL) {
-       promptUserForClearingDataAfterManyPredectionFailureSerial();
+       return promptUserForClearingDataAfterManyPredectionFailureSerial();
     }
+    return false;
 }
 
 char readCharFromUser(){
@@ -153,21 +143,15 @@ char readCharFromUser(){
     if(systemUI == OLED) {
       return readCharFromUserOLED();
     }
-    if(systemUI == SERIAL) {
        return readCharFromUserSerial();
-    }
-
-
 }
 
 bool promptUserRunAnotherSession(){
-
     if(systemUI == OLED) {
       return promptUserRunAnotherSessionOLED();
     }
     if(systemUI == SERIAL) {
        return promptUserRunAnotherSessionSerial();
     }
-
-
+return false;
 }

@@ -238,8 +238,21 @@ char readCharFromUserOLED(){
 } 
 
 bool promptUserRunAnotherSessionOLED(){
-    std::vector<std::string> items = {"Yes", "No"};
-    int choice = display_prompt_menu("Would you like to run another session?", items);
+    int choice = display_prompt_yes_no("main","Would you like to run another session?");
+     if (choice) { 
+        LOG_INFO("Main", "[USER] > want to Start a another session ");
+    } 
+    else {
+        LOG_INFO("Main", "[USER] > No need for another session");
+    }
+
     return choice;
 
+}
+
+bool promptUserForClearingDataAfterManyPredectionFailureOLED() {
+
+
+    bool choice = display_prompt_yes_no("PREDICT", " [USER] > Delete data for all labels after many failures? (y/n):"); // Pass the formatted string  
+    return choice; 
 }
