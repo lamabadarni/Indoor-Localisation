@@ -5,7 +5,6 @@
  *
  * Each label undergoes one or more prediction attempts.
  * The user confirms prediction results or chooses to rescan or abort.
- * Valid labels are tracked in `validForPredection[]` and scored using `getAccuracy()`.
  *
  * Key Flow:
  * - Run full validation phase (`runValidationPhase`)
