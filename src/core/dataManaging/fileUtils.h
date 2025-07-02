@@ -6,11 +6,10 @@
 #include "core/ui/userUI.h"
 #include "core/ui/userUIOled.h"
 
-static constexpr char META_FILENAME[]        = "meta_";       // This one is okay
-static constexpr char STATIC_RSSI_FILENAME[] = "static_rssi_data";  // Shortened
-//static constexpr char STATIC_RSSI_FILENAME[] = "dynamic_rssi_data";  // Shortened
-static constexpr char TOF_FILENAME[]         = "tof_data";   // Shortened
-static constexpr char ACCURACY_FILENAME[]    = "acc_data";   // Shortened
+static constexpr char STATIC_RSSI_FILENAME[] = "static_rssi_data";
+static constexpr char DYNAMIC_RSSI_FILENAME[] = "dynamic_rssi_data";
+static constexpr char TOF_FILENAME[]         = "tof_data";
+static constexpr char ACCURACY_FILENAME[]    = "acc_data";
 static constexpr char TMP_SUFFIX[]           = ".tmp";
 static constexpr char CSV_SUFFIX[]           = ".csv";
 constexpr const char* MOUNT_POINT            = "/indoor-localisation-data";
