@@ -45,15 +45,16 @@
 #define PREDICTION_MAX_LABEL_FAILURE (5)
 #define PREDICTION_SAMPLES           (5)
 #define PREDICTION_SAMPLES_THRESHOLD (3)
+#define MAX_LOG_LINES                (7) // Adjust this value based on your display and font size
 
 // Hardware pins
-#define PIN_BTN_UP      GPIO_NUM_34
-#define PIN_BTN_DOWN    GPIO_NUM_35
-#define PIN_BTN_SELECT  GPIO_NUM_32
+#define PIN_BTN_UP      GPIO_NUM_16
+#define PIN_BTN_DOWN    GPIO_NUM_12
+#define PIN_BTN_SELECT  GPIO_NUM_11
 
 // I²C pins for the OLED
-#define OLED_I2C_SDA    GPIO_NUM_21
-#define OLED_I2C_SCL    GPIO_NUM_22
+#define OLED_I2C_SDA    GPIO_NUM_33
+#define OLED_I2C_SCL    GPIO_NUM_18
 
 // ====================== Enums ======================
 
@@ -167,6 +168,7 @@ extern const std::string   systemModes[MODES_NUM];
 extern const std::string   systemScannerModes[SYSTEM_SCANNER_MODES_NUM];
 extern const std::string   systemBootMode[SYSTEM_BOOT_MODES_NUM];
 extern const std::string   systemStates[SYSTEM_SCANNER_MODES_NUM];
+extern std::vector<std::string> log_buffer; 
 
 // ====================== Utility Functions ======================
 

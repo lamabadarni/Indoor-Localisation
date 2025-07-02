@@ -5,7 +5,7 @@
  * Each function logs its prompt to the serial console and simultaneously displays an interactive prompt on the screen.
  */
 
-#include "userUI.h"
+#include "userUIOled.h"
 #include "core/ui/display.h"      // The display manager
 #include "core/utils/platform.h"
 #include "core/utils/utilities.h"
@@ -18,7 +18,7 @@
 // 🟦 SYSTEM SETUP PROMPTS
 // =======================================================
 
-static void promptUserLoggerConfiguration() {
+static void promptUserLoggerConfigurationOLED() {
     delay_ms(USER_PROMPTION_DELAY);
 
     std::vector<std::string> items = {"Info Logs", "Debug Logs"};
@@ -33,7 +33,7 @@ static void promptUserLoggerConfiguration() {
     }
 }
 
-static SystemMode promptUserSystemMode() {
+static SystemMode promptUserSystemModeOLED() {
     delay_ms(USER_PROMPTION_DELAY);
     int sel = display_prompt_menu("Select System Mode", arrayToVector(systemModes, MODES_NUM));
     for (int i = 0; i < MODES_NUM; ++i) {
@@ -42,7 +42,7 @@ static SystemMode promptUserSystemMode() {
     return static_cast<SystemMode>(sel);
 }
 
-static SystemScannerMode promptUserScannerMode() {
+static SystemScannerMode promptUserScannerModeOLED() {
     delay_ms(USER_PROMPTION_DELAY);
     LOG_INFO_OLED("SETUP", "[USER] > Select Scanner Mode:");
     for (int i = 0; i < SYSTEM_SCANNER_MODES_NUM; ++i) {
@@ -53,13 +53,13 @@ static SystemScannerMode promptUserScannerMode() {
     return static_cast<SystemScannerMode>(sel);
 }
 
-void runUserSystemSetup() {
-    promptUserLoggerConfiguration();
-    SystemSetup::currentSystemMode = promptUserSystemMode();
+void runUserSystemSetupOLED() {
+    promptUserLoggerConfigurationOLED();
+    SystemSetup::currentSystemMode = promptUserSystemModeOLED();
 
     if (SystemSetup::currentSystemMode == MODE_SYSTEM_BOOT) return;
 
-    SystemSetup::currentSystemScannerMode = promptUserScannerMode();
+    SystemSetup::currentSystemScannerMode = promptUserScannerModeOLED();
 
     struct {
         const char* prompt;
@@ -77,7 +77,7 @@ void runUserSystemSetup() {
     }
 }
 
-void promptUserShowDebugLogs() {
+void promptUserShowDebugLogsOLED() {
     LOG_INFO_OLED("FEEDBACK", "[USER] > Show debug logs during rescan? (y/n): ");
     if (display_prompt_yes_no("Debug", "Show debug logs?")) {
         SystemSetup::logLevel = LogLevel::LOG_LEVEL_DEBUG;
@@ -88,7 +88,7 @@ void promptUserShowDebugLogs() {
 // 🟩 LABEL SELECTION
 // =======================================================
 
-void promptUserLocationLabel() {
+void promptUserLocationLabelOLED() {
     LOG_INFO_OLED("LABEL", "[USER] > Select label by index:");
     // The complex skipping logic is preserved in the logs, but simplified for the display menu.
     // You can add more complex logic after the display selection if needed.
@@ -100,7 +100,7 @@ void promptUserLocationLabel() {
     currentLabel = static_cast<Label>(sel);
 }
 
-void promptLabelsValidToPredection() {
+void promptLabelsValidToPredectionOLED() {
     LOG_INFO_OLED("LABEL", "[USER] Labels valid for prediction:");
     for (int i = 0; i < LABELS_COUNT; ++i) {
         LOG_INFO_OLED("LABEL", "  %d - %s", i + 1, labels[i].c_str());
@@ -109,11 +109,11 @@ void promptLabelsValidToPredection() {
     display_prompt_menu("Valid Labels (View Only)", arrayToVector(labels, LABELS_COUNT));
 }
 
-bool promptUserProceedToNextLabel() {
+bool promptUserProceedToNextLabelOLED() {
     LOG_INFO_OLED("LABEL", "[USER] > Proceed to another label? (y/n): ");
     bool proceed = display_prompt_yes_no("Continue", "Scan another label?");
     if (!proceed) {
-        promptUserAbortOrContinue(); // Call the abort flow if user says no
+        promptUserAbortOrContinueOLED(); // Call the abort flow if user says no
     }
     return proceed && !shouldAbort;
 }
@@ -122,7 +122,7 @@ bool promptUserProceedToNextLabel() {
 // 🟨 BACKUP & REUSE
 // =======================================================
 
-char promptUserReuseDecision() {
+char promptUserReuseDecisionOLED() {
 
 
     std::vector<std::string> items = {"Yes, reuse", "Validate first", "No, rescan"};
@@ -136,7 +136,7 @@ char promptUserReuseDecision() {
 // 🟧 COVERAGE DIAGNOSTICS
 // =======================================================
 
-char promptUserRunCoverageDiagnostic() {
+char promptUserRunCoverageDiagnosticOLED() {
     
     std::vector<std::string> items = {"Yes", "No", "Don't ask again"};
     int choice = display_prompt_menu("Run coverage check?", items);
@@ -145,7 +145,7 @@ char promptUserRunCoverageDiagnostic() {
     return 'D';
 }
 
-bool promptUserAbortToImproveEnvironment() {
+bool promptUserAbortToImproveEnvironmentOLED() {
     LOG_INFO("COVERAGE", "[USER] > Abort to improve environment? (y/n): ");
     return display_prompt_yes_no("Coverage Low", "Abort to improve?");
 }
@@ -154,11 +154,11 @@ bool promptUserAbortToImproveEnvironment() {
 // 🟥 VALIDATION PHASE
 // =======================================================
 
-bool promptUserRescanAfterInvalidation() {
+bool promptUserRescanAfterInvalidationOLED() {
     return display_prompt_yes_no("Validation Failed", "Rescan location?");
 }
 
-bool promptUserForClearingDataAfterManyPredectionFailure() {
+bool promptUserForClearingDataAfterManyPredectionFailureOLED() {
     //TODO: ask user if to delete the data
     return display_prompt_yes_no("Error", "Clear all data?");
 }
@@ -167,11 +167,11 @@ bool promptUserForClearingDataAfterManyPredectionFailure() {
 // 🟪 PREDICTION PHASE
 // =======================================================
 
-bool promptUserApprovePrediction() {
+bool promptUserApprovePredictionOLED() {
     return display_prompt_yes_no("Prediction OK?", "Approve this label?");
 }
 
-Label promptUserChooseBetweenPredictions(Label rssi, Label tof) {
+Label promptUserChooseBetweenPredictionsOLED(Label rssi, Label tof) {
 
 
     std::vector<std::string> items;
@@ -185,7 +185,7 @@ Label promptUserChooseBetweenPredictions(Label rssi, Label tof) {
     return LABELS_COUNT;
 }
 
-bool promptUserRetryPrediction() {
+bool promptUserRetryPredictionOLED() {
     LOG_INFO("PREDICT", "[USER] > Retry prediction? (y/n): ");
     return display_prompt_yes_no("Prediction Failed", "Retry prediction?");
 }
@@ -194,7 +194,7 @@ bool promptUserRetryPrediction() {
 // 🛑 ABORT FLOW
 // =======================================================
 
-void promptUserAbortOrContinue() {
+void promptUserAbortOrContinueOLED() {
 
     // On a display, we ask a direct question instead of waiting for a timeout.
     if (!display_prompt_yes_no("Abort?", "Quit the session?")) {

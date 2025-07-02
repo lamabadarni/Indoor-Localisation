@@ -4,6 +4,7 @@
 #include "core/utils/utilities.h"
 #include "core/utils/logger.h"
 #include "core/ui/userUI.h"
+#include "core/ui/userUIOled.h"
 
 static constexpr char META_FILENAME[]        = "meta_";       // This one is okay
 static constexpr char RSSI_FILENAME[]        = "rssi_data_";  // Shortened

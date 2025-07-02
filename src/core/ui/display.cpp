@@ -9,6 +9,7 @@
 #include "driver/i2c_master.h"
 #include "../utils/utilities.h"
 
+
 // U8g2 core + HAL instances
 static u8g2_t           u8g2;
 static u8g2_esp32_hal_t u8g2_esp32_hal = U8G2_ESP32_HAL_DEFAULT;

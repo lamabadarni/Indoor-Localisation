@@ -39,6 +39,7 @@ int         BufferedData::lastN    = 0;
 std::vector<Label>     skippedLabels = {};
 std::vector<RSSIData>  rssiDataSet   = {};
 std::vector<TOFData>   tofDataSet    = {};
+std::vector<std::string> log_buffer;
 
 double  accumulatedRSSIs[NUMBER_OF_ANCHORS];
 double  accumulatedTOFs[NUMBER_OF_RESPONDERS];
