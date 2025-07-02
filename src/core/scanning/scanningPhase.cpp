@@ -8,8 +8,9 @@
  */
 
 #include "scanningPhase.h"
-#include "rssiScanner.h"
+#include "staticRSSIScanner.h"
 #include "tofScanner.h"
+#include "dynamicRSSIScanner.h"
 #include "core/validation/validationPhase.h"
 #include "core/systemBootModeHandlers/diagnostics.h"
 
@@ -28,42 +29,47 @@ void runScanningPhase() {
     LOG_INFO("SCAN", "You will be prompted to choose whether to reuse existing data or perform a new scan.");
     LOG_INFO("SCAN", "Scanning will continue until all labels are processed or you decide to abort.");
 
+    bool reuse = false; 
+    bool labelInvalid = false;
+
+    if (isDataLoaded()) {
+        LOG_INFO("SCAN", "Backup data available");
+        reuse = promptUserReuseDecision();
+    }
+
 
     for (int i = 0; i < LABELS_COUNT; ++i) {
         delay_ms(DELAY_BETWEEN_PHASES);
         promptUserLocationLabel();  // Sets currentLabel
+        LOG_INFO("SCAN", "Selected label: %s", labels[currentLabel].c_str());
 
-        // Backup data path
-        if (reuseFromMemory[currentLabel]) {
-            LOG_INFO("SCAN", "Backup data available for label: %s", labels[currentLabel].c_str());
-            char input = promptUserReuseDecision();
-
-            if (input == 'V' || input == 'v') {
-                LOG_INFO("SCAN", "Checking backup data accuracy...");
-                startLabelValidationSession();
-                if (validForPredection[currentLabel]) continue; // Reuse backup if valid
-            }
-
+        // Backup data validation path
+        if (reuse) {
+            LOG_INFO("SCAN", "Checking backup data accuracy for label %s", labels[currentLabel]);
+            startLabelValidationSession();
+            if (validForPredection[currentLabel]) continue; // Reuse backup if valid
+            else LOG_INFO("SCAN", "Data seems to be not accurate for %s | accuracy : %d . Rescanning", labels[currentLabel], getAccuracyForValidation());
         }
 
         // Fresh scan path
-        /// its better to add also a prombt function 
-        LOG_INFO("SCAN", "Selected label: %s", labels[currentLabel].c_str());
         LOG_INFO("SCAN", "Press any key to start scanning...");
         readCharFromUser();
 
         if (!startLabelScanningSession()) {
-            LOG_WARN("SCAN", "Skipping label: %s due to repeated validation failure.", labels[currentLabel].c_str());
-            skippedLabels.push_back(currentLabel);
+            LOG_INFO("SCAN", "Skipping label: %s due to repeated validation failure.", labels[currentLabel].c_str());
+            validForPredection[currentLabel] = false;
+            labelInvalid = true;
         }
     }
 
     LOG_INFO("SCAN", "=============== Scanning Phase Completed ===============");
 
-    if (!skippedLabels.empty()) {
-        LOG_WARN("SCAN", "The following labels were skipped due to scan failure:");
-        for (Label skipped : skippedLabels) {
-            LOG_WARN("SCAN", " - %s | Accuracy: %.2f%%", labels[skipped].c_str(), getAccuracy());
+    if (labelInvalid) {
+        LOG_INFO("SCAN", "The following labels were skipped due to scan failure:");
+        for (int i = 0; i < LABELS_COUNT; i++) {
+            if(!validForPredection[i]) {
+            LOG_INFO("SCAN", " - %s | Accuracy: %.2f%%", labels[i].c_str(), getAccuracyForValidation());
+            }
         }
     } else {
         LOG_INFO("SCAN", "All labels were scanned successfully.");
@@ -75,7 +81,7 @@ void runScanningPhase() {
 // =======================================================
 
 bool startLabelScanningSession() {
-    int retryCount = 0;
+    int  retryCount = 0;
     bool validScan = false;
 
     if (!dontAskAgain) {
@@ -85,11 +91,11 @@ bool startLabelScanningSession() {
     }
 
     while (retryCount < MAX_RETRIES_FOR_RSSI) {
-        LOG_INFO("SCAN", "Attempt #%d for label: %s", retryCount + 1, labels[currentLabel].c_str());
+        LOG_INFO("SCAN", "Collecting data attempt #%d for label: %s", retryCount + 1, labels[currentLabel].c_str());
 
         collectMeasurements();
 
-        LOG_INFO("SCAN", "Validating scan accuracy...");
+        LOG_INFO("SCAN", "Validating data collected accuracy...");
         startLabelValidationSession();
 
         if (validScan) {
@@ -97,12 +103,12 @@ bool startLabelScanningSession() {
             break;
         }
 
-        LOG_WARN("SCAN", "Accuracy insufficient. Retrying...");
+        LOG_INFO("SCAN", "Accuracy insufficient. Retrying..");
         retryCount++;
     }
 
     if (!validScan) {
-        LOG_ERROR("SCAN", "Scan failed after max retries for label: %s", labels[currentLabel].c_str());
+        LOG_ERROR("SCAN", "Scan failed after max retries : %d for label: %s", MAX_RETRIES_FOR_RSSI, labels[currentLabel].c_str());
     }
 
     return validScan;
@@ -117,36 +123,41 @@ void collectMeasurements() {
 
     switch (SystemSetup::currentSystemMode) {
         case STATIC_RSSI:
-            LOG_INFO("SCAN", "Mode: STATIC_RSSI");
-            performRSSIScan();
+            LOG_INFO("SCAN", "Mode: Static RSSI");
+            performStaticRSSIScan();
+            break;
+
+        case DYNAMIC_RSSI:
+            LOG_INFO("SCAN", "Mode: Dynamic RSSI");
+            performDynamicRSSIScan();
             break;
 
         case TOF:
-            LOG_INFO("SCAN", "Mode: TOF");
-            performTOFScan();
-            break;
-
-        case STATIC_RSSI_TOF:
-            LOG_INFO("SCAN", "Mode: STATIC_RSSI_TOF");
-            performRSSIScan();
+            LOG_INFO("SCAN", "Mode: Time Of Flight");
             performTOFScan();
             break;
 
         default:
-            LOG_WARN("SCAN", "Unsupported scanner mode: %d", SystemSetup::currentSystemScannerMode);
+            LOG_INFO("SCAN", "Unsupported scanner mode: %d", SystemSetup::currentSystemScannerMode);
             break;
     }
 }
 
 // =======================================================
-// SINGLE QUICK SCAN (DIAGNOSTIC)
+// SINGLE SCAN 
 // =======================================================
 
 void createSingleScan() {
+    
     switch (SystemSetup::currentSystemScannerMode) {
         case STATIC_RSSI:
-            LOG_INFO("SCAN", "Mode: STATIC_RSSI");
-            createSingleRSSIScan();
+            LOG_INFO("SCAN", "Mode: Static RSSI");
+            createSingleStaticRSSIScan();
+            break;
+
+        case DYNAMIC_RSSI:
+            LOG_INFO("SCAN", "Mode: Dynamic RSSI");
+            createSingleDynamicRSSIScan();
             break;
 
         case TOF:
@@ -154,14 +165,8 @@ void createSingleScan() {
             createSingleTOFScan();
             break;
 
-        case STATIC_RSSI_TOF:
-            LOG_INFO("SCAN", "Mode: STATIC_RSSI_TOF");
-            createSingleRSSIScan();
-            createSingleTOFScan();
-            break;
-
         default:
-            LOG_WARN("SCAN", "Unsupported scanner mode: %d", SystemSetup::currentSystemScannerMode);
+            LOG_ERROR("SCAN", "Unsupported scanner mode: %d", SystemSetup::currentSystemScannerMode);
             break;
     }
 }
@@ -173,8 +178,9 @@ void createSingleScan() {
 void rescan() {
     LOG_INFO("SCAN", "Rescanning after failed invalidation for label: %s", labels[currentLabel].c_str());
 
-    // LAMA: Consider clearing invalid measurements if needed
-
+    DeleteBufferedData::scanner = SystemSetup::currentSystemScannerMode;
+    //WARD: how to know how much to delete??  
+      
     collectMeasurements();
 
     LOG_INFO("SCAN", "Rescan complete for label: %s", labels[currentLabel].c_str());

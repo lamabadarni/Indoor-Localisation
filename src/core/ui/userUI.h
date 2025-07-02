@@ -76,11 +76,7 @@ bool promptUserAbortToImproveEnvironment();
  */
 bool promptUserRescanAfterInvalidation();
 
-/**
- * @brief Placeholder for prompt after multiple prediction failures.
- * @return true if user confirms clearing data.
- */
-bool promptUserForClearingDataAfterManyPredectionFailure(); // To be implemented
+bool promptUserRetryValidation(); //HALA-IMPLEMENT
 
 // ======================== PREDICTION FLOW ========================
 

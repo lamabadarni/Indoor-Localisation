@@ -9,10 +9,10 @@
 bool initDataBackup();
 
 /**
- * @brief buffers the RSSI scan data for later saving.
- * @param scanData The RSSI scan data to be buffered.
+ * @brief buffers the Static RSSI scan data for later saving.
+ * @param scanData The Static RSSI scan data to be buffered.
  */
-void saveData(const RSSIData &scanData);
+void saveData(const StaticRSSIData &scanData);
 
 /**
  * @brief buffers the TOF scan data for later saving.
@@ -21,9 +21,14 @@ void saveData(const RSSIData &scanData);
 void saveData(const TOFData &scanData);
 
 /**
+ * @brief buffers the Dynamic RSSI scan data for later saving.
+ * @param scanData The Dynamic RSSI scan data to be buffered.
+ */
+void saveData(const DynamicMacData& macData, const DynamicRSSIData& scanData);
+/**
  * @brief delete buffered data based DeleteInvalidData
  */
-void deleteInvalidData(void); 
+void deleteInvalidData(void);
 
 /**
  * @brief Loads the dataset according to the current system state into the global vectors.
@@ -39,17 +44,10 @@ bool loadDataset(void);
 bool formatStorage(void);
 
 /**
- * @brief Deletes invalid data based on the provided validMap.
- * @param validMap A mapping of Label -> valid data (true if valid, false otherwise).
- * @return true if the data was cleaned successfully, false otherwise.
- */
-bool filterNonValidData(const bool validMap[LABELS_COUNT]);
-
-/**
  * @brief Resets the CSV files for RSSI and TOF data and prints the column headers.
  * @return true if the reset was successful, false otherwise.
  */
-bool resetCSV(void);
+bool createCSV(void);
 
 /**
  * @brief Assumes there are n buffered samples in the dataset that need to be saved to the file.

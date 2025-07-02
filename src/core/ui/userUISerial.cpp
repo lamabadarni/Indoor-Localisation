@@ -63,6 +63,10 @@ static SystemScannerMode promptUserScannerMode() {
     return static_cast<SystemScannerMode>(sel - 1);
 }
 
+static SystemPredictionMode promptUserPredictionMode() {
+    //LAMA TODO
+}
+
 void runUserSystemSetupSerial() {
     promptUserLoggerConfiguration();
     SystemSetup::currentSystemMode = promptUserSystemMode();
@@ -102,7 +106,7 @@ void promptUserShowDebugLogsSerial() {
 // 🟩 LABEL SELECTION
 // =======================================================
 
-void promptUserLocationLabelSerial() {
+void promptUserLocationLabelForScanSerial() {
     LOG_INFO("LABEL", "[USER] > Select label by index:");
     for (int i = 0; i < LABELS_COUNT; ++i) {
         for(auto label : skippedLabels) {
@@ -122,31 +126,31 @@ void promptUserLocationLabelSerial() {
     currentLabel = static_cast<Label>(sel - 1);
 }
 
-void promptLabelsValidToPredectionSerial() {
+void promptLabelsValidPredectionSerial() {
+    //LAMA TODO
     LOG_INFO("LABEL", "[USER] Labels valid for prediction:");
     for (int i = 0; i < LABELS_COUNT; ++i) {
         LOG_INFO("LABEL", "  %d - %s", i + 1, labels[i].c_str());
     }
 }
 
-bool promptUserProceedToNextLabelSerial() {
+void promptUserProceedToNextLabelSerial() {
     LOG_INFO("LABEL", "[USER] > Proceed to another label? (y/n): ");
     char c = readCharFromUser();
-    if (c == 'y' || c == 'Y') return true;
-
-    promptUserAbortOrContinue();
-    return !shouldAbort;
+    shouldAbort = (c == 'N' || c == 'n'); //HALA : SEE CHANGE
 }
 
 // =======================================================
 // 🟨 BACKUP & REUSE
 // =======================================================
 
-char promptUserReuseDecisionSerial() {
+bool promptUserReuseDecisionSerial() {
     LOG_INFO("BACKUP", "[USER] > Reuse saved scan?");
     LOG_INFO("UI", "  Y - Yes, reuse");
     LOG_INFO("UI", "  N - No, rescan");
-    return readCharFromUser();
+    char c = readCharFromUser();
+    if (c == 'y' || c == 'Y') return true;
+    return false;
 }
 
 // =======================================================
@@ -170,6 +174,12 @@ bool promptUserAbortToImproveEnvironmentSerial() {
 // =======================================================
 // 🟥 VALIDATION PHASE
 // =======================================================
+
+bool promptUserRetryValidationSerial() {
+    LOG_INFO("PREDICT", "[USER] > Retry validation? (y/n): ");
+    char c = readCharFromUser();
+    return c == 'y' || c == 'Y' ;
+}
 
 bool promptUserRescanAfterInvalidationSerial() {
     LOG_INFO("VALIDATE", "[USER] > Rescan after failed validation? (y/n): ");

@@ -27,7 +27,7 @@ void runValidationPhase() {
     LOG_INFO("VALIDATE", "You will be asked to confirm whether the prediction is correct.");
     LOG_INFO("VALIDATE", "Validation phase will continue until running validation phase at all labels or you decide to abort.");
 
-    setValidForPredection(); // by default all the unskipped labels are set to true
+    setValidForPredection();
 
     while (!shouldAbort) {
         LOG_INFO("VALIDATE", "Please stand still at a label, press enter when you're ready");
@@ -38,8 +38,8 @@ void runValidationPhase() {
         if (!validForPredection[currentLabel]) {
             delay_ms(USER_PROMPTION_DELAY);
             LOG_ERROR("VALIDATE", "Predection failure at: %s", labels[currentLabel]);
-            bool _rescan = promptUserRescanAfterInvalidation();
-            if(_rescan) {
+            bool rescanD = promptUserRescanAfterInvalidation();
+            if(rescanD) {
                 LOG_INFO("VALIDATE", "Rescanning...");
 
                 if(SystemSetup::logLevel < LogLevel::LOG_LEVEL_DEBUG) {
@@ -48,9 +48,7 @@ void runValidationPhase() {
 
                 rescan();
             }
-            else {
-                 promptUserAbortOrContinue();
-            }
+            promptUserProceedToNextLabelSerial();
         }
     }
 
@@ -84,7 +82,7 @@ void startLabelValidationSession() {
         Label predicted = predict();
 
         if(predicted == currentLabel) {
-            LOG_INFO("VALIDATION", "Data set validation session for : %s completed. Accuracy detected : %d", labels[currentLabel], getAccuracy());
+            LOG_INFO("VALIDATION", "Data set validation session for : %s completed. Accuracy detected : %d", labels[currentLabel], getAccuracyForValidation());
             validForPredection[currentLabel] = true;
             return;
         }
@@ -98,12 +96,13 @@ void startLabelValidationSession() {
             break;
         }
 
-        retry = promptUserRetryPrediction();
+        retry = promptUserRetryValidation();
 
         delay_ms(DELAY_BETWEEN_PHASES);
     }
 
-    // Lama TODO: Delete data
+    DeleteBufferedData::scanner = SystemSetup::currentSystemScannerMode;
+    //WARD: how to know how much to delete??
     validForPredection[currentLabel] = false;
     return;
 }

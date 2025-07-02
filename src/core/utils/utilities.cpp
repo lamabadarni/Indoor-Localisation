@@ -21,6 +21,15 @@ bool SystemSetup::enableValidationPhase = false;
 // == Logging ==
 LogLevel SystemSetup::logLevel   = LOG_LEVEL_ERROR;
 
+SystemScannerMode SaveBufferedData::scanner   = SYSTEM_SCANNER_MODES_NUM;
+SystemScannerMode DeleteBufferedData::scanner = SYSTEM_SCANNER_MODES_NUM;
+int               SaveBufferedData::lastN     = 0;
+int               DeleteBufferedData::lastN   = 0;
+
+DataLoaded::Dynamic = false;
+DataLoaded::Static  = false;
+DataLoaded::TOF     = false;
+
 // ======================   Globals    ======================
 
 Label  currentLabel = LABELS_COUNT;
@@ -29,12 +38,7 @@ bool   shouldAbort  = false;
 bool   validForPredection[LABELS_COUNT]  = {0};
 double tofAccuracy[LABELS_COUNT]         = {0};
 double staticRSSIAccuracy[LABELS_COUNT]  = {0};
-dounle dynamicRSSIAccuracy[LABELS_COUNT] = {0}
-
-SystemScannerMode SaveBufferedData::scanner   = SYSTEM_SCANNER_MODES_NUM;
-SystemScannerMode DeleteBufferedData::scanner = SYSTEM_SCANNER_MODES_NUM;
-int               SaveBufferedData::lastN     = 0;
-int               DeleteBufferedData::lastN   = 0;
+double dynamicRSSIAccuracy[LABELS_COUNT] = {0}
 
 std::vector<StaticRSSIData>  rssiDataSet        = {};
 std::vector<DynamicMacData>  dynamicMacDataSet  = {};
@@ -189,15 +193,32 @@ void setValidForPredection() {
     }
 }
 
-float getAccuracy() {
-    switch ( SystemSetup::currentSystemPredictionModeion ) {
-    case SystemPredictionMode::STATIC_RSSI {
+float getAccuracyForValidation() {
+    switch ( SystemSetup::currentSystemPredictionMode ) {
+        case SystemPredictionMode::STATICRSSI {
+            return staticRSSIAccuracy[currentLabel];
+        }
+        case SystemPredictionMode::DYNAMICRSSI {
+            return dynamicRSSIAccuracy[currentLabel];
+        }
+        case SystemPredictionMode::TOfF {
+            return tofAccuracy[currentLabel];
+        }
+        default:
+        break;
+    } 
+    return 0.0;
+}
+
+float getAccuracyForPrediction() {
+    switch ( SystemSetup::currentSystemPredictionMode ) {
+    case SystemPredictionMode::STATICRSSI {
         return staticRSSIAccuracy[currentLabel];
     }
-    case SystemPredictionMode::DYNAMIC_RSSI {
+    case SystemPredictionMode::DYNAMICRSSI {
         return dynamicRSSIAccuracy[currentLabel];
     }
-    case SystemPredictionMode::TOF {
+    case SystemPredictionMode::TOfF {
         return tofAccuracy[currentLabel];
     }
     case SystemPredictionMode::STATIC_RSSI_DYNAMIC_RSSI {
@@ -238,6 +259,19 @@ bool isTOFActiveForPrediction() {
            SystemSetup::currentSystemPredictionMode == STATIC_RSSI_TOF || 
            SystemSetup::currentSystemPredictionMode == DYNAMIC_RSSI_TOF ||
            SystemSetup::currentSystemPredictionMode == STATIC_RSSI_DYNAMIC_RSSI_TOF;
+}
+
+bool isDataLoaded() {
+    switch (SystemSetup::currentSystemScannerMode) {
+    case TOF:
+        return DataLoaded::TOF;
+    case DYNAMIC_RSSI:
+        return DataLoaded::Dynamic;
+    case STATIC_RSSI:
+        return DataLoaded::Static;
+    default:
+        break;
+    }
 }
 
 std::vector<std::string> arrayToVector(const std::string arr[], int size) {

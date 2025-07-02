@@ -3,7 +3,7 @@
 #include "../utils/platform.h"
 #include "../ui/display.h"
 
-void log_message(const char* level, const char* tag, const char* format, ...) {
+void log_message_serial(const char* level, const char* tag, const char* format, ...) {
 
     const char* color = "";
     
