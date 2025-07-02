@@ -8,13 +8,11 @@ void log_message_serial(const char* level, const char* tag, const char* format, 
     const char* color = "";
     
     if (strcmp(level, "INFO") == 0)
-        color = "\\033[1;32m";  // Green
-    else if (strcmp(level, "WARN") == 0)
-        color = "\\033[1;33m";  // Yellow
+        color = "\033[1;32m";  // Green
     else if (strcmp(level, "ERROR") == 0)
-        color = "\\033[1;31m";  // Red
+        color = "\033[1;31m";  // Red
     else if (strcmp(level, "DEBUG") == 0)
-        color = "\\033[1;34m";  // Blue
+        color = "\033[1;34m";  // Blue
 
     char buffer[256];
     va_list args;
@@ -22,9 +20,11 @@ void log_message_serial(const char* level, const char* tag, const char* format, 
     vsnprintf(buffer, sizeof(buffer), format, args);
     va_end(args);
     unsigned long timestamp = millis_since_boot();
-    printf("[%s][%s][%lums] %s\n", level, tag, timestamp, buffer);
-    if (!logFile) {
-        fprintf("[%s][%s][%lums] %s\n", level, tag, timestamp, buffer);
+    printf("%s[%s][%s][%lums] %s\033[0m\n", color, level, tag, timestamp, buffer);
+    fflush(stdout);                        
+    vTaskDelay(pdMS_TO_TICKS(15));          
+    if (logFile) {
+        fprintf(logFile, "[%s][%s][%lums] %s\n", level, tag, timestamp, buffer);
     }
 }
 
@@ -45,8 +45,8 @@ void log_message_oled(const char* level, const char* tag, const char* format, ..
     // Send the complete, formatted string to our new OLED log viewer
     display_add_log_line(std::string(full_log_cstr));
 
-    if (!logFile) {
-        fprintf(full_log_cstr);
+    if (logFile) {
+        fprintf(logFile, full_log_cstr);
     }
 
     // The original printf to the serial terminal is now removed.

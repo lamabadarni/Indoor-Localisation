@@ -10,7 +10,7 @@ static constexpr char CSV_SUFFIX[]            = ".csv";
 static constexpr char TXT_SUFFIX[]            = ".txt";
 
 std::string getBaseDir() {
-    return std::string(MOUNT_POINT);
+    return std::string(MOUNT_POINT) + "/Data";
 }
 
 std::string getStaticRSSIFilePath(void) {

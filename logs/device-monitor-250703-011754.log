@@ -1,0 +1,2184 @@
+01:17:54.570 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+01:17:54.571 > I (32) boot: compile time Jul  3 2025 00:41:34
+01:17:54.571 > D (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+01:17:54.571 > [37mD (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+01:17:54.572 > I (35) boot: chip revision: v0.0
+01:17:54.573 > [37mI[37m (35) boot: efuse block revision: v0.2
+01:17:54.573 > D (35) boot.esp32s2: magic e9
+01:17:54.573 > [37mD (35) boot.esp32s2: segments 04
+01:17:54.573 > [37mD[37m (35) boot.esp32s2: spi_mode 02
+01:17:54.574 > [37mD[37m (35) boot.esp32s2: spi_speed 0f
+01:17:54.574 > D (36) boot.esp32s2: spi_size 02
+01:17:54.574 > [37mI (36) boot.esp32s2: SPI Speed      : 80MHz
+01:17:54.574 > [37mI[37m (36) boot.esp32s2: SPI Mode       : DIO
+01:17:54.574 > [37mI (36) boot.esp32s2: SPI Flash Size : 4MB
+01:17:54.574 > [37mD (37) boot: Enabling RTCWDT(9000 ms)
+01:17:54.574 > [37mI[37m (37) boot: Enabling RNG early entropy source...
+01:17:54.575 > [37mD[37m (37) bootloader_flash: rodata starts from paddr=0x00008000, si[37mze=0xc00, will be mapped to vaddr=0x3f000000
+01:17:54.575 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:17:54.576 > [37mD (38) boot: mapped partition table 0x8000 at 0x3f008000
+01:17:54.576 > [37mD[37m (38) flash_parts: partition table verified, 5 entries
+01:17:54.576 > I (39) boot: Partition Table:
+01:17:54.576 > [37mI[37m (39) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+01:17:54.577 > [37mD (40) boot: load partition table entry 0x3f008000
+01:17:54.577 > D (40) boot: type=1 subtype=2
+01:17:54.578 > [37mI[37m (40) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+01:17:54.579 > [37mD[37m (41) boot: load partition table entry 0x3f008020
+01:17:54.579 > D (41) boot: type=1 subtype=1
+01:17:54.579 > [37mI[37m (41) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+01:17:54.580 > [37mD[37m (42) boot: load partition table entry 0x3f008040
+01:17:54.580 > [37mD[37m (43) boot: type=0 subtype=0
+01:17:54.580 > [37mI[37m (43) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+01:17:54.582 > [37mD (44) boot: load partition table entry 0x3f008060
+01:17:54.582 > [37mD (44) boot: type=1 subtype=83
+01:17:54.582 > [37mI[37m (44) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+01:17:54.583 > [37mI (45) boot: End of partition table
+01:17:54.583 > [37mD[37m (45) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+01:17:54.585 > [37mD (46) esp_image: reading image header @ 0x10000
+01:17:54.585 > D (47) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+01:17:54.586 > D (48) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a3c
+01:17:54.586 > [37mV (48) esp_image: loading segment header 0 at offset 0x10018
+01:17:54.586 > [37mV[37m (48) esp_image: segment data length 0x14e08 data starts 0x1002[37m0[37m
+01:17:54.587 > V (49) esp_image: MMU page size 0x10000
+01:17:54.587 > [37mV[37m (49) esp_image: segment 0 map_segment 1 segment_data_offs 0x10020 load_addr 0x3f000020
+01:17:54.587 > [37mI[37m (49) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=14e08h ( 85512) map
+01:17:54.588 > D (50) esp_image: free data page_count 0x00000038
+01:17:54.588 > [37mD (50) bootloader_flash: rodata starts from paddr=0x00010020, si[37mze=0x14e08, will be mapped to vaddr=0x3f000000
+01:17:54.588 > [37mV[37m (50) bootloader_flash: after mapping, starting from paddr=0x00010000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:17:54.605 > [37mV[37m (67) esp_image: loading segment header 1 at offset 0x24e28
+01:17:54.605 > D (67) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:17:54.606 > [37mV[37m (68) esp_image: segment data length 0x1c data starts 0x24e30
+01:17:54.606 > [37mV (69) esp_image: MMU page size 0x10000
+01:17:54.606 > [37mV[37m (69) esp_image: segment 1 map_segment 0 segment_data_offs 0x24[37me30 load_addr 0x3ff9e010
+01:17:54.607 > [37mI[37m (69) esp_image: segment 1: paddr=00024e30 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+01:17:54.608 > [37mD[37m (70) esp_image: free data page_count 0x00000038
+01:17:54.608 > [37mD[37m (70) bootloader_flash: rodata starts from paddr=0x00024e30, si[37mz[37me=0x1c, will be mapped to vaddr=0x3f000000
+01:17:54.608 > [37mV[37m (70) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:17:54.608 > [37mV[37m (71) esp_image: loading segment header 2 at offset 0x24e4c
+01:17:54.609 > [37mD[37m (71) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:17:54.610 > [37mV[37m (72) esp_image: segment data length 0x2ed8 data starts 0x24e54[37m[37m
+01:17:54.611 > V (73) esp_image: MMU page size 0x10000
+01:17:54.611 > [37mV[37m (73) esp_image: segment 2 map_segment 0 segment_data_offs 0x24e54 load_addr 0x3ffc5ad0
+01:17:54.611 > [37mI[37m (73) esp_image: segment 2: paddr=00024e54 vaddr=3ffc5ad0 size=02ed8h ( 11992) load
+01:17:54.611 > [37mD[37m (74) esp_image: free data page_count 0x00000038
+01:17:54.611 > [37mD[37m (74) bootloader_flash: rodata starts from paddr=0x00024e54, si[37mz[37me=0x2ed8, will be mapped to vaddr=0x3f000000
+01:17:54.612 > [37mV[37m (74) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:17:54.615 > [37mV[37m (77) esp_image: loading segment header 3 at offset 0x27d2c
+01:17:54.615 > [37mD[37m (77) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:17:54.617 > [37mV (78) esp_image: segment data length 0x82e4 data starts 0x27d34[37m[37m
+01:17:54.617 > V (79) esp_image: MMU page size 0x10000
+01:17:54.617 > [37mV[37m (80) esp_image: segment 3 map_segment 0 segment_data_offs 0x27d34 load_addr 0x40024000
+01:17:54.617 > [37mI[37m (80) esp_image: segment 3: paddr=00027d34 vaddr=40024000 size=082e4h ( 33508) load
+01:17:54.618 > [37mD[37m (80) esp_image: free data page_count 0x00000038
+01:17:54.618 > [37mD[37m (80) bootloader_flash: rodata starts from paddr=0x00027d34, si[37mze=0x82e4, will be mapped to vaddr=0x3f000000
+01:17:54.618 > [37mV[37m (80) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:17:54.627 > [37mV[37m (89) esp_image: loading segment header 4 at offset 0x30018
+01:17:54.627 > [37mD (89) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+01:17:54.628 > [37mV[37m (90) esp_image: segment data length 0x3fe6c data starts 0x3002[37m0[37m
+01:17:54.629 > [37mV[37m (91) esp_image: MMU page size 0x10000
+01:17:54.629 > [37mV[37m (91) esp_image: segment 4 map_segment 1 segment_data_offs 0x30020 load_addr 0x40080020
+01:17:54.629 > [37mI[37m (92) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=3fe6ch (261740) map
+01:17:54.630 > [37mD[37m (92) esp_image: free data page_count 0x00000038
+01:17:54.630 > [37mD[37m (92) bootloader_flash: rodata starts from paddr=0x00030020, si[37mz[37me=0x3fe6c, will be mapped to vaddr=0x3f000000
+01:17:54.630 > [37mV[37m (92) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m30000 and vaddr=0x3f000000, 0x40000 bytes are mapped
+01:17:54.682 > [37mV[37m (144) esp_image: loading segment header 5 at offset 0x6fe8c
+01:17:54.682 > D (144) bootloader_flash: mmu set block paddr=0x00060000 (was 0x[37mf[37mfffffff)
+01:17:54.683 > [37mV[37m (145) esp_image: segment data length 0x97e8 data starts 0x6fe9[37m4[37m
+01:17:54.684 > [37mV[37m (146) esp_image: MMU page size 0x10000
+01:17:54.684 > [37mV[37m (146) esp_image: segment 5 map_segment 0 segment_data_offs 0x6fe94 load_addr 0x4002c2e4
+01:17:54.684 > [37mI[37m (147) esp_image: segment 5: paddr=0006fe94 vaddr=4002c2e4 size=097e8h ( 38888) load
+01:17:54.685 > [37mD[37m (147) esp_image: free data page_count 0x00000038
+01:17:54.685 > [37mD[37m (147) bootloader_flash: rodata starts from paddr=0x0006fe94, s[37mize=0x97e8, will be mapped to vaddr=0x3f000000
+01:17:54.685 > [37mV[37m (147) bootloader_flash: after mapping, starting from paddr=0x0[37m0[37m060000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:17:54.695 > [37mV[37m (157) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007967c
+01:17:54.696 > [37mD[37m (158) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+01:17:54.706 > [37mI[37m (168) boot: Loaded app from partition at offset 0x10000
+01:17:54.706 > I (168) boot: Disabling RNG early entropy source...
+01:17:54.707 > [37mD[37m (168) boot: Mapping segment 0 as DROM
+01:17:54.707 > D (169) boot: Mapping segment 4 as IROM
+01:17:54.707 > [37mD[37m (169) boot: calling set_cache_and_start_app
+01:17:54.707 > [37mD (169) boot: configure drom and irom and start
+01:17:54.707 > [37mV[37m (170) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000[37m0[37m20, size=0x14e08
+01:17:54.708 > [37mV[37m (171) boot: after mapping rodata, starting from paddr=0x000100[37m0[37m0 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:17:54.709 > [37mV[37m (171) boot: mapped one page of the rodata, from paddr=0x000100[37m0[37m0 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+01:17:54.709 > [37mV[37m (171) boot: text starts from paddr=0x00030020, vaddr=0x4008002[37m0[37m, size=0x3fe6c
+01:17:54.710 > [37mV[37m (172) boot: after mapping text, starting from paddr=0x00030000[37m [37mand vaddr=0x40080000, 0x40000 bytes are mapped
+01:17:54.710 > [37mD[37m (173) boot: start: 0x40026a3c
+01:17:54.733 > [37mI[37m (195) main_task: Started on CPU0
+01:17:54.733 > [37mI[37m (195) main_task: Calling app_main()
+01:17:54.734 > [37m\[37m033[1;32m[INFO][MAIN][13ms] START[0m
+01:17:54.734 > [37m\[37m033[1;32m[INFO][DATA][14ms] START[0m
+01:17:54.734 > [37m\[37m033[1;32m[INFO][SDCard][14ms] Init SD Card.[0m
+01:17:54.735 > [37mI[37m (195) SDCARD: Mounting filesystem
+01:17:54.736 > [37mI[37m (195) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:17:54.744 > [37mI[37m (205) sdspi_transaction: cmd=52, R1 response: command not supp[37mo[37mrted
+01:17:54.794 > [37mI[37m (255) sdspi_transaction: cmd=5, R1 response: command not suppo[37mr[37mted
+01:17:54.833 > [37mE[37m (295) vfs_fat_sdmmc: mount_to_vfs failed (0x102).
+01:17:54.833 > [37mI[37m (295) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:18:04.942 > [37m\[37m033[1;32m[INFO][SETUP][10222ms] [USER] > Select log level:[0m[37m
+01:18:04.952 > [37m\[37m033[1;32m[INFO][SETUP][10232ms]   I - ERROR and INFO logs[0m
+01:18:04.952 > [37m\[37m033[1;32m[INFO][SETUP][10232ms]   D - ERROR, INFO, and DEBUG lo[37mg[37ms[0m
+01:18:04.962 > Guru Meditation Error: Core  0 panic'ed (LoadProhibited). Except[37mi[37mon was unhandled.
+01:18:04.964 > [37m[37m
+01:18:04.964 > [37mC[37more  0 register dump:
+01:18:04.964 > [37mP[37mC      : 0x4008f315  PS      : 0x00060030  A0      : 0x80087f09[37m [37m A1      : 0x3ffcdff0  
+01:18:04.965 > A2      : 0x3ffc89b8  A3      : 0x00000000  A4      : 0x40096a60[37m [37m A5      : 0x00000000  
+01:18:04.966 > A6      : 0x3ffc9380  A7      : 0x3ffcddcc  A8      : 0x00000000[37m [37m A9      : 0x3ffcdb50  
+01:18:04.967 > [37mA10     : 0x3ffcdba0  A11     : 0x00000004  A12     : 0x00000005[37m [37m A13     : 0x00000080  
+01:18:04.968 > [37mA[37m14     : 0x3ffc9380  A15     : 0x3ffcba3c  SAR     : 0x0000001f[37m [37m EXCCAUSE: 0x0000001c  
+01:18:04.969 > [37mE[37mXCVADDR: 0x00000010  LBEG    : 0x00000005  LEND    : 0x00000080[37m [37m LCOUNT  : 0x4002a7e8  
+01:18:04.971 > [37m[37m
+01:18:04.972 > [37m[37m
+01:18:04.972 > [37mBacktrace: 0x4008f312:0x3ffcdff0 0x40087f06:0x3ffce010 0x400880a[37mf[37m:0x3ffce030 0x400884c7:0x3ffce050 0x400884b8:0x3ffce070 0x40088[37mf[37med:0x3ffce090 0x4008930b:0x3ffce0b0 0x400882d7:0x3ffce0e0 0x4008aab0:0x3ffce100 0x400bf823:0x3ffce120 0x4002d279:0x3ffce150
+01:18:04.975 > [37m[37m
+01:18:04.976 > [37m[37m
+01:18:04.977 > [37m[37m
+01:18:04.978 > [37m[37m
+01:18:04.978 > ELF file SHA256: 77daa708d
+01:18:04.979 > [37m[37m
+01:18:04.979 > Rebooting...
+01:18:05.012 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+01:18:05.012 > I (32) boot: compile time Jul  3 2025 00:41:34
+01:18:05.012 > [37mD (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+01:18:05.013 > [37mD[37m (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+01:18:05.014 > [37mI[37m (35) boot: chip revision: v0.0
+01:18:05.014 > [37mI[37m (35) boot: efuse block revision: v0.2
+01:18:05.014 > [37mD[37m (35) boot.esp32s2: magic e9
+01:18:05.014 > [37mD[37m (35) boot.esp32s2: segments 04
+01:18:05.015 > [37mD[37m (35) boot.esp32s2: spi_mode 02
+01:18:05.016 > [37mD[37m (35) boot.esp32s2: spi_speed 0f
+01:18:05.016 > [37mD[37m (36) boot.esp32s2: spi_size 02
+01:18:05.016 > [37mI[37m (36) boot.esp32s2: SPI Speed      : 80MHz
+01:18:05.016 > [37mI[37m (36) boot.esp32s2: SPI Mode       : DIO
+01:18:05.016 > [37mI[37m (36) boot.esp32s2: SPI Flash Size : 4MB
+01:18:05.016 > [37mD[37m (37) boot: Enabling RTCWDT(9000 ms)
+01:18:05.016 > [37mI[37m (37) boot: Enabling RNG early entropy source...
+01:18:05.016 > [37mD[37m (37) bootloader_flash: rodata starts from paddr=0x00008000, si[37mz[37me=0xc00, will be mapped to vaddr=0x3f000000
+01:18:05.017 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:05.018 > [37mD[37m (38) boot: mapped partition table 0x8000 at 0x3f008000
+01:18:05.018 > [37mD[37m (38) flash_parts: partition table verified, 5 entries
+01:18:05.018 > [37mI (39) boot: Partition Table:
+01:18:05.018 > [37mI[37m (39) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+01:18:05.019 > [37mD[37m (40) boot: load partition table entry 0x3f008000
+01:18:05.019 > [37mD (40) boot: type=1 subtype=2
+01:18:05.019 > [37mI[37m (40) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+01:18:05.021 > [37mD[37m (41) boot: load partition table entry 0x3f008020
+01:18:05.021 > D (41) boot: type=1 subtype=1
+01:18:05.021 > [37mI[37m (41) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+01:18:05.022 > [37mD[37m (42) boot: load partition table entry 0x3f008040
+01:18:05.022 > [37mD (43) boot: type=0 subtype=0
+01:18:05.022 > [37mI[37m (43) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+01:18:05.023 > [37mD[37m (44) boot: load partition table entry 0x3f008060
+01:18:05.023 > D (44) boot: type=1 subtype=83
+01:18:05.024 > [37mI[37m (44) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+01:18:05.025 > [37mI[37m (45) boot: End of partition table
+01:18:05.025 > [37mD[37m (45) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+01:18:05.026 > [37mD[37m (46) esp_image: reading image header @ 0x10000
+01:18:05.026 > [37mD[37m (47) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+01:18:05.027 > [37mD[37m (48) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a3c
+01:18:05.027 > [37mV[37m (48) esp_image: loading segment header 0 at offset 0x10018
+01:18:05.028 > [37mV[37m (48) esp_image: segment data length 0x14e08 data starts 0x1002[37m0[37m
+01:18:05.029 > [37mV[37m (49) esp_image: MMU page size 0x10000
+01:18:05.029 > [37mV[37m (49) esp_image: segment 0 map_segment 1 segment_data_offs 0x10[37m020 load_addr 0x3f000020
+01:18:05.029 > [37mI[37m (49) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=14e08h ( 85512) map
+01:18:05.029 > [37mD[37m (50) esp_image: free data page_count 0x00000038
+01:18:05.029 > [37mD[37m (50) bootloader_flash: rodata starts from paddr=0x00010020, si[37mz[37me=0x14e08, will be mapped to vaddr=0x3f000000
+01:18:05.029 > [37mV[37m (50) bootloader_flash: after mapping, starting from paddr=0x00[37m010000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:05.047 > [37mV[37m (67) esp_image: loading segment header 1 at offset 0x24e28
+01:18:05.047 > D (67) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:05.048 > [37mV[37m (68) esp_image: segment data length 0x1c data starts 0x24e30
+01:18:05.048 > [37mV (69) esp_image: MMU page size 0x10000
+01:18:05.048 > [37mV[37m (69) esp_image: segment 1 map_segment 0 segment_data_offs 0x24e30 load_addr 0x3ff9e010
+01:18:05.048 > [37mI[37m (69) esp_image: segment 1: paddr=00024e30 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+01:18:05.050 > [37mD (70) esp_image: free data page_count 0x00000038
+01:18:05.050 > [37mD[37m (70) bootloader_flash: rodata starts from paddr=0x00024e30, si[37mz[37me=0x1c, will be mapped to vaddr=0x3f000000
+01:18:05.050 > [37mV[37m (70) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:05.050 > [37mV[37m (71) esp_image: loading segment header 2 at offset 0x24e4c
+01:18:05.050 > [37mD[37m (71) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:05.052 > [37mV[37m (72) esp_image: segment data length 0x2ed8 data starts 0x24e54[37m[37m
+01:18:05.053 > [37mV (73) esp_image: MMU page size 0x10000
+01:18:05.053 > [37mV[37m (73) esp_image: segment 2 map_segment 0 segment_data_offs 0x24e54 load_addr 0x3ffc5ad0
+01:18:05.053 > [37mI[37m (73) esp_image: segment 2: paddr=00024e54 vaddr=3ffc5ad0 size=02ed8h ( 11992) load
+01:18:05.053 > [37mD[37m (74) esp_image: free data page_count 0x00000038
+01:18:05.053 > [37mD[37m (74) bootloader_flash: rodata starts from paddr=0x00024e54, si[37mz[37me=0x2ed8, will be mapped to vaddr=0x3f000000
+01:18:05.053 > [37mV[37m (74) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:05.056 > [37mV[37m (77) esp_image: loading segment header 3 at offset 0x27d2c
+01:18:05.057 > [37mD[37m (77) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:05.058 > [37mV[37m (78) esp_image: segment data length 0x82e4 data starts 0x27d34[37m[37m
+01:18:05.059 > [37mV[37m (79) esp_image: MMU page size 0x10000
+01:18:05.059 > [37mV[37m (80) esp_image: segment 3 map_segment 0 segment_data_offs 0x27d34 load_addr 0x40024000
+01:18:05.059 > [37mI[37m (80) esp_image: segment 3: paddr=00027d34 vaddr=40024000 size=082e4h ( 33508) load
+01:18:05.059 > [37mD[37m (80) esp_image: free data page_count 0x00000038
+01:18:05.060 > [37mD[37m (80) bootloader_flash: rodata starts from paddr=0x00027d34, si[37mz[37me=0x82e4, will be mapped to vaddr=0x3f000000
+01:18:05.061 > [37mV[37m (81) bootloader_flash: after mapping, starting from paddr=0x00020000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:05.069 > [37mV[37m (90) esp_image: loading segment header 4 at offset 0x30018
+01:18:05.070 > D (90) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+01:18:05.071 > [37mV[37m (91) esp_image: segment data length 0x3fe6c data starts 0x3002[37m0[37m
+01:18:05.072 > [37mV[37m (92) esp_image: MMU page size 0x10000
+01:18:05.072 > [37mV[37m (92) esp_image: segment 4 map_segment 1 segment_data_offs 0x30020 load_addr 0x40080020
+01:18:05.072 > [37mI[37m (93) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=[37m3fe6ch (261740) map
+01:18:05.072 > [37mD[37m (93) esp_image: free data page_count 0x00000038
+01:18:05.072 > [37mD[37m (93) bootloader_flash: rodata starts from paddr=0x00030020, si[37mz[37me=0x3fe6c, will be mapped to vaddr=0x3f000000
+01:18:05.073 > [37mV[37m (93) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m30000 and vaddr=0x3f000000, 0x40000 bytes are mapped
+01:18:05.124 > [37mV[37m (145) esp_image: loading segment header 5 at offset 0x6fe8c
+01:18:05.124 > D (145) bootloader_flash: mmu set block paddr=0x00060000 (was 0x[37mf[37mfffffff)
+01:18:05.126 > [37mV[37m (146) esp_image: segment data length 0x97e8 data starts 0x6fe9[37m4[37m
+01:18:05.127 > [37mV[37m (147) esp_image: MMU page size 0x10000
+01:18:05.127 > [37mV[37m (147) esp_image: segment 5 map_segment 0 segment_data_offs 0x6fe94 load_addr 0x4002c2e4
+01:18:05.127 > [37mI (148) esp_image: segment 5: paddr=0006fe94 vaddr=4002c2e4 size=097e8h ( 38888) load
+01:18:05.127 > [37mD[37m (148) esp_image: free data page_count 0x00000038
+01:18:05.127 > [37mD[37m (148) bootloader_flash: rodata starts from paddr=0x0006fe94, s[37mi[37mze=0x97e8, will be mapped to vaddr=0x3f000000
+01:18:05.128 > [37mV[37m (148) bootloader_flash: after mapping, starting from paddr=0x0[37m0[37m060000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:05.138 > [37mV[37m (158) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007967c
+01:18:05.139 > [37mD[37m (159) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+01:18:05.148 > [37mI[37m (169) boot: Loaded app from partition at offset 0x10000
+01:18:05.149 > [37mI[37m (169) boot: Disabling RNG early entropy source...
+01:18:05.150 > [37mD[37m (169) boot: Mapping segment 0 as DROM
+01:18:05.150 > [37mD[37m (170) boot: Mapping segment 4 as IROM
+01:18:05.150 > [37mD[37m (170) boot: calling set_cache_and_start_app
+01:18:05.150 > [37mD (170) boot: configure drom and irom and start
+01:18:05.150 > [37mV[37m (171) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000[37m0[37m20, size=0x14e08
+01:18:05.151 > [37mV[37m (172) boot: after mapping rodata, starting from paddr=0x000100[37m0[37m0 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:05.151 > [37mV[37m (172) boot: mapped one page of the rodata, from paddr=0x000100[37m0[37m0 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+01:18:05.152 > [37mV[37m (172) boot: text starts from paddr=0x00030020, vaddr=0x4008002[37m0[37m, size=0x3fe6c
+01:18:05.153 > [37mV[37m (173) boot: after mapping text, starting from paddr=0x00030000[37m [37mand vaddr=0x40080000, 0x40000 bytes are mapped
+01:18:05.153 > [37mD[37m (174) boot: start: 0x40026a3c
+01:18:05.175 > [37mI[37m (196) main_task: Started on CPU0
+01:18:05.176 > [37mI[37m (196) main_task: Calling app_main()
+01:18:05.176 > [37m\[37m033[1;32m[INFO][MAIN][13ms] START[0m
+01:18:05.177 > [37m\[37m033[1;32m[INFO][DATA][14ms] START[0m
+01:18:05.177 > [37m\[37m033[1;32m[INFO][SDCard][14ms] Init SD Card.[0m
+01:18:05.178 > [37mI[37m (196) SDCARD: Mounting filesystem
+01:18:05.179 > [37mI[37m (196) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:18:05.186 > [37mI[37m (206) sdspi_transaction: cmd=52, R1 response: command not supp[37mo[37mrted
+01:18:05.237 > [37mI[37m (256) sdspi_transaction: cmd=5, R1 response: command not suppo[37mr[37mted
+01:18:05.276 > [37mE[37m (296) vfs_fat_sdmmc: mount_to_vfs failed (0x102).
+01:18:05.276 > [37mI[37m (296) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:18:15.385 > [37m\[37m033[1;32m[INFO][SETUP][10222ms] [USER] > Select log level:[0m[37m
+01:18:15.395 > [37m\[37m033[1;32m[INFO][SETUP][10232ms]   I - ERROR and INFO logs[0m
+01:18:15.395 > [37m\[37m033[1;32m[INFO][SETUP][10232ms]   D - ERROR, INFO, and DEBUG lo[37mg[37ms[0m
+01:18:15.404 > [37mGuru Meditation Error: Core  0 panic'ed (LoadProhibited). Except[37mi[37mon was unhandled.
+01:18:15.406 > [37m[37m
+01:18:15.407 > [37mC[37more  0 register dump:
+01:18:15.407 > [37mP[37mC      : 0x4008f315  PS      : 0x00060030  A0      : 0x80087f09[37m [37m A1      : 0x3ffcdff0  
+01:18:15.408 > [37mA2      : 0x3ffc89b8  A3      : 0x00000000  A4      : 0x3ffcde04[37m [37m A5      : 0x00000000  
+01:18:15.409 > [37mA[37m6      : 0x3f001d31  A7      : 0x3ffcddcc  A8      : 0x00000000[37m [37m A9      : 0x3ffcdb50  
+01:18:15.410 > [37mA10     : 0x3ffcdba0  A11     : 0x00000004  A12     : 0x00000005[37m [37m A13     : 0x00000080  
+01:18:15.411 > [37mA[37m14     : 0x3ffc9380  A15     : 0x3ffcba3c  SAR     : 0x0000001f[37m [37m EXCCAUSE: 0x0000001c  
+01:18:15.412 > [37mEXCVADDR: 0x00000010  LBEG    : 0x00000005  LEND    : 0x00000080[37m [37m LCOUNT  : 0x4002a7e8  
+01:18:15.414 > [37m[37m
+01:18:15.415 > [37m[37m
+01:18:15.416 > Backtrace: 0x4008f312:0x3ffcdff0 0x40087f06:0x3ffce010 0x400880af:0x3ffce030 0x400884c7:0x3ffce050 0x400884b8:0x3ffce070 0x40088[37mf[37med:0x3ffce090 0x4008930b:0x3ffce0b0 0x400882d7:0x3ffce0e0 0x4008aab0:0x3ffce100 0x400bf823:0x3ffce120 0x4002d279:0x3ffce150
+01:18:15.425 > [37m[37m
+01:18:15.425 > 
+01:18:15.425 > 
+01:18:15.425 > 
+01:18:15.425 > ELF file SHA256: 77daa708d
+01:18:15.425 > 
+01:18:15.425 > Rebooting...
+01:18:15.459 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+01:18:15.459 > I (32) boot: compile time Jul  3 2025 00:41:34
+01:18:15.459 > D (32) bootloader_flash: XMC chip detected by RDID (00204016), skip.
+01:18:15.459 > D (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xffffffff)
+01:18:15.459 > I (35) boot: chip revision: v0.0
+01:18:15.459 > I (35) boot: efuse block revision: v0.2
+01:18:15.459 > D (35) boot.esp32s2: magic e9
+01:18:15.459 > D (35) boot.esp32s2: segments 04
+01:18:15.459 > D (35) boot.esp32s2: spi_mode 02
+01:18:15.459 > D (35) boot.esp32s2: spi_speed 0f
+01:18:15.459 > D (36) boot.esp32s2: spi_size 02
+01:18:15.459 > I (36) boot.esp32s2: SPI Speed      : 80MHz
+01:18:15.459 > I (36) boot.esp32s2: SPI Mode       : DIO
+01:18:15.459 > I (36) boot.esp32s2: SPI Flash Size : 4MB
+01:18:15.459 > D (37) boot: Enabling RTCWDT(9000 ms)
+01:18:15.459 > [37mI (37) boot: Enabling RNG early entropy source...
+01:18:15.459 > [37mD[37m (37) bootloader_flash: rodata starts from paddr=0x00008000, size=0xc00, will be mapped to vaddr=0x3f000000
+01:18:15.459 > V (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:15.460 > [37mD[37m (38) boot: mapped partition table 0x8000 at 0x3f008000
+01:18:15.461 > [37mD[37m (38) flash_parts: partition table verified, 5 entries
+01:18:15.461 > I (39) boot: Partition Table:
+01:18:15.461 > [37mI[37m (39) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+01:18:15.462 > [37mD[37m (40) boot: load partition table entry 0x3f008000
+01:18:15.462 > D (40) boot: type=1 subtype=2
+01:18:15.462 > [37mI[37m (40) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+01:18:15.463 > [37mD[37m (41) boot: load partition table entry 0x3f008020
+01:18:15.465 > [37mD (41) boot: type=1 subtype=1
+01:18:15.465 > I (41) boot:  1 phy_init         RF data          01 01 0000d000 00001000
+01:18:15.465 > D (42) boot: load partition table entry 0x3f008040
+01:18:15.465 > D (43) boot: type=0 subtype=0
+01:18:15.465 > I (43) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+01:18:15.470 > D (44) boot: load partition table entry 0x3f008060
+01:18:15.470 > D (44) boot: type=1 subtype=83
+01:18:15.470 > I (44) boot:  3 storage          Unknown data     01 83 00110000 000f0000
+01:18:15.470 > I (45) boot: End of partition table
+01:18:15.470 > D (45) boot: Trying partition index -1 offs 0x10000 size 0x100000
+01:18:15.470 > D (46) esp_image: reading image header @ 0x10000
+01:18:15.470 > D (47) bootloader_flash: mmu set block paddr=0x00010000 (was 0xffffffff)
+01:18:15.470 > [37mD (48) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a3c
+01:18:15.470 > V (48) esp_image: loading segment header 0 at offset 0x10018
+01:18:15.470 > [37mV (48) esp_image: segment data length 0x14e08 data starts 0x1002[37m0[37m
+01:18:15.471 > [37mV (49) esp_image: MMU page size 0x10000
+01:18:15.471 > [37mV[37m (49) esp_image: segment 0 map_segment 1 segment_data_offs 0x10020 load_addr 0x3f000020
+01:18:15.472 > [37mI[37m (49) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=14e08h ( 85512) map
+01:18:15.472 > [37mD[37m (50) esp_image: free data page_count 0x00000038
+01:18:15.472 > [37mD[37m (50) bootloader_flash: rodata starts from paddr=0x00010020, si[37mz[37me=0x14e08, will be mapped to vaddr=0x3f000000
+01:18:15.472 > [37mV[37m (50) bootloader_flash: after mapping, starting from paddr=0x00[37m010000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:15.489 > [37mV[37m (67) esp_image: loading segment header 1 at offset 0x24e28
+01:18:15.490 > D (67) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:15.492 > V (68) esp_image: segment data length 0x1c data starts 0x24e30
+01:18:15.492 > V (69) esp_image: MMU page size 0x10000
+01:18:15.492 > V (69) esp_image: segment 1 map_segment 0 segment_data_offs 0x24e30 load_addr 0x3ff9e010
+01:18:15.492 > I (69) esp_image: segment 1: paddr=00024e30 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+01:18:15.492 > [37mD[37m (70) esp_image: free data page_count 0x00000038
+01:18:15.492 > [37mD[37m (70) bootloader_flash: rodata starts from paddr=0x00024e30, si[37mz[37me=0x1c, will be mapped to vaddr=0x3f000000
+01:18:15.493 > [37mV[37m (70) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:15.493 > [37mV[37m (71) esp_image: loading segment header 2 at offset 0x24e4c
+01:18:15.493 > [37mD[37m (71) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:15.494 > [37mV[37m (72) esp_image: segment data length 0x2ed8 data starts 0x24e54[37m[37m
+01:18:15.495 > V (73) esp_image: MMU page size 0x10000
+01:18:15.496 > [37mV[37m (73) esp_image: segment 2 map_segment 0 segment_data_offs 0x24e54 load_addr 0x3ffc5ad0
+01:18:15.496 > [37mI[37m (73) esp_image: segment 2: paddr=00024e54 vaddr=3ffc5ad0 size=02ed8h ( 11992) load
+01:18:15.496 > [37mD (74) esp_image: free data page_count 0x00000038
+01:18:15.497 > [37mD[37m (74) bootloader_flash: rodata starts from paddr=0x00024e54, size=0x2ed8, will be mapped to vaddr=0x3f000000
+01:18:15.497 > V (74) bootloader_flash: after mapping, starting from paddr=0x00020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:15.499 > [37mV[37m (77) esp_image: loading segment header 3 at offset 0x27d2c
+01:18:15.499 > D (77) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:15.501 > [37mV[37m (78) esp_image: segment data length 0x82e4 data starts 0x27d34[37m[37m
+01:18:15.502 > V (79) esp_image: MMU page size 0x10000
+01:18:15.502 > [37mV[37m (80) esp_image: segment 3 map_segment 0 segment_data_offs 0x27d34 load_addr 0x40024000
+01:18:15.502 > [37mI[37m (80) esp_image: segment 3: paddr=00027d34 vaddr=40024000 size=082e4h ( 33508) load
+01:18:15.502 > [37mD[37m (80) esp_image: free data page_count 0x00000038
+01:18:15.502 > D (80) bootloader_flash: rodata starts from paddr=0x00027d34, size=0x82e4, will be mapped to vaddr=0x3f000000
+01:18:15.503 > [37mV[37m (80) bootloader_flash: after mapping, starting from paddr=0x00020000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:15.512 > [37mV[37m (89) esp_image: loading segment header 4 at offset 0x30018
+01:18:15.512 > D (89) bootloader_flash: mmu set block paddr=0x00030000 (was 0xffffffff)
+01:18:15.512 > V (90) esp_image: segment data length 0x3fe6c data starts 0x3002[37m0[37m
+01:18:15.514 > [37mV (91) esp_image: MMU page size 0x10000
+01:18:15.514 > [37mV[37m (91) esp_image: segment 4 map_segment 1 segment_data_offs 0x30020 load_addr 0x40080020
+01:18:15.514 > [37mI[37m (92) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=3fe6ch (261740) map
+01:18:15.518 > [37mD[37m (92) esp_image: free data page_count 0x00000038
+01:18:15.518 > D (92) bootloader_flash: rodata starts from paddr=0x00030020, size=0x3fe6c, will be mapped to vaddr=0x3f000000
+01:18:15.518 > V (92) bootloader_flash: after mapping, starting from paddr=0x00030000 and vaddr=0x3f000000, 0x40000 bytes are mapped
+01:18:15.572 > [37mV[37m (144) esp_image: loading segment header 5 at offset 0x6fe8c
+01:18:15.572 > D (144) bootloader_flash: mmu set block paddr=0x00060000 (was 0xffffffff)
+01:18:15.572 > V (145) esp_image: segment data length 0x97e8 data starts 0x6fe94
+01:18:15.572 > V (146) esp_image: MMU page size 0x10000
+01:18:15.572 > V (146) esp_image: segment 5 map_segment 0 segment_data_offs 0x6fe94 load_addr 0x4002c2e4
+01:18:15.572 > I (147) esp_image: segment 5: paddr=0006fe94 vaddr=4002c2e4 size=097e8h ( 38888) load
+01:18:15.572 > D (147) esp_image: free data page_count 0x00000038
+01:18:15.572 > D (147) bootloader_flash: rodata starts from paddr=0x0006fe94, size=0x97e8, will be mapped to vaddr=0x3f000000
+01:18:15.572 > V (147) bootloader_flash: after mapping, starting from paddr=0x00060000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:15.580 > [37mV[37m (157) esp_image: image start 0x00010000 end of last section 0x0007967c
+01:18:15.580 > D (158) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+01:18:15.598 > [37mI[37m (168) boot: Loaded app from partition at offset 0x10000
+01:18:15.598 > I (168) boot: Disabling RNG early entropy source...
+01:18:15.598 > D (168) boot: Mapping segment 0 as DROM
+01:18:15.598 > D (169) boot: Mapping segment 4 as IROM
+01:18:15.598 > D (169) boot: calling set_cache_and_start_app
+01:18:15.598 > D (169) boot: configure drom and irom and start
+01:18:15.598 > V (170) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000020, size=0x14e08
+01:18:15.598 > V (171) boot: after mapping rodata, starting from paddr=0x00010000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:15.598 > V (171) boot: mapped one page of the rodata, from paddr=0x00010000 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+01:18:15.598 > V (171) boot: text starts from paddr=0x00030020, vaddr=0x40080020, size=0x3fe6c
+01:18:15.598 > V (172) boot: after mapping text, starting from paddr=0x00030000 and vaddr=0x40080000, 0x40000 bytes are mapped
+01:18:15.598 > D (173) boot: start: 0x40026a3c
+01:18:15.617 > [37mI[37m (195) main_task: Started on CPU0
+01:18:15.623 > [37mI (195) main_task: Calling app_main()
+01:18:15.623 > \033[1;32m[INFO][MAIN][13ms] START[0m
+01:18:15.623 > \033[1;32m[INFO][DATA][14ms] START[0m
+01:18:15.623 > \033[1;32m[INFO][SDCard][14ms] Init SD Card.[0m
+01:18:15.623 > I (195) SDCARD: Mounting filesystem
+01:18:15.623 > I (195) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:18:15.629 > I (205) sdspi_transaction: cmd=52, R1 response: command not supp[37mo[37mrted
+01:18:15.678 > [37mI[37m (255) sdspi_transaction: cmd=5, R1 response: command not suppo[37mr[37mted
+01:18:15.717 > [37mE[37m (295) vfs_fat_sdmmc: mount_to_vfs failed (0x102).
+01:18:15.718 > [37mI[37m (295) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:18:25.827 > [37m\[37m033[1;32m[INFO][SETUP][10222ms] [USER] > Select log level:[0m[37m
+01:18:25.836 > [37m\[37m033[1;32m[INFO][SETUP][10232ms]   I - ERROR and INFO logs[0m
+01:18:25.837 > [37m\033[1;32m[INFO][SETUP][10232ms]   D - ERROR, INFO, and DEBUG lo[37mg[37ms[0m
+01:18:25.846 > [37mGuru Meditation Error: Core  0 panic'ed (LoadProhibited). Except[37mi[37mon was unhandled.
+01:18:25.848 > [37m[37m
+01:18:25.848 > [37mC[37more  0 register dump:
+01:18:25.848 > [37mP[37mC      : 0x4008f315  PS      : 0x00060030  A0      : 0x80087f09[37m [37m A1      : 0x3ffcdff0  
+01:18:25.849 > [37mA2      : 0x3ffc89b8  A3      : 0x00000000  A4      : 0x3ffcde04[37m [37m A5      : 0x00000000  
+01:18:25.851 > A6      : 0x3f001d31  A7      : 0x3ffcddcc  A8      : 0x00000000[37m [37m A9      : 0x3ffcdb50  
+01:18:25.852 > A10     : 0x3ffcdba0  A11     : 0x00000004  A12     : 0x00000005[37m [37m A13     : 0x00000080  
+01:18:25.853 > A14     : 0x3f001cf4  A15     : 0x3ffcba3c  SAR     : 0x0000001f[37m [37m EXCCAUSE: 0x0000001c  
+01:18:25.854 > EXCVADDR: 0x00000010  LBEG    : 0x00000005  LEND    : 0x00000080[37m [37m LCOUNT  : 0x4002a7e8  
+01:18:25.856 > [37m[37m
+01:18:25.857 > [37m[37m
+01:18:25.857 > Backtrace: 0x4008f312:0x3ffcdff0 0x40087f06:0x3ffce010 0x400880a[37mf:0x3ffce030 0x400884c7:0x3ffce050 0x400884b8:0x3ffce070 0x40088[37mf[37med:0x3ffce090 0x4008930b:0x3ffce0b0 0x400882d7:0x3ffce0e0 0x4008aab0:0x3ffce100 0x400bf823:0x3ffce120 0x4002d279:0x3ffce150
+01:18:25.859 > [37m[37m
+01:18:25.860 > [37m[37m
+01:18:25.861 > [37m[37m
+01:18:25.862 > [37m[37m
+01:18:25.862 > ELF file SHA256: 77daa708d
+01:18:25.863 > [37m[37m
+01:18:25.863 > Rebooting...
+01:18:25.896 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+01:18:25.896 > I (32) boot: compile time Jul  3 2025 00:41:34
+01:18:25.896 > [37mD (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+01:18:25.898 > [37mD[37m (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+01:18:25.899 > [37mI[37m (35) boot: chip revision: v0.0
+01:18:25.899 > [37mI (35) boot: efuse block revision: v0.2
+01:18:25.899 > [37mD (35) boot.esp32s2: magic e9
+01:18:25.899 > [37mD[37m (35) boot.esp32s2: segments 04
+01:18:25.899 > [37mD[37m (35) boot.esp32s2: spi_mode 02
+01:18:25.900 > [37mD[37m (35) boot.esp32s2: spi_speed 0f
+01:18:25.900 > D (36) boot.esp32s2: spi_size 02
+01:18:25.900 > [37mI[37m (36) boot.esp32s2: SPI Speed      : 80MHz
+01:18:25.900 > [37mI (36) boot.esp32s2: SPI Mode       : DIO
+01:18:25.900 > [37mI[37m (36) boot.esp32s2: SPI Flash Size : 4MB
+01:18:25.900 > [37mD (37) boot: Enabling RTCWDT(9000 ms)
+01:18:25.901 > [37mI[37m (37) boot: Enabling RNG early entropy source...
+01:18:25.901 > [37mD[37m (37) bootloader_flash: rodata starts from paddr=0x00008000, si[37mz[37me=0xc00, will be mapped to vaddr=0x3f000000
+01:18:25.901 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:25.902 > [37mD (38) boot: mapped partition table 0x8000 at 0x3f008000
+01:18:25.902 > [37mD[37m (38) flash_parts: partition table verified, 5 entries
+01:18:25.902 > I (39) boot: Partition Table:
+01:18:25.902 > [37mI[37m (39) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+01:18:25.904 > [37mD[37m (40) boot: load partition table entry 0x3f008000
+01:18:25.904 > [37mD (40) boot: type=1 subtype=2
+01:18:25.904 > [37mI[37m (40) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+01:18:25.905 > [37mD[37m (41) boot: load partition table entry 0x3f008020
+01:18:25.905 > D (41) boot: type=1 subtype=1
+01:18:25.905 > [37mI[37m (41) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+01:18:25.906 > [37mD (42) boot: load partition table entry 0x3f008040
+01:18:25.906 > D (43) boot: type=0 subtype=0
+01:18:25.907 > [37mI[37m (43) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+01:18:25.908 > [37mD (44) boot: load partition table entry 0x3f008060
+01:18:25.908 > D (44) boot: type=1 subtype=83
+01:18:25.908 > [37mI[37m (44) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+01:18:25.909 > I (45) boot: End of partition table
+01:18:25.909 > D (45) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+01:18:25.910 > [37mD (46) esp_image: reading image header @ 0x10000
+01:18:25.910 > [37mD[37m (47) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+01:18:25.912 > [37mD[37m (48) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a3c
+01:18:25.912 > [37mV[37m (48) esp_image: loading segment header 0 at offset 0x10018
+01:18:25.912 > [37mV[37m (48) esp_image: segment data length 0x14e08 data starts 0x1002[37m0[37m
+01:18:25.913 > [37mV (49) esp_image: MMU page size 0x10000
+01:18:25.913 > [37mV[37m (49) esp_image: segment 0 map_segment 1 segment_data_offs 0x10020 load_addr 0x3f000020
+01:18:25.914 > [37mI (49) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=14e08h ( 85512) map
+01:18:25.914 > D (50) esp_image: free data page_count 0x00000038
+01:18:25.914 > [37mD (50) bootloader_flash: rodata starts from paddr=0x00010020, size=0x14e08, will be mapped to vaddr=0x3f000000
+01:18:25.914 > [37mV (50) bootloader_flash: after mapping, starting from paddr=0x00[37m010000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:25.931 > [37mV[37m (67) esp_image: loading segment header 1 at offset 0x24e28
+01:18:25.931 > D (67) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:25.933 > [37mV (68) esp_image: segment data length 0x1c data starts 0x24e30
+01:18:25.933 > V (69) esp_image: MMU page size 0x10000
+01:18:25.933 > [37mV (69) esp_image: segment 1 map_segment 0 segment_data_offs 0x24e30 load_addr 0x3ff9e010
+01:18:25.933 > [37mI[37m (69) esp_image: segment 1: paddr=00024e30 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+01:18:25.934 > [37mD (70) esp_image: free data page_count 0x00000038
+01:18:25.934 > D (70) bootloader_flash: rodata starts from paddr=0x00024e30, size=0x1c, will be mapped to vaddr=0x3f000000
+01:18:25.934 > [37mV (70) bootloader_flash: after mapping, starting from paddr=0x00[37m020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:25.935 > [37mV (71) esp_image: loading segment header 2 at offset 0x24e4c
+01:18:25.935 > [37mD[37m (71) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:25.936 > [37mV[37m (72) esp_image: segment data length 0x2ed8 data starts 0x24e54[37m[37m
+01:18:25.937 > V (73) esp_image: MMU page size 0x10000
+01:18:25.937 > [37mV (73) esp_image: segment 2 map_segment 0 segment_data_offs 0x24e54 load_addr 0x3ffc5ad0
+01:18:25.937 > [37mI[37m (73) esp_image: segment 2: paddr=00024e54 vaddr=3ffc5ad0 size=02ed8h ( 11992) load
+01:18:25.938 > D (74) esp_image: free data page_count 0x00000038
+01:18:25.938 > [37mD (74) bootloader_flash: rodata starts from paddr=0x00024e54, size=0x2ed8, will be mapped to vaddr=0x3f000000
+01:18:25.938 > [37mV (74) bootloader_flash: after mapping, starting from paddr=0x00[37m020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:25.941 > [37mV[37m (77) esp_image: loading segment header 3 at offset 0x27d2c
+01:18:25.941 > D (77) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:25.942 > [37mV (78) esp_image: segment data length 0x82e4 data starts 0x27d34[37m[37m
+01:18:25.943 > V (79) esp_image: MMU page size 0x10000
+01:18:25.943 > [37mV[37m (80) esp_image: segment 3 map_segment 0 segment_data_offs 0x27d34 load_addr 0x40024000
+01:18:25.944 > [37mI[37m (80) esp_image: segment 3: paddr=00027d34 vaddr=40024000 size=082e4h ( 33508) load
+01:18:25.944 > [37mD[37m (80) esp_image: free data page_count 0x00000038
+01:18:25.944 > [37mD[37m (80) bootloader_flash: rodata starts from paddr=0x00027d34, size=0x82e4, will be mapped to vaddr=0x3f000000
+01:18:25.944 > [37mV[37m (80) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:25.953 > [37mV[37m (89) esp_image: loading segment header 4 at offset 0x30018
+01:18:25.953 > D (89) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+01:18:25.954 > [37mV (90) esp_image: segment data length 0x3fe6c data starts 0x3002[37m0[37m
+01:18:25.955 > [37mV (91) esp_image: MMU page size 0x10000
+01:18:25.956 > [37mV (91) esp_image: segment 4 map_segment 1 segment_data_offs 0x30020 load_addr 0x40080020
+01:18:25.956 > [37mI (92) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=3fe6ch (261740) map
+01:18:25.956 > [37mD (92) esp_image: free data page_count 0x00000038
+01:18:25.956 > [37mD[37m (92) bootloader_flash: rodata starts from paddr=0x00030020, si[37mze=0x3fe6c, will be mapped to vaddr=0x3f000000
+01:18:25.956 > [37mV (92) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m30000 and vaddr=0x3f000000, 0x40000 bytes are mapped
+01:18:26.008 > [37mV[37m (144) esp_image: loading segment header 5 at offset 0x6fe8c
+01:18:26.008 > D (144) bootloader_flash: mmu set block paddr=0x00060000 (was 0x[37mf[37mfffffff)
+01:18:26.009 > [37mV (145) esp_image: segment data length 0x97e8 data starts 0x6fe9[37m4[37m
+01:18:26.010 > [37mV (146) esp_image: MMU page size 0x10000
+01:18:26.010 > [37mV (146) esp_image: segment 5 map_segment 0 segment_data_offs 0x6fe94 load_addr 0x4002c2e4
+01:18:26.011 > [37mI[37m (147) esp_image: segment 5: paddr=0006fe94 vaddr=4002c2e4 size=097e8h ( 38888) load
+01:18:26.011 > [37mD (147) esp_image: free data page_count 0x00000038
+01:18:26.011 > [37mD[37m (147) bootloader_flash: rodata starts from paddr=0x0006fe94, size=0x97e8, will be mapped to vaddr=0x3f000000
+01:18:26.011 > [37mV (147) bootloader_flash: after mapping, starting from paddr=0x0[37m0060000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:26.021 > [37mV[37m (157) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007967c
+01:18:26.022 > [37mD (158) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+01:18:26.032 > [37mI[37m (168) boot: Loaded app from partition at offset 0x10000
+01:18:26.032 > [37mI (168) boot: Disabling RNG early entropy source...
+01:18:26.033 > [37mD[37m (168) boot: Mapping segment 0 as DROM
+01:18:26.033 > [37mD (169) boot: Mapping segment 4 as IROM
+01:18:26.033 > [37mD (169) boot: calling set_cache_and_start_app
+01:18:26.033 > [37mD[37m (169) boot: configure drom and irom and start
+01:18:26.033 > [37mV[37m (170) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000[37m0[37m20, size=0x14e08
+01:18:26.035 > [37mV[37m (171) boot: after mapping rodata, starting from paddr=0x000100[37m0[37m0 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:26.035 > [37mV[37m (171) boot: mapped one page of the rodata, from paddr=0x000100[37m0[37m0 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+01:18:26.035 > [37mV[37m (171) boot: text starts from paddr=0x00030020, vaddr=0x4008002[37m0[37m, size=0x3fe6c
+01:18:26.036 > [37mV (172) boot: after mapping text, starting from paddr=0x00030000[37m and vaddr=0x40080000, 0x40000 bytes are mapped
+01:18:26.037 > [37mD (173) boot: start: 0x40026a3c
+01:18:26.059 > [37mI[37m (195) main_task: Started on CPU0
+01:18:26.059 > [37mI[37m (195) main_task: Calling app_main()
+01:18:26.060 > [37m\[37m033[1;32m[INFO][MAIN][13ms] START[0m
+01:18:26.060 > [37m\[37m033[1;32m[INFO][DATA][14ms] START[0m
+01:18:26.060 > [37m\[37m033[1;32m[INFO][SDCard][14ms] Init SD Card.[0m
+01:18:26.061 > [37mI[37m (195) SDCARD: Mounting filesystem
+01:18:26.062 > [37mI[37m (195) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:18:26.070 > [37mI[37m (205) sdspi_transaction: cmd=52, R1 response: command not supp[37mo[37mrted
+01:18:26.120 > [37mI[37m (255) sdspi_transaction: cmd=5, R1 response: command not suppo[37mr[37mted
+01:18:26.159 > [37mE[37m (295) vfs_fat_sdmmc: mount_to_vfs failed (0x102).
+01:18:26.160 > [37mI[37m (295) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:18:36.268 > [37m\[37m033[1;32m[INFO][SETUP][10222ms] [USER] > Select log level:[0m[37m
+01:18:36.278 > [37m\[37m033[1;32m[INFO][SETUP][10232ms]   I - ERROR and INFO logs[0m
+01:18:36.278 > [37m\033[1;32m[INFO][SETUP][10232ms]   D - ERROR, INFO, and DEBUG lo[37mg[37ms[0m
+01:18:36.288 > Guru Meditation Error: Core  0 panic'ed (LoadProhibited). Except[37mi[37mon was unhandled.
+01:18:36.290 > [37m[37m
+01:18:36.290 > [37mCore  0 register dump:
+01:18:36.290 > [37mP[37mC      : 0x4008f315  PS      : 0x00060030  A0      : 0x80087f09[37m [37m A1      : 0x3ffcdff0  
+01:18:36.291 > [37mA2      : 0x3ffc89b8  A3      : 0x00000000  A4      : 0x3ffcde04[37m [37m A5      : 0x00000000  
+01:18:36.292 > A6      : 0x3f001d31  A7      : 0x3ffcddcc  A8      : 0x00000000[37m [37m A9      : 0x3ffcdb50  
+01:18:36.293 > A10     : 0x3ffcdba0  A11     : 0x00000004  A12     : 0x00000005[37m [37m A13     : 0x00000080  
+01:18:36.294 > A14     : 0x3f001cf4  A15     : 0x3ffcba3c  SAR     : 0x0000001f[37m [37m EXCCAUSE: 0x0000001c  
+01:18:36.296 > EXCVADDR: 0x00000010  LBEG    : 0x00000005  LEND    : 0x00000080[37m [37m LCOUNT  : 0x4002a7e8  
+01:18:36.298 > [37m[37m
+01:18:36.299 > [37m[37m
+01:18:36.299 > Backtrace: 0x4008f312:0x3ffcdff0 0x40087f06:0x3ffce010 0x400880a[37mf:0x3ffce030 0x400884c7:0x3ffce050 0x400884b8:0x3ffce070 0x40088[37mf[37med:0x3ffce090 0x4008930b:0x3ffce0b0 0x400882d7:0x3ffce0e0 0x4008aab0:0x3ffce100 0x400bf823:0x3ffce120 0x4002d279:0x3ffce150
+01:18:36.301 > [37m[37m
+01:18:36.302 > [37m[37m
+01:18:36.303 > [37m[37m
+01:18:36.304 > [37m[37m
+01:18:36.304 > ELF file SHA256: 77daa708d
+01:18:36.305 > [37m[37m
+01:18:36.305 > Rebooting...
+01:18:36.338 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+01:18:36.338 > I (32) boot: compile time Jul  3 2025 00:41:34
+01:18:36.338 > [37mD (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+01:18:36.339 > [37mD (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+01:18:36.340 > [37mI (35) boot: chip revision: v0.0
+01:18:36.340 > I (35) boot: efuse block revision: v0.2
+01:18:36.341 > [37mD (35) boot.esp32s2: magic e9
+01:18:36.341 > [37mD (35) boot.esp32s2: segments 04
+01:18:36.341 > [37mD[37m (35) boot.esp32s2: spi_mode 02
+01:18:36.342 > [37mD[37m (35) boot.esp32s2: spi_speed 0f
+01:18:36.342 > D (36) boot.esp32s2: spi_size 02
+01:18:36.342 > [37mI (36) boot.esp32s2: SPI Speed      : 80MHz
+01:18:36.342 > [37mI (36) boot.esp32s2: SPI Mode       : DIO
+01:18:36.342 > I (36) boot.esp32s2: SPI Flash Size : 4MB
+01:18:36.342 > [37mD (37) boot: Enabling RTCWDT(9000 ms)
+01:18:36.342 > [37mI (37) boot: Enabling RNG early entropy source...
+01:18:36.342 > [37mD[37m (37) bootloader_flash: rodata starts from paddr=0x00008000, size=0xc00, will be mapped to vaddr=0x3f000000
+01:18:36.343 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:36.344 > [37mD (38) boot: mapped partition table 0x8000 at 0x3f008000
+01:18:36.344 > D (38) flash_parts: partition table verified, 5 entries
+01:18:36.344 > I (39) boot: Partition Table:
+01:18:36.344 > [37mI (39) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+01:18:36.345 > [37mD[37m (40) boot: load partition table entry 0x3f008000
+01:18:36.345 > D (40) boot: type=1 subtype=2
+01:18:36.346 > [37mI[37m (40) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+01:18:36.347 > [37mD[37m (41) boot: load partition table entry 0x3f008020
+01:18:36.347 > D (41) boot: type=1 subtype=1
+01:18:36.347 > [37mI[37m (41) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+01:18:36.348 > [37mD[37m (42) boot: load partition table entry 0x3f008040
+01:18:36.348 > D (43) boot: type=0 subtype=0
+01:18:36.348 > [37mI[37m (43) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+01:18:36.349 > [37mD (44) boot: load partition table entry 0x3f008060
+01:18:36.349 > [37mD (44) boot: type=1 subtype=83
+01:18:36.350 > [37mI[37m (44) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+01:18:36.351 > [37mI (45) boot: End of partition table
+01:18:36.351 > [37mD[37m (45) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+01:18:36.352 > [37mD[37m (46) esp_image: reading image header @ 0x10000
+01:18:36.352 > [37mD[37m (47) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+01:18:36.353 > [37mD[37m (48) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a3c
+01:18:36.354 > [37mV (48) esp_image: loading segment header 0 at offset 0x10018
+01:18:36.354 > [37mV[37m (48) esp_image: segment data length 0x14e08 data starts 0x1002[37m0[37m
+01:18:36.355 > V (49) esp_image: MMU page size 0x10000
+01:18:36.355 > [37mV[37m (49) esp_image: segment 0 map_segment 1 segment_data_offs 0x10020 load_addr 0x3f000020
+01:18:36.355 > [37mI[37m (49) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=14e08h ( 85512) map
+01:18:36.355 > [37mD (50) esp_image: free data page_count 0x00000038
+01:18:36.355 > [37mD (50) bootloader_flash: rodata starts from paddr=0x00010020, si[37mze=0x14e08, will be mapped to vaddr=0x3f000000
+01:18:36.356 > [37mV[37m (50) bootloader_flash: after mapping, starting from paddr=0x00[37m010000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:36.373 > [37mV[37m (67) esp_image: loading segment header 1 at offset 0x24e28
+01:18:36.373 > D (67) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:36.374 > [37mV[37m (68) esp_image: segment data length 0x1c data starts 0x24e30
+01:18:36.374 > [37mV (69) esp_image: MMU page size 0x10000
+01:18:36.374 > [37mV[37m (69) esp_image: segment 1 map_segment 0 segment_data_offs 0x24e30 load_addr 0x3ff9e010
+01:18:36.375 > [37mI[37m (69) esp_image: segment 1: paddr=00024e30 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+01:18:36.376 > [37mD[37m (70) esp_image: free data page_count 0x00000038
+01:18:36.376 > [37mD (70) bootloader_flash: rodata starts from paddr=0x00024e30, si[37mz[37me=0x1c, will be mapped to vaddr=0x3f000000
+01:18:36.376 > [37mV[37m (70) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:36.376 > [37mV[37m (71) esp_image: loading segment header 2 at offset 0x24e4c
+01:18:36.376 > [37mD[37m (71) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:36.378 > [37mV[37m (72) esp_image: segment data length 0x2ed8 data starts 0x24e54[37m[37m
+01:18:36.379 > V (73) esp_image: MMU page size 0x10000
+01:18:36.379 > [37mV (73) esp_image: segment 2 map_segment 0 segment_data_offs 0x24e54 load_addr 0x3ffc5ad0
+01:18:36.379 > [37mI (73) esp_image: segment 2: paddr=00024e54 vaddr=3ffc5ad0 size=02ed8h ( 11992) load
+01:18:36.379 > [37mD[37m (74) esp_image: free data page_count 0x00000038
+01:18:36.379 > [37mD (74) bootloader_flash: rodata starts from paddr=0x00024e54, si[37mze=0x2ed8, will be mapped to vaddr=0x3f000000
+01:18:36.380 > [37mV (74) bootloader_flash: after mapping, starting from paddr=0x00[37m020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:36.383 > [37mV[37m (77) esp_image: loading segment header 3 at offset 0x27d2c
+01:18:36.383 > [37mD[37m (77) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:36.384 > [37mV (78) esp_image: segment data length 0x82e4 data starts 0x27d34[37m[37m
+01:18:36.385 > V (79) esp_image: MMU page size 0x10000
+01:18:36.385 > [37mV[37m (80) esp_image: segment 3 map_segment 0 segment_data_offs 0x27d34 load_addr 0x40024000
+01:18:36.385 > [37mI[37m (80) esp_image: segment 3: paddr=00027d34 vaddr=40024000 size=082e4h ( 33508) load
+01:18:36.386 > [37mD (80) esp_image: free data page_count 0x00000038
+01:18:36.386 > [37mD[37m (80) bootloader_flash: rodata starts from paddr=0x00027d34, size=0x82e4, will be mapped to vaddr=0x3f000000
+01:18:36.386 > [37mV (80) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:36.395 > [37mV[37m (89) esp_image: loading segment header 4 at offset 0x30018
+01:18:36.395 > D (89) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+01:18:36.396 > [37mV[37m (90) esp_image: segment data length 0x3fe6c data starts 0x3002[37m0[37m
+01:18:36.397 > [37mV[37m (91) esp_image: MMU page size 0x10000
+01:18:36.397 > [37mV[37m (91) esp_image: segment 4 map_segment 1 segment_data_offs 0x30020 load_addr 0x40080020
+01:18:36.397 > [37mI[37m (92) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=3fe6ch (261740) map
+01:18:36.397 > [37mD (92) esp_image: free data page_count 0x00000038
+01:18:36.398 > [37mD[37m (92) bootloader_flash: rodata starts from paddr=0x00030020, si[37mze=0x3fe6c, will be mapped to vaddr=0x3f000000
+01:18:36.398 > [37mV (92) bootloader_flash: after mapping, starting from paddr=0x00[37m030000 and vaddr=0x3f000000, 0x40000 bytes are mapped
+01:18:36.450 > [37mV[37m (144) esp_image: loading segment header 5 at offset 0x6fe8c
+01:18:36.450 > D (144) bootloader_flash: mmu set block paddr=0x00060000 (was 0x[37mf[37mfffffff)
+01:18:36.451 > V (145) esp_image: segment data length 0x97e8 data starts 0x6fe9[37m4[37m
+01:18:36.452 > [37mV (146) esp_image: MMU page size 0x10000
+01:18:36.452 > [37mV (146) esp_image: segment 5 map_segment 0 segment_data_offs 0x6fe94 load_addr 0x4002c2e4
+01:18:36.452 > [37mI[37m (147) esp_image: segment 5: paddr=0006fe94 vaddr=4002c2e4 size[37m=097e8h ( 38888) load
+01:18:36.452 > [37mD[37m (147) esp_image: free data page_count 0x00000038
+01:18:36.452 > [37mD[37m (147) bootloader_flash: rodata starts from paddr=0x0006fe94, s[37mi[37mze=0x97e8, will be mapped to vaddr=0x3f000000
+01:18:36.454 > [37mV[37m (147) bootloader_flash: after mapping, starting from paddr=0x0[37m0[37m060000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:36.464 > [37mV[37m (158) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007967c
+01:18:36.465 > [37mD[37m (159) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+01:18:36.475 > [37mI[37m (169) boot: Loaded app from partition at offset 0x10000
+01:18:36.475 > I (169) boot: Disabling RNG early entropy source...
+01:18:36.476 > [37mD[37m (169) boot: Mapping segment 0 as DROM
+01:18:36.476 > D (170) boot: Mapping segment 4 as IROM
+01:18:36.476 > [37mD (170) boot: calling set_cache_and_start_app
+01:18:36.476 > D (170) boot: configure drom and irom and start
+01:18:36.476 > [37mV (171) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000[37m0[37m20, size=0x14e08
+01:18:36.477 > [37mV (172) boot: after mapping rodata, starting from paddr=0x000100[37m00 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:36.478 > [37mV[37m (172) boot: mapped one page of the rodata, from paddr=0x00010000 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+01:18:36.478 > [37mV[37m (172) boot: text starts from paddr=0x00030020, vaddr=0x4008002[37m0[37m, size=0x3fe6c
+01:18:36.479 > [37mV (173) boot: after mapping text, starting from paddr=0x00030000[37m and vaddr=0x40080000, 0x40000 bytes are mapped
+01:18:36.479 > [37mD (174) boot: start: 0x40026a3c
+01:18:36.502 > [37mI[37m (196) main_task: Started on CPU0
+01:18:36.502 > [37mI[37m (196) main_task: Calling app_main()
+01:18:36.503 > [37m\[37m033[1;32m[INFO][MAIN][13ms] START[0m
+01:18:36.503 > [37m\[37m033[1;32m[INFO][DATA][14ms] START[0m
+01:18:36.503 > [37m\033[1;32m[INFO][SDCard][14ms] Init SD Card.[0m
+01:18:36.504 > [37mI[37m (196) SDCARD: Mounting filesystem
+01:18:36.505 > [37mI[37m (196) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:18:36.553 > [37mI[37m (246) sdspi_transaction: cmd=5, R1 response: command not suppo[37mr[37mted
+01:18:36.693 > [37mE[37m (386) sdmmc_common: sdmmc_init_ocr: send_op_cond (1) returned [37m0[37mx107
+01:18:36.701 > [37mE[37m (396) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).
+01:18:36.702 > [37mI[37m (396) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:18:46.811 > [37m\[37m033[1;32m[INFO][SETUP][10322ms] [USER] > Select log level:[0m[37m
+01:18:46.822 > [37m\033[1;32m[INFO][SETUP][10332ms]   I - ERROR and INFO logs[0m
+01:18:46.822 > \033[1;32m[INFO][SETUP][10332ms]   D - ERROR, INFO, and DEBUG lo[37mg[37ms[0m
+01:18:46.831 > [37mGuru Meditation Error: Core  0 panic'ed (LoadProhibited). Except[37mi[37mon was unhandled.
+01:18:46.833 > [37m[37m
+01:18:46.833 > [37mCore  0 register dump:
+01:18:46.833 > [37mP[37mC      : 0x4008f315  PS      : 0x00060030  A0      : 0x80087f09[37m [37m A1      : 0x3ffcdff0  
+01:18:46.834 > A2      : 0x3ffc89b8  A3      : 0x00000000  A4      : 0x40096a60[37m [37m A5      : 0x00000000  
+01:18:46.835 > [37mA6      : 0x3ffc9380  A7      : 0x3ffcddcc  A8      : 0x00000000[37m [37m A9      : 0x3ffcdb50  
+01:18:46.836 > A10     : 0x3ffcdba0  A11     : 0x00000004  A12     : 0x00000005[37m [37m A13     : 0x00000080  
+01:18:46.837 > A14     : 0x3ffc9380  A15     : 0x3ffcba3c  SAR     : 0x0000001f[37m [37m EXCCAUSE: 0x0000001c  
+01:18:46.838 > EXCVADDR: 0x00000010  LBEG    : 0x00000005  LEND    : 0x00000080[37m [37m LCOUNT  : 0x4002a7e8  
+01:18:46.840 > [37m[37m
+01:18:46.841 > [37m[37m
+01:18:46.841 > [37mBacktrace: 0x4008f312:0x3ffcdff0 0x40087f06:0x3ffce010 0x400880a[37mf[37m:0x3ffce030 0x400884c7:0x3ffce050 0x400884b8:0x3ffce070 0x40088[37mf[37med:0x3ffce090 0x4008930b:0x3ffce0b0 0x400882d7:0x3ffce0e0 0x4008aab0:0x3ffce100 0x400bf823:0x3ffce120 0x4002d279:0x3ffce150
+01:18:46.843 > [37m[37m
+01:18:46.845 > [37m[37m
+01:18:46.846 > [37m[37m
+01:18:46.847 > [37m[37m
+01:18:46.847 > ELF file SHA256: 77daa708d
+01:18:46.848 > [37m[37m
+01:18:46.848 > Rebooting...
+01:18:46.881 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+01:18:46.881 > I (32) boot: compile time Jul  3 2025 00:41:34
+01:18:46.881 > [37mD (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+01:18:46.882 > [37mD (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+01:18:46.883 > I (35) boot: chip revision: v0.0
+01:18:46.883 > [37mI[37m (35) boot: efuse block revision: v0.2
+01:18:46.883 > [37mD (35) boot.esp32s2: magic e9
+01:18:46.883 > D (35) boot.esp32s2: segments 04
+01:18:46.883 > [37mD[37m (35) boot.esp32s2: spi_mode 02
+01:18:46.884 > [37mD[37m (35) boot.esp32s2: spi_speed 0f
+01:18:46.885 > D (36) boot.esp32s2: spi_size 02
+01:18:46.885 > [37mI (36) boot.esp32s2: SPI Speed      : 80MHz
+01:18:46.885 > [37mI (36) boot.esp32s2: SPI Mode       : DIO
+01:18:46.885 > [37mI[37m (36) boot.esp32s2: SPI Flash Size : 4MB
+01:18:46.885 > [37mD[37m (37) boot: Enabling RTCWDT(9000 ms)
+01:18:46.885 > [37mI (37) boot: Enabling RNG early entropy source...
+01:18:46.885 > [37mD[37m (37) bootloader_flash: rodata starts from paddr=0x00008000, si[37mze=0xc00, will be mapped to vaddr=0x3f000000
+01:18:46.885 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:46.887 > [37mD (38) boot: mapped partition table 0x8000 at 0x3f008000
+01:18:46.887 > [37mD (38) flash_parts: partition table verified, 5 entries
+01:18:46.887 > [37mI (39) boot: Partition Table:
+01:18:46.887 > [37mI[37m (39) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+01:18:46.888 > D (40) boot: load partition table entry 0x3f008000
+01:18:46.888 > [37mD (40) boot: type=1 subtype=2
+01:18:46.888 > [37mI[37m (40) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+01:18:46.889 > D (41) boot: load partition table entry 0x3f008020
+01:18:46.889 > [37mD (41) boot: type=1 subtype=1
+01:18:46.890 > [37mI[37m (41) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+01:18:46.891 > [37mD (42) boot: load partition table entry 0x3f008040
+01:18:46.891 > D (43) boot: type=0 subtype=0
+01:18:46.891 > I (43) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+01:18:46.892 > [37mD (44) boot: load partition table entry 0x3f008060
+01:18:46.892 > D (44) boot: type=1 subtype=83
+01:18:46.892 > [37mI[37m (44) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+01:18:46.893 > I (45) boot: End of partition table
+01:18:46.894 > [37mD[37m (45) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+01:18:46.895 > [37mD (46) esp_image: reading image header @ 0x10000
+01:18:46.895 > [37mD[37m (47) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+01:18:46.896 > [37mD[37m (48) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a3c
+01:18:46.896 > [37mV[37m (48) esp_image: loading segment header 0 at offset 0x10018
+01:18:46.896 > [37mV[37m (48) esp_image: segment data length 0x14e08 data starts 0x1002[37m0[37m
+01:18:46.897 > V (49) esp_image: MMU page size 0x10000
+01:18:46.898 > [37mV (49) esp_image: segment 0 map_segment 1 segment_data_offs 0x10[37m020 load_addr 0x3f000020
+01:18:46.898 > [37mI[37m (49) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=14e08h ( 85512) map
+01:18:46.898 > [37mD[37m (50) esp_image: free data page_count 0x00000038
+01:18:46.898 > [37mD[37m (50) bootloader_flash: rodata starts from paddr=0x00010020, si[37mz[37me=0x14e08, will be mapped to vaddr=0x3f000000
+01:18:46.898 > [37mV[37m (50) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m10000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:46.916 > [37mV[37m (67) esp_image: loading segment header 1 at offset 0x24e28
+01:18:46.916 > D (67) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:46.917 > [37mV (68) esp_image: segment data length 0x1c data starts 0x24e30
+01:18:46.917 > V (69) esp_image: MMU page size 0x10000
+01:18:46.917 > [37mV[37m (69) esp_image: segment 1 map_segment 0 segment_data_offs 0x24e30 load_addr 0x3ff9e010
+01:18:46.917 > [37mI[37m (69) esp_image: segment 1: paddr=00024e30 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+01:18:46.918 > D (70) esp_image: free data page_count 0x00000038
+01:18:46.918 > [37mD[37m (70) bootloader_flash: rodata starts from paddr=0x00024e30, si[37mz[37me=0x1c, will be mapped to vaddr=0x3f000000
+01:18:46.919 > [37mV[37m (70) bootloader_flash: after mapping, starting from paddr=0x00020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:46.919 > V (71) esp_image: loading segment header 2 at offset 0x24e4c
+01:18:46.919 > [37mD (71) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:46.920 > V (72) esp_image: segment data length 0x2ed8 data starts 0x24e54[37m[37m
+01:18:46.922 > V (73) esp_image: MMU page size 0x10000
+01:18:46.922 > V (73) esp_image: segment 2 map_segment 0 segment_data_offs 0x24e54 load_addr 0x3ffc5ad0
+01:18:46.922 > I (73) esp_image: segment 2: paddr=00024e54 vaddr=3ffc5ad0 size=02ed8h ( 11992) load
+01:18:46.922 > D (74) esp_image: free data page_count 0x00000038
+01:18:46.922 > D (74) bootloader_flash: rodata starts from paddr=0x00024e54, size=0x2ed8, will be mapped to vaddr=0x3f000000
+01:18:46.922 > [37mV (74) bootloader_flash: after mapping, starting from paddr=0x00020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:46.926 > [37mV[37m (77) esp_image: loading segment header 3 at offset 0x27d2c
+01:18:46.926 > D (77) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:46.927 > V (78) esp_image: segment data length 0x82e4 data starts 0x27d34[37m[37m
+01:18:46.928 > V (79) esp_image: MMU page size 0x10000
+01:18:46.928 > V (80) esp_image: segment 3 map_segment 0 segment_data_offs 0x27d34 load_addr 0x40024000
+01:18:46.928 > I (80) esp_image: segment 3: paddr=00027d34 vaddr=40024000 size=082e4h ( 33508) load
+01:18:46.928 > [37mD (80) esp_image: free data page_count 0x00000038
+01:18:46.929 > [37mD[37m (80) bootloader_flash: rodata starts from paddr=0x00027d34, size=0x82e4, will be mapped to vaddr=0x3f000000
+01:18:46.930 > V (81) bootloader_flash: after mapping, starting from paddr=0x00020000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:46.938 > [37mV[37m (90) esp_image: loading segment header 4 at offset 0x30018
+01:18:46.938 > D (90) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+01:18:46.940 > [37mV (91) esp_image: segment data length 0x3fe6c data starts 0x3002[37m0[37m
+01:18:46.941 > V (92) esp_image: MMU page size 0x10000
+01:18:46.941 > [37mV[37m (92) esp_image: segment 4 map_segment 1 segment_data_offs 0x30020 load_addr 0x40080020
+01:18:46.941 > [37mI[37m (93) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=3fe6ch (261740) map
+01:18:46.941 > [37mD[37m (93) esp_image: free data page_count 0x00000038
+01:18:46.941 > [37mD[37m (93) bootloader_flash: rodata starts from paddr=0x00030020, si[37mz[37me=0x3fe6c, will be mapped to vaddr=0x3f000000
+01:18:46.941 > [37mV[37m (93) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m30000 and vaddr=0x3f000000, 0x40000 bytes are mapped
+01:18:46.993 > [37mV[37m (145) esp_image: loading segment header 5 at offset 0x6fe8c
+01:18:46.993 > D (145) bootloader_flash: mmu set block paddr=0x00060000 (was 0x[37mf[37mfffffff)
+01:18:46.995 > [37mV (146) esp_image: segment data length 0x97e8 data starts 0x6fe9[37m4[37m
+01:18:46.996 > [37mV (147) esp_image: MMU page size 0x10000
+01:18:46.996 > [37mV (147) esp_image: segment 5 map_segment 0 segment_data_offs 0x6fe94 load_addr 0x4002c2e4
+01:18:46.996 > [37mI[37m (148) esp_image: segment 5: paddr=0006fe94 vaddr=4002c2e4 size=097e8h ( 38888) load
+01:18:46.996 > [37mD (148) esp_image: free data page_count 0x00000038
+01:18:46.996 > [37mD[37m (148) bootloader_flash: rodata starts from paddr=0x0006fe94, size=0x97e8, will be mapped to vaddr=0x3f000000
+01:18:46.996 > [37mV (148) bootloader_flash: after mapping, starting from paddr=0x0[37m0[37m060000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:47.007 > [37mV[37m (158) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007967c
+01:18:47.008 > [37mD (159) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+01:18:47.017 > [37mI[37m (169) boot: Loaded app from partition at offset 0x10000
+01:18:47.017 > I (169) boot: Disabling RNG early entropy source...
+01:18:47.018 > [37mD[37m (169) boot: Mapping segment 0 as DROM
+01:18:47.019 > [37mD (170) boot: Mapping segment 4 as IROM
+01:18:47.019 > [37mD (170) boot: calling set_cache_and_start_app
+01:18:47.019 > [37mD[37m (170) boot: configure drom and irom and start
+01:18:47.019 > [37mV[37m (171) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000[37m0[37m20, size=0x14e08
+01:18:47.020 > [37mV (172) boot: after mapping rodata, starting from paddr=0x00010000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:47.020 > [37mV[37m (172) boot: mapped one page of the rodata, from paddr=0x000100[37m00 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+01:18:47.021 > [37mV[37m (172) boot: text starts from paddr=0x00030020, vaddr=0x4008002[37m0[37m, size=0x3fe6c
+01:18:47.022 > [37mV (173) boot: after mapping text, starting from paddr=0x00030000 and vaddr=0x40080000, 0x40000 bytes are mapped
+01:18:47.022 > [37mD (174) boot: start: 0x40026a3c
+01:18:47.044 > [37mI[37m (196) main_task: Started on CPU0
+01:18:47.045 > [37mI[37m (196) main_task: Calling app_main()
+01:18:47.045 > [37m\[37m033[1;32m[INFO][MAIN][13ms] START[0m
+01:18:47.045 > [37m\[37m033[1;32m[INFO][DATA][14ms] START[0m
+01:18:47.046 > [37m\[37m033[1;32m[INFO][SDCard][14ms] Init SD Card.[0m
+01:18:47.047 > [37mI[37m (196) SDCARD: Mounting filesystem
+01:18:47.048 > [37mI[37m (196) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:18:47.096 > [37mI[37m (246) sdspi_transaction: cmd=5, R1 response: command not suppo[37mr[37mted
+01:18:47.236 > [37mE[37m (386) sdmmc_common: sdmmc_init_ocr: send_op_cond (1) returned [37m0[37mx107
+01:18:47.244 > [37mE[37m (396) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).
+01:18:47.245 > [37mI[37m (396) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:18:57.354 > [37m\[37m033[1;32m[INFO][SETUP][10322ms] [USER] > Select log level:[0m[37m
+01:18:57.363 > [37m\[37m033[1;32m[INFO][SETUP][10332ms]   I - ERROR and INFO logs[0m
+01:18:57.364 > [37m\[37m033[1;32m[INFO][SETUP][10332ms]   D - ERROR, INFO, and DEBUG lo[37mg[37ms[0m
+01:18:57.373 > [37mGuru Meditation Error: Core  0 panic'ed (LoadProhibited). Except[37mi[37mon was unhandled.
+01:18:57.375 > [37m[37m
+01:18:57.375 > [37mCore  0 register dump:
+01:18:57.375 > PC      : 0x4008f315  PS      : 0x00060030  A0      : 0x80087f09[37m [37m A1      : 0x3ffcdff0  
+01:18:57.377 > A2      : 0x3ffc89b8  A3      : 0x00000000  A4      : 0x40096a60[37m [37m A5      : 0x00000000  
+01:18:57.378 > A6      : 0x3ffc9380  A7      : 0x3ffcddcc  A8      : 0x00000000[37m [37m A9      : 0x3ffcdb50  
+01:18:57.379 > A10     : 0x3ffcdba0  A11     : 0x00000004  A12     : 0x00000005[37m [37m A13     : 0x00000080  
+01:18:57.380 > A14     : 0x3f001cf4  A15     : 0x3ffcba3c  SAR     : 0x0000001f[37m [37m EXCCAUSE: 0x0000001c  
+01:18:57.381 > [37mEXCVADDR: 0x00000010  LBEG    : 0x00000005  LEND    : 0x00000080[37m [37m LCOUNT  : 0x4002a7e8  
+01:18:57.383 > [37m[37m
+01:18:57.384 > [37m[37m
+01:18:57.384 > Backtrace: 0x4008f312:0x3ffcdff0 0x40087f06:0x3ffce010 0x400880a[37mf:0x3ffce030 0x400884c7:0x3ffce050 0x400884b8:0x3ffce070 0x40088[37mf[37med:0x3ffce090 0x4008930b:0x3ffce0b0 0x400882d7:0x3ffce0e0 0x4008aab0:0x3ffce100 0x400bf823:0x3ffce120 0x4002d279:0x3ffce150
+01:18:57.386 > [37m[37m
+01:18:57.387 > [37m[37m
+01:18:57.388 > [37m[37m
+01:18:57.389 > [37m[37m
+01:18:57.389 > ELF file SHA256: 77daa708d
+01:18:57.390 > [37m[37m
+01:18:57.390 > Rebooting...
+01:18:57.423 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+01:18:57.424 > I (32) boot: compile time Jul  3 2025 00:41:34
+01:18:57.424 > D (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+01:18:57.425 > [37mD (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+01:18:57.426 > I (35) boot: chip revision: v0.0
+01:18:57.426 > [37mI (35) boot: efuse block revision: v0.2
+01:18:57.426 > [37mD (35) boot.esp32s2: magic e9
+01:18:57.426 > [37mD (35) boot.esp32s2: segments 04
+01:18:57.426 > [37mD (35) boot.esp32s2: spi_mode 02
+01:18:57.427 > [37mD[37m (35) boot.esp32s2: spi_speed 0f
+01:18:57.427 > D (36) boot.esp32s2: spi_size 02
+01:18:57.427 > I (36) boot.esp32s2: SPI Speed      : 80MHz
+01:18:57.427 > [37mI (36) boot.esp32s2: SPI Mode       : DIO
+01:18:57.427 > [37mI (36) boot.esp32s2: SPI Flash Size : 4MB
+01:18:57.428 > [37mD (37) boot: Enabling RTCWDT(9000 ms)
+01:18:57.428 > [37mI (37) boot: Enabling RNG early entropy source...
+01:18:57.428 > [37mD[37m (37) bootloader_flash: rodata starts from paddr=0x00008000, size=0xc00, will be mapped to vaddr=0x3f000000
+01:18:57.428 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:57.429 > D (38) boot: mapped partition table 0x8000 at 0x3f008000
+01:18:57.429 > [37mD[37m (38) flash_parts: partition table verified, 5 entries
+01:18:57.430 > I (39) boot: Partition Table:
+01:18:57.430 > [37mI (39) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+01:18:57.431 > [37mD (40) boot: load partition table entry 0x3f008000
+01:18:57.431 > D (40) boot: type=1 subtype=2
+01:18:57.431 > [37mI[37m (40) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+01:18:57.432 > [37mD (41) boot: load partition table entry 0x3f008020
+01:18:57.432 > D (41) boot: type=1 subtype=1
+01:18:57.432 > [37mI (41) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+01:18:57.434 > [37mD (42) boot: load partition table entry 0x3f008040
+01:18:57.434 > D (43) boot: type=0 subtype=0
+01:18:57.434 > [37mI (43) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+01:18:57.435 > [37mD (44) boot: load partition table entry 0x3f008060
+01:18:57.435 > D (44) boot: type=1 subtype=83
+01:18:57.435 > [37mI[37m (44) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+01:18:57.436 > I (45) boot: End of partition table
+01:18:57.436 > [37mD[37m (45) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+01:18:57.437 > [37mD[37m (46) esp_image: reading image header @ 0x10000
+01:18:57.438 > [37mD[37m (47) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+01:18:57.439 > [37mD[37m (48) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a3c
+01:18:57.439 > V (48) esp_image: loading segment header 0 at offset 0x10018
+01:18:57.439 > [37mV (48) esp_image: segment data length 0x14e08 data starts 0x1002[37m0[37m
+01:18:57.440 > V (49) esp_image: MMU page size 0x10000
+01:18:57.440 > [37mV (49) esp_image: segment 0 map_segment 1 segment_data_offs 0x10020 load_addr 0x3f000020
+01:18:57.441 > [37mI (49) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=[37m14e08h ( 85512) map
+01:18:57.441 > D (50) esp_image: free data page_count 0x00000038
+01:18:57.441 > [37mD[37m (50) bootloader_flash: rodata starts from paddr=0x00010020, size=0x14e08, will be mapped to vaddr=0x3f000000
+01:18:57.441 > [37mV (50) bootloader_flash: after mapping, starting from paddr=0x00[37m010000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:57.458 > [37mV[37m (67) esp_image: loading segment header 1 at offset 0x24e28
+01:18:57.458 > D (67) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:57.460 > [37mV (68) esp_image: segment data length 0x1c data starts 0x24e30
+01:18:57.460 > [37mV (69) esp_image: MMU page size 0x10000
+01:18:57.460 > [37mV (69) esp_image: segment 1 map_segment 0 segment_data_offs 0x24e30 load_addr 0x3ff9e010
+01:18:57.460 > [37mI[37m (69) esp_image: segment 1: paddr=00024e30 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+01:18:57.461 > [37mD (70) esp_image: free data page_count 0x00000038
+01:18:57.461 > [37mD (70) bootloader_flash: rodata starts from paddr=0x00024e30, size=0x1c, will be mapped to vaddr=0x3f000000
+01:18:57.461 > [37mV (70) bootloader_flash: after mapping, starting from paddr=0x00[37m020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:57.462 > [37mV[37m (71) esp_image: loading segment header 2 at offset 0x24e4c
+01:18:57.462 > [37mD (71) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:57.463 > [37mV[37m (72) esp_image: segment data length 0x2ed8 data starts 0x24e54[37m[37m
+01:18:57.464 > V (73) esp_image: MMU page size 0x10000
+01:18:57.464 > V (73) esp_image: segment 2 map_segment 0 segment_data_offs 0x24[37me54 load_addr 0x3ffc5ad0
+01:18:57.465 > [37mI (73) esp_image: segment 2: paddr=00024e54 vaddr=3ffc5ad0 size=02ed8h ( 11992) load
+01:18:57.465 > D (74) esp_image: free data page_count 0x00000038
+01:18:57.465 > [37mD (74) bootloader_flash: rodata starts from paddr=0x00024e54, si[37mze=0x2ed8, will be mapped to vaddr=0x3f000000
+01:18:57.465 > [37mV[37m (74) bootloader_flash: after mapping, starting from paddr=0x00020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:18:57.468 > [37mV[37m (77) esp_image: loading segment header 3 at offset 0x27d2c
+01:18:57.468 > D (77) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:18:57.469 > V (78) esp_image: segment data length 0x82e4 data starts 0x27d34[37m[37m
+01:18:57.471 > [37mV (79) esp_image: MMU page size 0x10000
+01:18:57.471 > [37mV (80) esp_image: segment 3 map_segment 0 segment_data_offs 0x27d34 load_addr 0x40024000
+01:18:57.471 > [37mI (80) esp_image: segment 3: paddr=00027d34 vaddr=40024000 size=082e4h ( 33508) load
+01:18:57.471 > [37mD[37m (80) esp_image: free data page_count 0x00000038
+01:18:57.471 > [37mD[37m (80) bootloader_flash: rodata starts from paddr=0x00027d34, si[37mz[37me=0x82e4, will be mapped to vaddr=0x3f000000
+01:18:57.472 > [37mV (81) bootloader_flash: after mapping, starting from paddr=0x00020000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:57.481 > [37mV[37m (90) esp_image: loading segment header 4 at offset 0x30018
+01:18:57.481 > D (90) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+01:18:57.482 > [37mV (91) esp_image: segment data length 0x3fe6c data starts 0x3002[37m0[37m
+01:18:57.484 > [37mV (92) esp_image: MMU page size 0x10000
+01:18:57.484 > V (92) esp_image: segment 4 map_segment 1 segment_data_offs 0x30[37m020 load_addr 0x40080020
+01:18:57.484 > I (93) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=3fe6ch (261740) map
+01:18:57.484 > [37mD[37m (93) esp_image: free data page_count 0x00000038
+01:18:57.484 > [37mD (93) bootloader_flash: rodata starts from paddr=0x00030020, si[37mze=0x3fe6c, will be mapped to vaddr=0x3f000000
+01:18:57.484 > [37mV (93) bootloader_flash: after mapping, starting from paddr=0x00[37m030000 and vaddr=0x3f000000, 0x40000 bytes are mapped
+01:18:57.536 > [37mV[37m (145) esp_image: loading segment header 5 at offset 0x6fe8c
+01:18:57.536 > D (145) bootloader_flash: mmu set block paddr=0x00060000 (was 0x[37mf[37mfffffff)
+01:18:57.537 > [37mV[37m (146) esp_image: segment data length 0x97e8 data starts 0x6fe9[37m4[37m
+01:18:57.538 > [37mV (147) esp_image: MMU page size 0x10000
+01:18:57.538 > [37mV[37m (147) esp_image: segment 5 map_segment 0 segment_data_offs 0x6fe94 load_addr 0x4002c2e4
+01:18:57.539 > [37mI[37m (148) esp_image: segment 5: paddr=0006fe94 vaddr=4002c2e4 size=097e8h ( 38888) load
+01:18:57.539 > [37mD (148) esp_image: free data page_count 0x00000038
+01:18:57.539 > [37mD[37m (148) bootloader_flash: rodata starts from paddr=0x0006fe94, s[37mize=0x97e8, will be mapped to vaddr=0x3f000000
+01:18:57.539 > [37mV[37m (148) bootloader_flash: after mapping, starting from paddr=0x0[37m0[37m060000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:57.549 > [37mV[37m (158) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007967c
+01:18:57.550 > [37mD (159) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+01:18:57.560 > [37mI[37m (169) boot: Loaded app from partition at offset 0x10000
+01:18:57.560 > I (169) boot: Disabling RNG early entropy source...
+01:18:57.560 > D (169) boot: Mapping segment 0 as DROM
+01:18:57.560 > D (169) boot: Mapping segment 4 as IROM
+01:18:57.560 > [37mD (169) boot: calling set_cache_and_start_app
+01:18:57.561 > [37mD (169) boot: configure drom and irom and start
+01:18:57.561 > [37mV (170) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000[37m0[37m20, size=0x14e08
+01:18:57.562 > [37mV (171) boot: after mapping rodata, starting from paddr=0x00010000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:18:57.562 > [37mV (171) boot: mapped one page of the rodata, from paddr=0x000100[37m00 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+01:18:57.562 > V (171) boot: text starts from paddr=0x00030020, vaddr=0x4008002[37m0[37m, size=0x3fe6c
+01:18:57.563 > [37mV (172) boot: after mapping text, starting from paddr=0x00030000[37m and vaddr=0x40080000, 0x40000 bytes are mapped
+01:18:57.564 > [37mD (173) boot: start: 0x40026a3c
+01:18:57.586 > [37mI[37m (195) main_task: Started on CPU0
+01:18:57.587 > [37mI[37m (195) main_task: Calling app_main()
+01:18:57.587 > [37m\033[1;32m[INFO][MAIN][13ms] START[0m
+01:18:57.587 > [37m\[37m033[1;32m[INFO][DATA][14ms] START[0m
+01:18:57.587 > [37m\[37m033[1;32m[INFO][SDCard][14ms] Init SD Card.[0m
+01:18:57.588 > [37mI[37m (195) SDCARD: Mounting filesystem
+01:18:57.589 > [37mI[37m (195) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:18:57.618 > [37mE[37m (225) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).
+01:18:57.618 > [37mI[37m (225) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:19:07.725 > [37m\[37m033[1;32m[INFO][SETUP][10152ms] [USER] > Select log level:[0m[37m
+01:19:07.735 > [37m\033[1;32m[INFO][SETUP][10162ms]   I - ERROR and INFO logs[0m
+01:19:07.735 > [37m\[37m033[1;32m[INFO][SETUP][10162ms]   D - ERROR, INFO, and DEBUG lo[37mg[37ms[0m
+01:19:07.745 > Guru Meditation Error: Core  0 panic'ed (LoadProhibited). Except[37mi[37mon was unhandled.
+01:19:07.747 > [37m[37m
+01:19:07.747 > [37mCore  0 register dump:
+01:19:07.747 > [37mPC      : 0x4008f315  PS      : 0x00060030  A0      : 0x80087f09[37m [37m A1      : 0x3ffcdff0  
+01:19:07.748 > [37mA2      : 0x3ffc89b8  A3      : 0x00000000  A4      : 0x40096a60[37m [37m A5      : 0x00000000  
+01:19:07.749 > A6      : 0x3ffc9380  A7      : 0x3ffcddcc  A8      : 0x00000000[37m [37m A9      : 0x3ffcdb50  
+01:19:07.750 > A10     : 0x3ffcdba0  A11     : 0x00000004  A12     : 0x00000005[37m [37m A13     : 0x00000080  
+01:19:07.751 > A14     : 0x3f001cf4  A15     : 0x3ffcba3c  SAR     : 0x0000001f[37m [37m EXCCAUSE: 0x0000001c  
+01:19:07.753 > EXCVADDR: 0x00000010  LBEG    : 0x00000005  LEND    : 0x00000080[37m [37m LCOUNT  : 0x4002a7e8  
+01:19:07.755 > [37m[37m
+01:19:07.756 > [37m[37m
+01:19:07.756 > Backtrace: 0x4008f312:0x3ffcdff0 0x40087f06:0x3ffce010 0x400880a[37mf:0x3ffce030 0x400884c7:0x3ffce050 0x400884b8:0x3ffce070 0x40088[37mf[37med:0x3ffce090 0x4008930b:0x3ffce0b0 0x400882d7:0x3ffce0e0 0x400[37m8aab0:0x3ffce100 0x400bf823:0x3ffce120 0x4002d279:0x3ffce150
+01:19:07.758 > [37m[37m
+01:19:07.759 > [37m[37m
+01:19:07.760 > [37m[37m
+01:19:07.761 > [37m[37m
+01:19:07.761 > ELF file SHA256: 77daa708d
+01:19:07.762 > [37m[37m
+01:19:07.762 > Rebooting...
+01:19:07.795 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+01:19:07.795 > I (32) boot: compile time Jul  3 2025 00:41:34
+01:19:07.795 > D (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+01:19:07.796 > [37mD (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+01:19:07.797 > I (35) boot: chip revision: v0.0
+01:19:07.798 > [37mI (35) boot: efuse block revision: v0.2
+01:19:07.798 > [37mD (35) boot.esp32s2: magic e9
+01:19:07.798 > D (35) boot.esp32s2: segments 04
+01:19:07.798 > [37mD (35) boot.esp32s2: spi_mode 02
+01:19:07.799 > [37mD[37m (35) boot.esp32s2: spi_speed 0f
+01:19:07.799 > D (36) boot.esp32s2: spi_size 02
+01:19:07.799 > [37mI (36) boot.esp32s2: SPI Speed      : 80MHz
+01:19:07.799 > [37mI (36) boot.esp32s2: SPI Mode       : DIO
+01:19:07.799 > [37mI[37m (36) boot.esp32s2: SPI Flash Size : 4MB
+01:19:07.799 > [37mD (37) boot: Enabling RTCWDT(9000 ms)
+01:19:07.799 > [37mI[37m (37) boot: Enabling RNG early entropy source...
+01:19:07.799 > [37mD[37m (37) bootloader_flash: rodata starts from paddr=0x00008000, si[37mz[37me=0xc00, will be mapped to vaddr=0x3f000000
+01:19:07.800 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:07.801 > D (38) boot: mapped partition table 0x8000 at 0x3f008000
+01:19:07.801 > [37mD[37m (38) flash_parts: partition table verified, 5 entries
+01:19:07.801 > I (39) boot: Partition Table:
+01:19:07.801 > [37mI (39) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+01:19:07.803 > [37mD (40) boot: load partition table entry 0x3f008000
+01:19:07.803 > D (40) boot: type=1 subtype=2
+01:19:07.803 > [37mI (40) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+01:19:07.804 > [37mD (41) boot: load partition table entry 0x3f008020
+01:19:07.804 > D (41) boot: type=1 subtype=1
+01:19:07.804 > [37mI (41) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+01:19:07.805 > [37mD (42) boot: load partition table entry 0x3f008040
+01:19:07.805 > D (43) boot: type=0 subtype=0
+01:19:07.805 > [37mI (43) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+01:19:07.807 > [37mD (44) boot: load partition table entry 0x3f008060
+01:19:07.807 > [37mD (44) boot: type=1 subtype=83
+01:19:07.807 > [37mI[37m (44) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+01:19:07.808 > I (45) boot: End of partition table
+01:19:07.808 > [37mD[37m (45) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+01:19:07.809 > [37mD (46) esp_image: reading image header @ 0x10000
+01:19:07.809 > [37mD (47) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+01:19:07.810 > [37mD[37m (48) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a3c
+01:19:07.811 > [37mV (48) esp_image: loading segment header 0 at offset 0x10018
+01:19:07.811 > [37mV (48) esp_image: segment data length 0x14e08 data starts 0x1002[37m0[37m
+01:19:07.812 > V (49) esp_image: MMU page size 0x10000
+01:19:07.812 > [37mV (49) esp_image: segment 0 map_segment 1 segment_data_offs 0x10020 load_addr 0x3f000020
+01:19:07.812 > [37mI[37m (49) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=14e08h ( 85512) map
+01:19:07.813 > D (50) esp_image: free data page_count 0x00000038
+01:19:07.813 > D (50) bootloader_flash: rodata starts from paddr=0x00010020, size=0x14e08, will be mapped to vaddr=0x3f000000
+01:19:07.813 > V (50) bootloader_flash: after mapping, starting from paddr=0x00010000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:07.830 > [37mV[37m (67) esp_image: loading segment header 1 at offset 0x24e28
+01:19:07.830 > D (67) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:07.831 > [37mV (68) esp_image: segment data length 0x1c data starts 0x24e30
+01:19:07.831 > [37mV (69) esp_image: MMU page size 0x10000
+01:19:07.831 > [37mV[37m (69) esp_image: segment 1 map_segment 0 segment_data_offs 0x24e30 load_addr 0x3ff9e010
+01:19:07.832 > [37mI[37m (69) esp_image: segment 1: paddr=00024e30 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+01:19:07.833 > [37mD (70) esp_image: free data page_count 0x00000038
+01:19:07.833 > [37mD[37m (70) bootloader_flash: rodata starts from paddr=0x00024e30, si[37mze=0x1c, will be mapped to vaddr=0x3f000000
+01:19:07.833 > [37mV[37m (70) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:07.833 > [37mV[37m (71) esp_image: loading segment header 2 at offset 0x24e4c
+01:19:07.834 > [37mD[37m (71) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:07.835 > [37mV[37m (72) esp_image: segment data length 0x2ed8 data starts 0x24e54[37m[37m
+01:19:07.836 > [37mV (73) esp_image: MMU page size 0x10000
+01:19:07.836 > [37mV[37m (73) esp_image: segment 2 map_segment 0 segment_data_offs 0x24e54 load_addr 0x3ffc5ad0
+01:19:07.836 > [37mI[37m (73) esp_image: segment 2: paddr=00024e54 vaddr=3ffc5ad0 size=02ed8h ( 11992) load
+01:19:07.836 > [37mD (74) esp_image: free data page_count 0x00000038
+01:19:07.836 > [37mD[37m (74) bootloader_flash: rodata starts from paddr=0x00024e54, si[37mze=0x2ed8, will be mapped to vaddr=0x3f000000
+01:19:07.837 > [37mV[37m (74) bootloader_flash: after mapping, starting from paddr=0x00[37m020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:07.840 > [37mV[37m (77) esp_image: loading segment header 3 at offset 0x27d2c
+01:19:07.840 > D (77) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:07.841 > [37mV[37m (78) esp_image: segment data length 0x82e4 data starts 0x27d34[37m[37m
+01:19:07.842 > [37mV (79) esp_image: MMU page size 0x10000
+01:19:07.842 > [37mV[37m (80) esp_image: segment 3 map_segment 0 segment_data_offs 0x27d34 load_addr 0x40024000
+01:19:07.842 > [37mI[37m (80) esp_image: segment 3: paddr=00027d34 vaddr=40024000 size=082e4h ( 33508) load
+01:19:07.843 > [37mD[37m (80) esp_image: free data page_count 0x00000038
+01:19:07.843 > [37mD[37m (80) bootloader_flash: rodata starts from paddr=0x00027d34, size=0x82e4, will be mapped to vaddr=0x3f000000
+01:19:07.843 > [37mV[37m (80) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:07.852 > [37mV[37m (89) esp_image: loading segment header 4 at offset 0x30018
+01:19:07.852 > D (89) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+01:19:07.853 > [37mV[37m (90) esp_image: segment data length 0x3fe6c data starts 0x3002[37m0[37m
+01:19:07.854 > [37mV (91) esp_image: MMU page size 0x10000
+01:19:07.854 > [37mV[37m (91) esp_image: segment 4 map_segment 1 segment_data_offs 0x30020 load_addr 0x40080020
+01:19:07.854 > [37mI[37m (92) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=3fe6ch (261740) map
+01:19:07.854 > [37mD[37m (92) esp_image: free data page_count 0x00000038
+01:19:07.855 > [37mD[37m (92) bootloader_flash: rodata starts from paddr=0x00030020, si[37mz[37me=0x3fe6c, will be mapped to vaddr=0x3f000000
+01:19:07.855 > [37mV (92) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m30000 and vaddr=0x3f000000, 0x40000 bytes are mapped
+01:19:07.907 > [37mV[37m (144) esp_image: loading segment header 5 at offset 0x6fe8c
+01:19:07.907 > D (144) bootloader_flash: mmu set block paddr=0x00060000 (was 0x[37mf[37mfffffff)
+01:19:07.908 > [37mV[37m (145) esp_image: segment data length 0x97e8 data starts 0x6fe9[37m4[37m
+01:19:07.909 > [37mV[37m (146) esp_image: MMU page size 0x10000
+01:19:07.909 > [37mV[37m (146) esp_image: segment 5 map_segment 0 segment_data_offs 0x6fe94 load_addr 0x4002c2e4
+01:19:07.909 > [37mI[37m (147) esp_image: segment 5: paddr=0006fe94 vaddr=4002c2e4 size=097e8h ( 38888) load
+01:19:07.909 > [37mD[37m (147) esp_image: free data page_count 0x00000038
+01:19:07.910 > [37mD[37m (147) bootloader_flash: rodata starts from paddr=0x0006fe94, s[37mize=0x97e8, will be mapped to vaddr=0x3f000000
+01:19:07.910 > [37mV[37m (147) bootloader_flash: after mapping, starting from paddr=0x0[37m0060000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:07.920 > [37mV[37m (157) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007967c
+01:19:07.921 > [37mD[37m (158) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+01:19:07.931 > [37mI[37m (168) boot: Loaded app from partition at offset 0x10000
+01:19:07.931 > I (168) boot: Disabling RNG early entropy source...
+01:19:07.932 > [37mD[37m (168) boot: Mapping segment 0 as DROM
+01:19:07.932 > D (169) boot: Mapping segment 4 as IROM
+01:19:07.932 > [37mD[37m (169) boot: calling set_cache_and_start_app
+01:19:07.932 > [37mD (169) boot: configure drom and irom and start
+01:19:07.932 > [37mV[37m (170) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000[37m0[37m20, size=0x14e08
+01:19:07.933 > [37mV[37m (171) boot: after mapping rodata, starting from paddr=0x000100[37m00 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:07.934 > [37mV[37m (171) boot: mapped one page of the rodata, from paddr=0x000100[37m0[37m0 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+01:19:07.934 > [37mV[37m (171) boot: text starts from paddr=0x00030020, vaddr=0x4008002[37m0[37m, size=0x3fe6c
+01:19:07.935 > [37mV (172) boot: after mapping text, starting from paddr=0x00030000[37m and vaddr=0x40080000, 0x40000 bytes are mapped
+01:19:07.935 > D (173) boot: start: 0x40026a3c
+01:19:07.958 > [37mI[37m (195) main_task: Started on CPU0
+01:19:07.958 > [37mI[37m (195) main_task: Calling app_main()
+01:19:07.959 > [37m\[37m033[1;32m[INFO][MAIN][13ms] START[0m
+01:19:07.959 > [37m\[37m033[1;32m[INFO][DATA][14ms] START[0m
+01:19:07.959 > [37m\[37m033[1;32m[INFO][SDCard][14ms] Init SD Card.[0m
+01:19:07.960 > [37mI[37m (195) SDCARD: Mounting filesystem
+01:19:07.961 > [37mI[37m (195) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:19:07.989 > [37mE[37m (225) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).
+01:19:07.990 > [37mI[37m (225) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:19:18.097 > [37m\[37m033[1;32m[INFO][SETUP][10152ms] [USER] > Select log level:[0m[37m
+01:19:18.107 > [37m\[37m033[1;32m[INFO][SETUP][10162ms]   I - ERROR and INFO logs[0m
+01:19:18.107 > [37m\[37m033[1;32m[INFO][SETUP][10162ms]   D - ERROR, INFO, and DEBUG lo[37mg[37ms[0m
+01:19:18.117 > [37mGuru Meditation Error: Core  0 panic'ed (LoadProhibited). Except[37mi[37mon was unhandled.
+01:19:18.119 > [37m[37m
+01:19:18.119 > Core  0 register dump:
+01:19:18.119 > [37mPC      : 0x4008f315  PS      : 0x00060030  A0      : 0x80087f09[37m [37m A1      : 0x3ffcdff0  
+01:19:18.120 > A2      : 0x3ffc89b8  A3      : 0x00000000  A4      : 0x40096a60[37m [37m A5      : 0x00000000  
+01:19:18.121 > A6      : 0x3ffc9380  A7      : 0x3ffcddcc  A8      : 0x00000000[37m [37m A9      : 0x3ffcdb50  
+01:19:18.122 > A10     : 0x3ffcdba0  A11     : 0x00000004  A12     : 0x00000005[37m [37m A13     : 0x00000080  
+01:19:18.123 > A14     : 0x3f001cf4  A15     : 0x3ffcba3c  SAR     : 0x0000001f[37m [37m EXCCAUSE: 0x0000001c  
+01:19:18.124 > EXCVADDR: 0x00000010  LBEG    : 0x00000005  LEND    : 0x00000080[37m [37m LCOUNT  : 0x4002a7e8  
+01:19:18.126 > [37m[37m
+01:19:18.127 > [37m[37m
+01:19:18.127 > Backtrace: 0x4008f312:0x3ffcdff0 0x40087f06:0x3ffce010 0x400880a[37mf[37m:0x3ffce030 0x400884c7:0x3ffce050 0x400884b8:0x3ffce070 0x40088[37mf[37med:0x3ffce090 0x4008930b:0x3ffce0b0 0x400882d7:0x3ffce0e0 0x4008aab0:0x3ffce100 0x400bf823:0x3ffce120 0x4002d279:0x3ffce150
+01:19:18.130 > [37m[37m
+01:19:18.131 > [37m[37m
+01:19:18.132 > [37m[37m
+01:19:18.133 > [37m[37m
+01:19:18.133 > ELF file SHA256: 77daa708d
+01:19:18.134 > [37m[37m
+01:19:18.134 > Rebooting...
+01:19:18.167 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+01:19:18.167 > I (32) boot: compile time Jul  3 2025 00:41:34
+01:19:18.167 > [37mD (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+01:19:18.168 > [37mD (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+01:19:18.169 > I (35) boot: chip revision: v0.0
+01:19:18.169 > [37mI (35) boot: efuse block revision: v0.2
+01:19:18.169 > [37mD (35) boot.esp32s2: magic e9
+01:19:18.169 > [37mD (35) boot.esp32s2: segments 04
+01:19:18.170 > [37mD (35) boot.esp32s2: spi_mode 02
+01:19:18.170 > [37mD[37m (35) boot.esp32s2: spi_speed 0f
+01:19:18.171 > D (36) boot.esp32s2: spi_size 02
+01:19:18.171 > [37mI (36) boot.esp32s2: SPI Speed      : 80MHz
+01:19:18.171 > I (36) boot.esp32s2: SPI Mode       : DIO
+01:19:18.171 > [37mI (36) boot.esp32s2: SPI Flash Size : 4MB
+01:19:18.171 > D (37) boot: Enabling RTCWDT(9000 ms)
+01:19:18.171 > [37mI[37m (37) boot: Enabling RNG early entropy source...
+01:19:18.171 > [37mD (37) bootloader_flash: rodata starts from paddr=0x00008000, si[37mze=0xc00, will be mapped to vaddr=0x3f000000
+01:19:18.171 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:18.173 > [37mD (38) boot: mapped partition table 0x8000 at 0x3f008000
+01:19:18.173 > [37mD (38) flash_parts: partition table verified, 5 entries
+01:19:18.173 > I (39) boot: Partition Table:
+01:19:18.173 > [37mI[37m (39) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+01:19:18.174 > [37mD (40) boot: load partition table entry 0x3f008000
+01:19:18.174 > D (40) boot: type=1 subtype=2
+01:19:18.174 > [37mI (40) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+01:19:18.175 > [37mD[37m (41) boot: load partition table entry 0x3f008020
+01:19:18.176 > D (41) boot: type=1 subtype=1
+01:19:18.176 > [37mI[37m (41) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+01:19:18.177 > [37mD[37m (42) boot: load partition table entry 0x3f008040
+01:19:18.177 > D (43) boot: type=0 subtype=0
+01:19:18.177 > [37mI[37m (43) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+01:19:18.178 > [37mD (44) boot: load partition table entry 0x3f008060
+01:19:18.178 > [37mD (44) boot: type=1 subtype=83
+01:19:18.178 > [37mI[37m (44) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+01:19:18.180 > [37mI (45) boot: End of partition table
+01:19:18.180 > [37mD[37m (45) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+01:19:18.181 > [37mD (46) esp_image: reading image header @ 0x10000
+01:19:18.181 > [37mD[37m (47) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+01:19:18.182 > [37mD (48) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a3c
+01:19:18.182 > [37mV[37m (48) esp_image: loading segment header 0 at offset 0x10018
+01:19:18.182 > [37mV (48) esp_image: segment data length 0x14e08 data starts 0x1002[37m0[37m
+01:19:18.183 > V (49) esp_image: MMU page size 0x10000
+01:19:18.184 > [37mV[37m (49) esp_image: segment 0 map_segment 1 segment_data_offs 0x10020 load_addr 0x3f000020
+01:19:18.184 > [37mI[37m (49) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=14e08h ( 85512) map
+01:19:18.184 > [37mD[37m (50) esp_image: free data page_count 0x00000038
+01:19:18.184 > [37mD[37m (50) bootloader_flash: rodata starts from paddr=0x00010020, si[37mze=0x14e08, will be mapped to vaddr=0x3f000000
+01:19:18.184 > [37mV[37m (50) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m10000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:18.202 > [37mV[37m (67) esp_image: loading segment header 1 at offset 0x24e28
+01:19:18.202 > D (67) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:18.203 > [37mV (68) esp_image: segment data length 0x1c data starts 0x24e30
+01:19:18.203 > V (69) esp_image: MMU page size 0x10000
+01:19:18.203 > [37mV[37m (69) esp_image: segment 1 map_segment 0 segment_data_offs 0x24e30 load_addr 0x3ff9e010
+01:19:18.203 > [37mI (69) esp_image: segment 1: paddr=00024e30 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+01:19:18.205 > [37mD (70) esp_image: free data page_count 0x00000038
+01:19:18.205 > [37mD (70) bootloader_flash: rodata starts from paddr=0x00024e30, si[37mze=0x1c, will be mapped to vaddr=0x3f000000
+01:19:18.205 > [37mV[37m (70) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:18.205 > [37mV[37m (71) esp_image: loading segment header 2 at offset 0x24e4c
+01:19:18.205 > [37mD[37m (71) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:18.206 > [37mV[37m (72) esp_image: segment data length 0x2ed8 data starts 0x24e54[37m[37m
+01:19:18.207 > V (73) esp_image: MMU page size 0x10000
+01:19:18.208 > [37mV[37m (73) esp_image: segment 2 map_segment 0 segment_data_offs 0x24e54 load_addr 0x3ffc5ad0
+01:19:18.208 > [37mI[37m (73) esp_image: segment 2: paddr=00024e54 vaddr=3ffc5ad0 size=02ed8h ( 11992) load
+01:19:18.208 > [37mD (74) esp_image: free data page_count 0x00000038
+01:19:18.208 > [37mD[37m (74) bootloader_flash: rodata starts from paddr=0x00024e54, si[37mze=0x2ed8, will be mapped to vaddr=0x3f000000
+01:19:18.208 > [37mV[37m (74) bootloader_flash: after mapping, starting from paddr=0x00[37m020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:18.211 > [37mV[37m (77) esp_image: loading segment header 3 at offset 0x27d2c
+01:19:18.212 > [37mD (77) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:18.213 > [37mV (78) esp_image: segment data length 0x82e4 data starts 0x27d34[37m[37m
+01:19:18.214 > [37mV (79) esp_image: MMU page size 0x10000
+01:19:18.214 > [37mV (80) esp_image: segment 3 map_segment 0 segment_data_offs 0x27d34 load_addr 0x40024000
+01:19:18.214 > [37mI[37m (80) esp_image: segment 3: paddr=00027d34 vaddr=40024000 size=082e4h ( 33508) load
+01:19:18.214 > D (80) esp_image: free data page_count 0x00000038
+01:19:18.214 > [37mD[37m (80) bootloader_flash: rodata starts from paddr=0x00027d34, size=0x82e4, will be mapped to vaddr=0x3f000000
+01:19:18.215 > [37mV (80) bootloader_flash: after mapping, starting from paddr=0x00[37m020000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:18.223 > [37mV[37m (89) esp_image: loading segment header 4 at offset 0x30018
+01:19:18.224 > D (89) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+01:19:18.225 > [37mV[37m (90) esp_image: segment data length 0x3fe6c data starts 0x3002[37m0[37m
+01:19:18.226 > V (91) esp_image: MMU page size 0x10000
+01:19:18.226 > [37mV[37m (91) esp_image: segment 4 map_segment 1 segment_data_offs 0x30020 load_addr 0x40080020
+01:19:18.226 > [37mI[37m (92) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=3fe6ch (261740) map
+01:19:18.226 > D (92) esp_image: free data page_count 0x00000038
+01:19:18.226 > [37mD (92) bootloader_flash: rodata starts from paddr=0x00030020, si[37mze=0x3fe6c, will be mapped to vaddr=0x3f000000
+01:19:18.227 > [37mV (92) bootloader_flash: after mapping, starting from paddr=0x00[37m030000 and vaddr=0x3f000000, 0x40000 bytes are mapped
+01:19:18.278 > [37mV[37m (144) esp_image: loading segment header 5 at offset 0x6fe8c
+01:19:18.279 > D (144) bootloader_flash: mmu set block paddr=0x00060000 (was 0x[37mf[37mfffffff)
+01:19:18.280 > [37mV (145) esp_image: segment data length 0x97e8 data starts 0x6fe9[37m4[37m
+01:19:18.281 > V (146) esp_image: MMU page size 0x10000
+01:19:18.281 > [37mV[37m (146) esp_image: segment 5 map_segment 0 segment_data_offs 0x6fe94 load_addr 0x4002c2e4
+01:19:18.281 > [37mI (147) esp_image: segment 5: paddr=0006fe94 vaddr=4002c2e4 size=097e8h ( 38888) load
+01:19:18.281 > [37mD (147) esp_image: free data page_count 0x00000038
+01:19:18.281 > [37mD (147) bootloader_flash: rodata starts from paddr=0x0006fe94, s[37mize=0x97e8, will be mapped to vaddr=0x3f000000
+01:19:18.282 > [37mV[37m (147) bootloader_flash: after mapping, starting from paddr=0x0[37m0060000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:18.292 > [37mV[37m (157) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007967c
+01:19:18.293 > [37mD (158) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+01:19:18.302 > [37mI[37m (168) boot: Loaded app from partition at offset 0x10000
+01:19:18.303 > I (168) boot: Disabling RNG early entropy source...
+01:19:18.304 > [37mD[37m (168) boot: Mapping segment 0 as DROM
+01:19:18.304 > D (169) boot: Mapping segment 4 as IROM
+01:19:18.304 > [37mD (169) boot: calling set_cache_and_start_app
+01:19:18.304 > [37mD (169) boot: configure drom and irom and start
+01:19:18.304 > [37mV[37m (170) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000[37m0[37m20, size=0x14e08
+01:19:18.305 > [37mV (171) boot: after mapping rodata, starting from paddr=0x000100[37m00 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:18.305 > [37mV[37m (171) boot: mapped one page of the rodata, from paddr=0x000100[37m00 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+01:19:18.306 > [37mV (171) boot: text starts from paddr=0x00030020, vaddr=0x4008002[37m0[37m, size=0x3fe6c
+01:19:18.307 > [37mV (172) boot: after mapping text, starting from paddr=0x00030000[37m and vaddr=0x40080000, 0x40000 bytes are mapped
+01:19:18.307 > D (173) boot: start: 0x40026a3c
+01:19:18.329 > [37mI[37m (195) main_task: Started on CPU0
+01:19:18.330 > [37mI[37m (195) main_task: Calling app_main()
+01:19:18.330 > [37m\[37m033[1;32m[INFO][MAIN][13ms] START[0m
+01:19:18.331 > [37m\[37m033[1;32m[INFO][DATA][14ms] START[0m
+01:19:18.331 > [37m\[37m033[1;32m[INFO][SDCard][14ms] Init SD Card.[0m
+01:19:18.332 > [37mI[37m (195) SDCARD: Mounting filesystem
+01:19:18.333 > [37mI[37m (195) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:19:18.377 > [37mE[37m (235) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).
+01:19:18.378 > [37mI[37m (235) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:19:28.479 > [37m\[37m033[1;32m[INFO][SETUP][10162ms] [USER] > Select log level:[0m[37m
+01:19:28.488 > [37m\[37m033[1;32m[INFO][SETUP][10172ms]   I - ERROR and INFO logs[0m
+01:19:28.489 > [37m\033[1;32m[INFO][SETUP][10172ms]   D - ERROR, INFO, and DEBUG lo[37mg[37ms[0m
+01:19:28.498 > Guru Meditation Error: Core  0 panic'ed (LoadProhibited). Except[37mi[37mon was unhandled.
+01:19:28.500 > [37m[37m
+01:19:28.500 > [37mC[37more  0 register dump:
+01:19:28.500 > [37mP[37mC      : 0x4008f315  PS      : 0x00060030  A0      : 0x80087f09[37m [37m A1      : 0x3ffcdff0  
+01:19:28.502 > [37mA[37m2      : 0x3ffc89b8  A3      : 0x00000000  A4      : 0x40096a60[37m [37m A5      : 0x00000000  
+01:19:28.503 > [37mA6      : 0x3ffc9380  A7      : 0x3ffcddcc  A8      : 0x00000000[37m [37m A9      : 0x3ffcdb50  
+01:19:28.504 > [37mA[37m10     : 0x3ffcdba0  A11     : 0x00000004  A12     : 0x00000005[37m [37m A13     : 0x00000080  
+01:19:28.505 > [37mA[37m14     : 0x3ffc9380  A15     : 0x3ffcba3c  SAR     : 0x0000001f[37m [37m EXCCAUSE: 0x0000001c  
+01:19:28.506 > [37mEXCVADDR: 0x00000010  LBEG    : 0x00000005  LEND    : 0x00000080[37m [37m LCOUNT  : 0x4002a7e8  
+01:19:28.508 > [37m[37m
+01:19:28.509 > [37m[37m
+01:19:28.509 > Backtrace: 0x4008f312:0x3ffcdff0 0x40087f06:0x3ffce010 0x400880a[37mf[37m:0x3ffce030 0x400884c7:0x3ffce050 0x400884b8:0x3ffce070 0x40088[37mf[37med:0x3ffce090 0x4008930b:0x3ffce0b0 0x400882d7:0x3ffce0e0 0x4008aab0:0x3ffce100 0x400bf823:0x3ffce120 0x4002d279:0x3ffce150
+01:19:28.511 > [37m[37m
+01:19:28.512 > [37m[37m
+01:19:28.513 > [37m[37m
+01:19:28.514 > [37m[37m
+01:19:28.514 > ELF file SHA256: 77daa708d
+01:19:28.515 > [37m[37m
+01:19:28.515 > Rebooting...
+01:19:28.548 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+01:19:28.549 > I (32) boot: compile time Jul  3 2025 00:41:34
+01:19:28.549 > [37mD (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+01:19:28.550 > [37mD[37m (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+01:19:28.551 > I (35) boot: chip revision: v0.0
+01:19:28.551 > I (35) boot: efuse block revision: v0.2
+01:19:28.551 > [37mD[37m (35) boot.esp32s2: magic e9
+01:19:28.551 > [37mD (35) boot.esp32s2: segments 04
+01:19:28.551 > [37mD[37m (35) boot.esp32s2: spi_mode 02
+01:19:28.552 > [37mD[37m (35) boot.esp32s2: spi_speed 0f
+01:19:28.552 > [37mD (36) boot.esp32s2: spi_size 02
+01:19:28.552 > [37mI (36) boot.esp32s2: SPI Speed      : 80MHz
+01:19:28.552 > [37mI[37m (36) boot.esp32s2: SPI Mode       : DIO
+01:19:28.552 > [37mI[37m (36) boot.esp32s2: SPI Flash Size : 4MB
+01:19:28.553 > [37mD[37m (37) boot: Enabling RTCWDT(9000 ms)
+01:19:28.553 > I (37) boot: Enabling RNG early entropy source...
+01:19:28.553 > [37mD[37m (37) bootloader_flash: rodata starts from paddr=0x00008000, si[37mze=0xc00, will be mapped to vaddr=0x3f000000
+01:19:28.553 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:28.554 > [37mD (38) boot: mapped partition table 0x8000 at 0x3f008000
+01:19:28.554 > [37mD[37m (38) flash_parts: partition table verified, 5 entries
+01:19:28.555 > I (39) boot: Partition Table:
+01:19:28.555 > [37mI[37m (39) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+01:19:28.556 > [37mD[37m (40) boot: load partition table entry 0x3f008000
+01:19:28.556 > [37mD (40) boot: type=1 subtype=2
+01:19:28.556 > [37mI[37m (40) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+01:19:28.557 > [37mD[37m (41) boot: load partition table entry 0x3f008020
+01:19:28.557 > D (41) boot: type=1 subtype=1
+01:19:28.557 > [37mI[37m (41) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+01:19:28.559 > [37mD[37m (42) boot: load partition table entry 0x3f008040
+01:19:28.559 > D (43) boot: type=0 subtype=0
+01:19:28.559 > [37mI[37m (43) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+01:19:28.560 > [37mD[37m (44) boot: load partition table entry 0x3f008060
+01:19:28.560 > [37mD[37m (44) boot: type=1 subtype=83
+01:19:28.560 > [37mI[37m (44) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+01:19:28.561 > [37mI[37m (45) boot: End of partition table
+01:19:28.561 > [37mD[37m (45) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+01:19:28.562 > [37mD[37m (46) esp_image: reading image header @ 0x10000
+01:19:28.563 > [37mD[37m (47) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+01:19:28.564 > [37mD[37m (48) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a3c
+01:19:28.564 > [37mV (48) esp_image: loading segment header 0 at offset 0x10018
+01:19:28.564 > [37mV[37m (48) esp_image: segment data length 0x14e08 data starts 0x1002[37m0[37m
+01:19:28.565 > [37mV (49) esp_image: MMU page size 0x10000
+01:19:28.565 > [37mV[37m (49) esp_image: segment 0 map_segment 1 segment_data_offs 0x10020 load_addr 0x3f000020
+01:19:28.566 > [37mI[37m (49) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=14e08h ( 85512) map
+01:19:28.566 > [37mD[37m (50) esp_image: free data page_count 0x00000038
+01:19:28.566 > [37mD[37m (50) bootloader_flash: rodata starts from paddr=0x00010020, si[37mz[37me=0x14e08, will be mapped to vaddr=0x3f000000
+01:19:28.566 > [37mV[37m (50) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m10000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:28.583 > [37mV[37m (67) esp_image: loading segment header 1 at offset 0x24e28
+01:19:28.583 > D (67) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:28.585 > [37mV[37m (68) esp_image: segment data length 0x1c data starts 0x24e30
+01:19:28.585 > [37mV[37m (69) esp_image: MMU page size 0x10000
+01:19:28.585 > [37mV[37m (69) esp_image: segment 1 map_segment 0 segment_data_offs 0x24e30 load_addr 0x3ff9e010
+01:19:28.585 > [37mI[37m (69) esp_image: segment 1: paddr=00024e30 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+01:19:28.586 > D (70) esp_image: free data page_count 0x00000038
+01:19:28.586 > [37mD[37m (70) bootloader_flash: rodata starts from paddr=0x00024e30, size=0x1c, will be mapped to vaddr=0x3f000000
+01:19:28.586 > [37mV[37m (70) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:28.587 > [37mV[37m (71) esp_image: loading segment header 2 at offset 0x24e4c
+01:19:28.587 > [37mD[37m (71) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:28.588 > V (72) esp_image: segment data length 0x2ed8 data starts 0x24e54[37m[37m
+01:19:28.589 > V (73) esp_image: MMU page size 0x10000
+01:19:28.589 > [37mV[37m (73) esp_image: segment 2 map_segment 0 segment_data_offs 0x24e54 load_addr 0x3ffc5ad0
+01:19:28.590 > [37mI (73) esp_image: segment 2: paddr=00024e54 vaddr=3ffc5ad0 size=02ed8h ( 11992) load
+01:19:28.590 > [37mD[37m (74) esp_image: free data page_count 0x00000038
+01:19:28.590 > [37mD[37m (74) bootloader_flash: rodata starts from paddr=0x00024e54, si[37mz[37me=0x2ed8, will be mapped to vaddr=0x3f000000
+01:19:28.590 > [37mV[37m (74) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:28.593 > [37mV[37m (77) esp_image: loading segment header 3 at offset 0x27d2c
+01:19:28.593 > [37mD[37m (77) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:28.594 > [37mV[37m (78) esp_image: segment data length 0x82e4 data starts 0x27d34[37m[37m
+01:19:28.595 > [37mV[37m (79) esp_image: MMU page size 0x10000
+01:19:28.596 > [37mV (80) esp_image: segment 3 map_segment 0 segment_data_offs 0x27[37md34 load_addr 0x40024000
+01:19:28.596 > [37mI[37m (80) esp_image: segment 3: paddr=00027d34 vaddr=40024000 size=082e4h ( 33508) load
+01:19:28.596 > [37mD[37m (80) esp_image: free data page_count 0x00000038
+01:19:28.596 > [37mD[37m (80) bootloader_flash: rodata starts from paddr=0x00027d34, size=0x82e4, will be mapped to vaddr=0x3f000000
+01:19:28.596 > [37mV[37m (80) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:28.605 > [37mV[37m (89) esp_image: loading segment header 4 at offset 0x30018
+01:19:28.605 > [37mD (89) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+01:19:28.606 > [37mV[37m (90) esp_image: segment data length 0x3fe6c data starts 0x3002[37m0[37m
+01:19:28.607 > [37mV (91) esp_image: MMU page size 0x10000
+01:19:28.608 > [37mV (91) esp_image: segment 4 map_segment 1 segment_data_offs 0x30[37m020 load_addr 0x40080020
+01:19:28.608 > [37mI[37m (92) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=3fe6ch (261740) map
+01:19:28.608 > [37mD (92) esp_image: free data page_count 0x00000038
+01:19:28.608 > [37mD[37m (92) bootloader_flash: rodata starts from paddr=0x00030020, si[37mze=0x3fe6c, will be mapped to vaddr=0x3f000000
+01:19:28.608 > [37mV[37m (92) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m30000 and vaddr=0x3f000000, 0x40000 bytes are mapped
+01:19:28.660 > [37mV[37m (144) esp_image: loading segment header 5 at offset 0x6fe8c
+01:19:28.660 > D (144) bootloader_flash: mmu set block paddr=0x00060000 (was 0x[37mf[37mfffffff)
+01:19:28.661 > [37mV[37m (145) esp_image: segment data length 0x97e8 data starts 0x6fe9[37m4[37m
+01:19:28.662 > [37mV (146) esp_image: MMU page size 0x10000
+01:19:28.662 > [37mV[37m (146) esp_image: segment 5 map_segment 0 segment_data_offs 0x6fe94 load_addr 0x4002c2e4
+01:19:28.663 > [37mI[37m (147) esp_image: segment 5: paddr=0006fe94 vaddr=4002c2e4 size=097e8h ( 38888) load
+01:19:28.663 > [37mD[37m (147) esp_image: free data page_count 0x00000038
+01:19:28.663 > [37mD[37m (147) bootloader_flash: rodata starts from paddr=0x0006fe94, s[37mi[37mze=0x97e8, will be mapped to vaddr=0x3f000000
+01:19:28.663 > [37mV[37m (147) bootloader_flash: after mapping, starting from paddr=0x0[37m0[37m060000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:28.673 > [37mV[37m (157) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007967c
+01:19:28.678 > D (158) bootloader_flash: mmu set block paddr=0x00070000 (was 0xffffffff)
+01:19:28.700 > [37mI[37m (168) boot: Loaded app from partition at offset 0x10000
+01:19:28.701 > I (168) boot: Disabling RNG early entropy source...
+01:19:28.701 > D (168) boot: Mapping segment 0 as DROM
+01:19:28.701 > D (169) boot: Mapping segment 4 as IROM
+01:19:28.701 > D (169) boot: calling set_cache_and_start_app
+01:19:28.701 > D (169) boot: configure drom and irom and start
+01:19:28.701 > V (170) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000020, size=0x14e08
+01:19:28.701 > V (171) boot: after mapping rodata, starting from paddr=0x00010000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:28.701 > V (171) boot: mapped one page of the rodata, from paddr=0x00010000 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+01:19:28.701 > V (171) boot: text starts from paddr=0x00030020, vaddr=0x40080020, size=0x3fe6c
+01:19:28.701 > V (172) boot: after mapping text, starting from paddr=0x00030000 and vaddr=0x40080000, 0x40000 bytes are mapped
+01:19:28.701 > D (173) boot: start: 0x40026a3c
+01:19:28.711 > [37mI[37m (195) main_task: Started on CPU0
+01:19:28.712 > [37mI[37m (195) main_task: Calling app_main()
+01:19:28.712 > [37m\[37m033[1;32m[INFO][MAIN][13ms] START[0m
+01:19:28.712 > [37m\[37m033[1;32m[INFO][DATA][14ms] START[0m
+01:19:28.713 > [37m\[37m033[1;32m[INFO][SDCard][14ms] Init SD Card.[0m
+01:19:28.713 > [37mI[37m (195) SDCARD: Mounting filesystem
+01:19:28.715 > [37mI[37m (195) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:19:28.922 > [37mE[37m (405) sdmmc_sd: sdmmc_init_sd_if_cond: send_if_cond (1) return[37me[37md 0x108
+01:19:28.931 > [37mE[37m (415) vfs_fat_sdmmc: sdmmc_card_init failed (0x108).
+01:19:28.931 > [37mI[37m (415) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:19:39.040 > [37m\[37m033[1;32m[INFO][SETUP][10342ms] [USER] > Select log level:[0m[37m
+01:19:39.050 > [37m\033[1;32m[INFO][SETUP][10352ms]   I - ERROR and INFO logs[0m
+01:19:39.050 > [37m\033[1;32m[INFO][SETUP][10352ms]   D - ERROR, INFO, and DEBUG lo[37mg[37ms[0m
+01:19:39.060 > [37mGuru Meditation Error: Core  0 panic'ed (LoadProhibited). Except[37mi[37mon was unhandled.
+01:19:39.062 > [37m[37m
+01:19:39.062 > Core  0 register dump:
+01:19:39.062 > [37mPC      : 0x4008f315  PS      : 0x00060030  A0      : 0x80087f09[37m [37m A1      : 0x3ffcdff0  
+01:19:39.063 > A2      : 0x3ffc89b8  A3      : 0x00000000  A4      : 0x3ffcde04[37m [37m A5      : 0x00000000  
+01:19:39.064 > [37mA6      : 0x3f001d31  A7      : 0x3ffcddcc  A8      : 0x00000000[37m [37m A9      : 0x3ffcdb50  
+01:19:39.066 > A10     : 0x3ffcdba0  A11     : 0x00000004  A12     : 0x00000005[37m [37m A13     : 0x00000080  
+01:19:39.067 > A14     : 0x3f001cf4  A15     : 0x3ffcba3c  SAR     : 0x0000001f[37m [37m EXCCAUSE: 0x0000001c  
+01:19:39.068 > EXCVADDR: 0x00000010  LBEG    : 0x00000005  LEND    : 0x00000080[37m [37m LCOUNT  : 0x4002a7e8  
+01:19:39.070 > [37m[37m
+01:19:39.071 > [37m[37m
+01:19:39.071 > [37mBacktrace: 0x4008f312:0x3ffcdff0 0x40087f06:0x3ffce010 0x400880a[37mf:0x3ffce030 0x400884c7:0x3ffce050 0x400884b8:0x3ffce070 0x40088[37mf[37med:0x3ffce090 0x4008930b:0x3ffce0b0 0x400882d7:0x3ffce0e0 0x4008aab0:0x3ffce100 0x400bf823:0x3ffce120 0x4002d279:0x3ffce150
+01:19:39.073 > [37m[37m
+01:19:39.074 > [37m[37m
+01:19:39.075 > [37m[37m
+01:19:39.076 > [37m[37m
+01:19:39.076 > ELF file SHA256: 77daa708d
+01:19:39.077 > [37m[37m
+01:19:39.077 > Rebooting...
+01:19:39.110 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+01:19:39.110 > I (32) boot: compile time Jul  3 2025 00:41:34
+01:19:39.110 > D (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+01:19:39.111 > [37mD (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+01:19:39.112 > I (35) boot: chip revision: v0.0
+01:19:39.113 > [37mI (35) boot: efuse block revision: v0.2
+01:19:39.113 > [37mD (35) boot.esp32s2: magic e9
+01:19:39.113 > [37mD (35) boot.esp32s2: segments 04
+01:19:39.113 > [37mD (35) boot.esp32s2: spi_mode 02
+01:19:39.114 > [37mD[37m (35) boot.esp32s2: spi_speed 0f
+01:19:39.114 > D (36) boot.esp32s2: spi_size 02
+01:19:39.114 > I (36) boot.esp32s2: SPI Speed      : 80MHz
+01:19:39.114 > [37mI (36) boot.esp32s2: SPI Mode       : DIO
+01:19:39.114 > [37mI (36) boot.esp32s2: SPI Flash Size : 4MB
+01:19:39.114 > [37mD (37) boot: Enabling RTCWDT(9000 ms)
+01:19:39.114 > [37mI (37) boot: Enabling RNG early entropy source...
+01:19:39.115 > [37mD (37) bootloader_flash: rodata starts from paddr=0x00008000, si[37mz[37me=0xc00, will be mapped to vaddr=0x3f000000
+01:19:39.115 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:39.117 > D (38) boot: mapped partition table 0x8000 at 0x3f008000
+01:19:39.117 > D (38) flash_parts: partition table verified, 5 entries
+01:19:39.117 > I (39) boot: Partition Table:
+01:19:39.117 > I (39) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+01:19:39.118 > [37mD (40) boot: load partition table entry 0x3f008000
+01:19:39.118 > D (40) boot: type=1 subtype=2
+01:19:39.118 > [37mI[37m (40) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+01:19:39.119 > [37mD (41) boot: load partition table entry 0x3f008020
+01:19:39.119 > D (41) boot: type=1 subtype=1
+01:19:39.119 > [37mI[37m (41) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+01:19:39.120 > [37mD[37m (42) boot: load partition table entry 0x3f008040
+01:19:39.120 > [37mD (43) boot: type=0 subtype=0
+01:19:39.120 > [37mI[37m (43) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+01:19:39.122 > [37mD (44) boot: load partition table entry 0x3f008060
+01:19:39.122 > D (44) boot: type=1 subtype=83
+01:19:39.122 > [37mI[37m (44) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+01:19:39.123 > [37mI (45) boot: End of partition table
+01:19:39.123 > [37mD[37m (45) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+01:19:39.124 > [37mD (46) esp_image: reading image header @ 0x10000
+01:19:39.124 > [37mD (47) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+01:19:39.125 > [37mD[37m (48) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a3c
+01:19:39.126 > [37mV (48) esp_image: loading segment header 0 at offset 0x10018
+01:19:39.126 > [37mV[37m (48) esp_image: segment data length 0x14e08 data starts 0x1002[37m0[37m
+01:19:39.127 > V (49) esp_image: MMU page size 0x10000
+01:19:39.127 > [37mV[37m (49) esp_image: segment 0 map_segment 1 segment_data_offs 0x10020 load_addr 0x3f000020
+01:19:39.127 > [37mI[37m (49) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=14e08h ( 85512) map
+01:19:39.127 > [37mD[37m (50) esp_image: free data page_count 0x00000038
+01:19:39.127 > [37mD[37m (50) bootloader_flash: rodata starts from paddr=0x00010020, si[37mz[37me=0x14e08, will be mapped to vaddr=0x3f000000
+01:19:39.128 > [37mV[37m (50) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m10000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:39.145 > [37mV[37m (67) esp_image: loading segment header 1 at offset 0x24e28
+01:19:39.145 > D (67) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:39.146 > [37mV[37m (68) esp_image: segment data length 0x1c data starts 0x24e30
+01:19:39.146 > V (69) esp_image: MMU page size 0x10000
+01:19:39.146 > [37mV[37m (69) esp_image: segment 1 map_segment 0 segment_data_offs 0x24e30 load_addr 0x3ff9e010
+01:19:39.147 > [37mI[37m (69) esp_image: segment 1: paddr=00024e30 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+01:19:39.148 > [37mD (70) esp_image: free data page_count 0x00000038
+01:19:39.148 > [37mD[37m (70) bootloader_flash: rodata starts from paddr=0x00024e30, size=0x1c, will be mapped to vaddr=0x3f000000
+01:19:39.148 > [37mV[37m (70) bootloader_flash: after mapping, starting from paddr=0x00[37m020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:39.148 > [37mV[37m (71) esp_image: loading segment header 2 at offset 0x24e4c
+01:19:39.149 > [37mD[37m (71) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:39.150 > [37mV[37m (72) esp_image: segment data length 0x2ed8 data starts 0x24e54[37m[37m
+01:19:39.151 > V (73) esp_image: MMU page size 0x10000
+01:19:39.151 > [37mV (73) esp_image: segment 2 map_segment 0 segment_data_offs 0x24e54 load_addr 0x3ffc5ad0
+01:19:39.151 > [37mI[37m (73) esp_image: segment 2: paddr=00024e54 vaddr=3ffc5ad0 size=02ed8h ( 11992) load
+01:19:39.151 > [37mD[37m (74) esp_image: free data page_count 0x00000038
+01:19:39.151 > [37mD (74) bootloader_flash: rodata starts from paddr=0x00024e54, si[37mz[37me=0x2ed8, will be mapped to vaddr=0x3f000000
+01:19:39.152 > [37mV[37m (74) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:39.155 > [37mV[37m (77) esp_image: loading segment header 3 at offset 0x27d2c
+01:19:39.155 > [37mD[37m (77) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:39.156 > [37mV (78) esp_image: segment data length 0x82e4 data starts 0x27d34[37m[37m
+01:19:39.157 > [37mV[37m (79) esp_image: MMU page size 0x10000
+01:19:39.157 > [37mV[37m (80) esp_image: segment 3 map_segment 0 segment_data_offs 0x27d34 load_addr 0x40024000
+01:19:39.157 > [37mI[37m (80) esp_image: segment 3: paddr=00027d34 vaddr=40024000 size=082e4h ( 33508) load
+01:19:39.158 > [37mD[37m (80) esp_image: free data page_count 0x00000038
+01:19:39.158 > [37mD[37m (80) bootloader_flash: rodata starts from paddr=0x00027d34, si[37mz[37me=0x82e4, will be mapped to vaddr=0x3f000000
+01:19:39.159 > [37mV[37m (81) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:39.168 > [37mV[37m (90) esp_image: loading segment header 4 at offset 0x30018
+01:19:39.168 > D (90) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+01:19:39.169 > [37mV[37m (91) esp_image: segment data length 0x3fe6c data starts 0x3002[37m0[37m
+01:19:39.170 > [37mV (92) esp_image: MMU page size 0x10000
+01:19:39.170 > [37mV[37m (92) esp_image: segment 4 map_segment 1 segment_data_offs 0x30020 load_addr 0x40080020
+01:19:39.170 > [37mI[37m (93) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=3fe6ch (261740) map
+01:19:39.171 > [37mD (93) esp_image: free data page_count 0x00000038
+01:19:39.171 > [37mD[37m (93) bootloader_flash: rodata starts from paddr=0x00030020, si[37mz[37me=0x3fe6c, will be mapped to vaddr=0x3f000000
+01:19:39.171 > [37mV[37m (93) bootloader_flash: after mapping, starting from paddr=0x00030000 and vaddr=0x3f000000, 0x40000 bytes are mapped
+01:19:39.223 > [37mV[37m (145) esp_image: loading segment header 5 at offset 0x6fe8c
+01:19:39.223 > D (145) bootloader_flash: mmu set block paddr=0x00060000 (was 0x[37mf[37mfffffff)
+01:19:39.224 > [37mV (146) esp_image: segment data length 0x97e8 data starts 0x6fe9[37m4[37m
+01:19:39.225 > V (147) esp_image: MMU page size 0x10000
+01:19:39.225 > [37mV[37m (147) esp_image: segment 5 map_segment 0 segment_data_offs 0x6fe94 load_addr 0x4002c2e4
+01:19:39.225 > [37mI[37m (148) esp_image: segment 5: paddr=0006fe94 vaddr=4002c2e4 size=097e8h ( 38888) load
+01:19:39.226 > [37mD (148) esp_image: free data page_count 0x00000038
+01:19:39.226 > [37mD (148) bootloader_flash: rodata starts from paddr=0x0006fe94, s[37mize=0x97e8, will be mapped to vaddr=0x3f000000
+01:19:39.226 > [37mV[37m (148) bootloader_flash: after mapping, starting from paddr=0x0[37m0060000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:39.236 > [37mV[37m (158) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007967c
+01:19:39.237 > [37mD[37m (159) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+01:19:39.247 > [37mI[37m (169) boot: Loaded app from partition at offset 0x10000
+01:19:39.247 > [37mI (169) boot: Disabling RNG early entropy source...
+01:19:39.248 > [37mD[37m (169) boot: Mapping segment 0 as DROM
+01:19:39.248 > D (170) boot: Mapping segment 4 as IROM
+01:19:39.248 > [37mD (170) boot: calling set_cache_and_start_app
+01:19:39.248 > [37mD[37m (170) boot: configure drom and irom and start
+01:19:39.248 > [37mV[37m (171) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000[37m0[37m20, size=0x14e08
+01:19:39.249 > [37mV[37m (172) boot: after mapping rodata, starting from paddr=0x00010000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:39.250 > [37mV[37m (172) boot: mapped one page of the rodata, from paddr=0x000100[37m00 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+01:19:39.250 > [37mV[37m (172) boot: text starts from paddr=0x00030020, vaddr=0x4008002[37m0[37m, size=0x3fe6c
+01:19:39.251 > [37mV[37m (173) boot: after mapping text, starting from paddr=0x00030000[37m and vaddr=0x40080000, 0x40000 bytes are mapped
+01:19:39.251 > D (174) boot: start: 0x40026a3c
+01:19:39.274 > [37mI[37m (196) main_task: Started on CPU0
+01:19:39.274 > [37mI[37m (196) main_task: Calling app_main()
+01:19:39.275 > [37m\[37m033[1;32m[INFO][MAIN][13ms] START[0m
+01:19:39.275 > [37m\[37m033[1;32m[INFO][DATA][14ms] START[0m
+01:19:39.275 > [37m\[37m033[1;32m[INFO][SDCard][14ms] Init SD Card.[0m
+01:19:39.276 > [37mI[37m (196) SDCARD: Mounting filesystem
+01:19:39.277 > [37mI[37m (196) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:19:39.304 > [37mE[37m (226) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).
+01:19:39.305 > [37mI[37m (226) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:19:49.414 > [37m\[37m033[1;32m[INFO][SETUP][10152ms] [USER] > Select log level:[0m[37m
+01:19:49.423 > [37m\[37m033[1;32m[INFO][SETUP][10162ms]   I - ERROR and INFO logs[0m
+01:19:49.423 > [37m\[37m033[1;32m[INFO][SETUP][10162ms]   D - ERROR, INFO, and DEBUG lo[37mg[37ms[0m
+01:19:49.433 > Guru Meditation Error: Core  0 panic'ed (LoadProhibited). Except[37mi[37mon was unhandled.
+01:19:49.435 > [37m[37m
+01:19:49.435 > Core  0 register dump:
+01:19:49.435 > PC      : 0x4008f315  PS      : 0x00060030  A0      : 0x80087f09[37m [37m A1      : 0x3ffcdff0  
+01:19:49.436 > [37mA2      : 0x3ffc89b8  A3      : 0x00000000  A4      : 0x3ffcde04[37m [37m A5      : 0x00000000  
+01:19:49.437 > [37mA6      : 0x3f001d31  A7      : 0x3ffcddcc  A8      : 0x00000000[37m [37m A9      : 0x3ffcdb50  
+01:19:49.438 > A10     : 0x3ffcdba0  A11     : 0x00000004  A12     : 0x00000005[37m [37m A13     : 0x00000080  
+01:19:49.439 > [37mA14     : 0x3f001cf4  A15     : 0x3ffcba3c  SAR     : 0x0000001f[37m [37m EXCCAUSE: 0x0000001c  
+01:19:49.440 > [37mEXCVADDR: 0x00000010  LBEG    : 0x00000005  LEND    : 0x00000080[37m [37m LCOUNT  : 0x4002a7e8  
+01:19:49.442 > [37m[37m
+01:19:49.443 > [37m[37m
+01:19:49.443 > Backtrace: 0x4008f312:0x3ffcdff0 0x40087f06:0x3ffce010 0x400880af:0x3ffce030 0x400884c7:0x3ffce050 0x400884b8:0x3ffce070 0x40088[37mf[37med:0x3ffce090 0x4008930b:0x3ffce0b0 0x400882d7:0x3ffce0e0 0x4008aab0:0x3ffce100 0x400bf823:0x3ffce120 0x4002d279:0x3ffce150
+01:19:49.446 > [37m[37m
+01:19:49.447 > [37m[37m
+01:19:49.448 > [37m[37m
+01:19:49.449 > [37m[37m
+01:19:49.449 > ELF file SHA256: 77daa708d
+01:19:49.450 > [37m[37m
+01:19:49.450 > Rebooting...
+01:19:49.483 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+01:19:49.483 > I (32) boot: compile time Jul  3 2025 00:41:34
+01:19:49.483 > [37mD (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+01:19:49.484 > [37mD[37m (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+01:19:49.485 > [37mI[37m (35) boot: chip revision: v0.0
+01:19:49.485 > [37mI[37m (35) boot: efuse block revision: v0.2
+01:19:49.485 > [37mD (35) boot.esp32s2: magic e9
+01:19:49.485 > [37mD[37m (35) boot.esp32s2: segments 04
+01:19:49.485 > [37mD[37m (35) boot.esp32s2: spi_mode 02
+01:19:49.486 > [37mD[37m (35) boot.esp32s2: spi_speed 0f
+01:19:49.487 > [37mD (36) boot.esp32s2: spi_size 02
+01:19:49.487 > [37mI[37m (36) boot.esp32s2: SPI Speed      : 80MHz
+01:19:49.487 > [37mI (36) boot.esp32s2: SPI Mode       : DIO
+01:19:49.487 > [37mI (36) boot.esp32s2: SPI Flash Size : 4MB
+01:19:49.487 > [37mD[37m (37) boot: Enabling RTCWDT(9000 ms)
+01:19:49.487 > [37mI[37m (37) boot: Enabling RNG early entropy source...
+01:19:49.487 > [37mD[37m (37) bootloader_flash: rodata starts from paddr=0x00008000, size=0xc00, will be mapped to vaddr=0x3f000000
+01:19:49.487 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:49.489 > [37mD (38) boot: mapped partition table 0x8000 at 0x3f008000
+01:19:49.489 > [37mD[37m (38) flash_parts: partition table verified, 5 entries
+01:19:49.489 > I (39) boot: Partition Table:
+01:19:49.489 > [37mI[37m (39) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+01:19:49.490 > [37mD (40) boot: load partition table entry 0x3f008000
+01:19:49.490 > [37mD (40) boot: type=1 subtype=2
+01:19:49.490 > [37mI (40) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+01:19:49.491 > [37mD[37m (41) boot: load partition table entry 0x3f008020
+01:19:49.492 > D (41) boot: type=1 subtype=1
+01:19:49.492 > [37mI[37m (41) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+01:19:49.493 > [37mD[37m (42) boot: load partition table entry 0x3f008040
+01:19:49.493 > D (43) boot: type=0 subtype=0
+01:19:49.493 > [37mI[37m (43) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+01:19:49.494 > [37mD[37m (44) boot: load partition table entry 0x3f008060
+01:19:49.494 > [37mD[37m (44) boot: type=1 subtype=83
+01:19:49.494 > [37mI[37m (44) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+01:19:49.495 > [37mI[37m (45) boot: End of partition table
+01:19:49.496 > [37mD[37m (45) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+01:19:49.497 > [37mD[37m (46) esp_image: reading image header @ 0x10000
+01:19:49.497 > [37mD[37m (47) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+01:19:49.498 > [37mD[37m (48) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a3c
+01:19:49.498 > [37mV[37m (48) esp_image: loading segment header 0 at offset 0x10018
+01:19:49.498 > [37mV[37m (48) esp_image: segment data length 0x14e08 data starts 0x1002[37m0[37m
+01:19:49.499 > [37mV (49) esp_image: MMU page size 0x10000
+01:19:49.500 > [37mV[37m (49) esp_image: segment 0 map_segment 1 segment_data_offs 0x10020 load_addr 0x3f000020
+01:19:49.500 > [37mI[37m (49) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=14e08h ( 85512) map
+01:19:49.500 > [37mD[37m (50) esp_image: free data page_count 0x00000038
+01:19:49.500 > [37mD[37m (50) bootloader_flash: rodata starts from paddr=0x00010020, si[37mz[37me=0x14e08, will be mapped to vaddr=0x3f000000
+01:19:49.500 > [37mV[37m (50) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m10000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:49.518 > [37mV[37m (67) esp_image: loading segment header 1 at offset 0x24e28
+01:19:49.518 > D (67) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:49.519 > [37mV[37m (68) esp_image: segment data length 0x1c data starts 0x24e30
+01:19:49.519 > V (69) esp_image: MMU page size 0x10000
+01:19:49.519 > [37mV[37m (69) esp_image: segment 1 map_segment 0 segment_data_offs 0x24e30 load_addr 0x3ff9e010
+01:19:49.519 > [37mI[37m (69) esp_image: segment 1: paddr=00024e30 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+01:19:49.520 > [37mD[37m (70) esp_image: free data page_count 0x00000038
+01:19:49.521 > [37mD (70) bootloader_flash: rodata starts from paddr=0x00024e30, si[37mze=0x1c, will be mapped to vaddr=0x3f000000
+01:19:49.521 > [37mV[37m (70) bootloader_flash: after mapping, starting from paddr=0x00[37m020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:49.521 > [37mV[37m (71) esp_image: loading segment header 2 at offset 0x24e4c
+01:19:49.521 > [37mD[37m (71) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:49.522 > [37mV[37m (72) esp_image: segment data length 0x2ed8 data starts 0x24e54[37m[37m
+01:19:49.524 > V (73) esp_image: MMU page size 0x10000
+01:19:49.524 > [37mV (73) esp_image: segment 2 map_segment 0 segment_data_offs 0x24e54 load_addr 0x3ffc5ad0
+01:19:49.524 > [37mI[37m (73) esp_image: segment 2: paddr=00024e54 vaddr=3ffc5ad0 size=02ed8h ( 11992) load
+01:19:49.524 > [37mD[37m (74) esp_image: free data page_count 0x00000038
+01:19:49.524 > [37mD (74) bootloader_flash: rodata starts from paddr=0x00024e54, si[37mze=0x2ed8, will be mapped to vaddr=0x3f000000
+01:19:49.524 > [37mV (74) bootloader_flash: after mapping, starting from paddr=0x00[37m020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:49.527 > [37mV[37m (77) esp_image: loading segment header 3 at offset 0x27d2c
+01:19:49.528 > [37mD[37m (77) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:49.529 > [37mV (78) esp_image: segment data length 0x82e4 data starts 0x27d34[37m[37m
+01:19:49.530 > [37mV (79) esp_image: MMU page size 0x10000
+01:19:49.530 > [37mV[37m (80) esp_image: segment 3 map_segment 0 segment_data_offs 0x27d34 load_addr 0x40024000
+01:19:49.530 > [37mI[37m (80) esp_image: segment 3: paddr=00027d34 vaddr=40024000 size=082e4h ( 33508) load
+01:19:49.530 > [37mD[37m (80) esp_image: free data page_count 0x00000038
+01:19:49.530 > [37mD[37m (80) bootloader_flash: rodata starts from paddr=0x00027d34, si[37mz[37me=0x82e4, will be mapped to vaddr=0x3f000000
+01:19:49.532 > [37mV[37m (81) bootloader_flash: after mapping, starting from paddr=0x00[37m020000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:49.540 > [37mV[37m (90) esp_image: loading segment header 4 at offset 0x30018
+01:19:49.541 > D (90) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+01:19:49.542 > [37mV (91) esp_image: segment data length 0x3fe6c data starts 0x3002[37m0[37m
+01:19:49.543 > [37mV (92) esp_image: MMU page size 0x10000
+01:19:49.543 > [37mV[37m (92) esp_image: segment 4 map_segment 1 segment_data_offs 0x30020 load_addr 0x40080020
+01:19:49.543 > [37mI[37m (93) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=3fe6ch (261740) map
+01:19:49.543 > [37mD (93) esp_image: free data page_count 0x00000038
+01:19:49.543 > [37mD (93) bootloader_flash: rodata starts from paddr=0x00030020, si[37mze=0x3fe6c, will be mapped to vaddr=0x3f000000
+01:19:49.544 > [37mV[37m (93) bootloader_flash: after mapping, starting from paddr=0x00[37m030000 and vaddr=0x3f000000, 0x40000 bytes are mapped
+01:19:49.595 > [37mV[37m (145) esp_image: loading segment header 5 at offset 0x6fe8c
+01:19:49.596 > D (145) bootloader_flash: mmu set block paddr=0x00060000 (was 0x[37mf[37mfffffff)
+01:19:49.597 > [37mV (146) esp_image: segment data length 0x97e8 data starts 0x6fe9[37m4[37m
+01:19:49.598 > [37mV (147) esp_image: MMU page size 0x10000
+01:19:49.598 > [37mV (147) esp_image: segment 5 map_segment 0 segment_data_offs 0x6[37mfe94 load_addr 0x4002c2e4
+01:19:49.598 > [37mI (148) esp_image: segment 5: paddr=0006fe94 vaddr=4002c2e4 size=097e8h ( 38888) load
+01:19:49.598 > [37mD[37m (148) esp_image: free data page_count 0x00000038
+01:19:49.599 > [37mD (148) bootloader_flash: rodata starts from paddr=0x0006fe94, size=0x97e8, will be mapped to vaddr=0x3f000000
+01:19:49.599 > V (148) bootloader_flash: after mapping, starting from paddr=0x0[37m0060000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:49.609 > [37mV[37m (158) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007967c
+01:19:49.610 > [37mD (159) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+01:19:49.619 > [37mI[37m (169) boot: Loaded app from partition at offset 0x10000
+01:19:49.620 > [37mI (169) boot: Disabling RNG early entropy source...
+01:19:49.621 > [37mD[37m (169) boot: Mapping segment 0 as DROM
+01:19:49.621 > D (170) boot: Mapping segment 4 as IROM
+01:19:49.621 > [37mD (170) boot: calling set_cache_and_start_app
+01:19:49.621 > [37mD (170) boot: configure drom and irom and start
+01:19:49.621 > [37mV[37m (171) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000[37m0[37m20, size=0x14e08
+01:19:49.622 > [37mV[37m (172) boot: after mapping rodata, starting from paddr=0x000100[37m0[37m0 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:49.622 > [37mV[37m (172) boot: mapped one page of the rodata, from paddr=0x000100[37m0[37m0 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+01:19:49.623 > [37mV[37m (172) boot: text starts from paddr=0x00030020, vaddr=0x4008002[37m0[37m, size=0x3fe6c
+01:19:49.624 > [37mV (173) boot: after mapping text, starting from paddr=0x00030000[37m [37mand vaddr=0x40080000, 0x40000 bytes are mapped
+01:19:49.624 > [37mD (174) boot: start: 0x40026a3c
+01:19:49.646 > [37mI[37m (196) main_task: Started on CPU0
+01:19:49.647 > [37mI[37m (196) main_task: Calling app_main()
+01:19:49.647 > [37m\[37m033[1;32m[INFO][MAIN][13ms] START[0m
+01:19:49.648 > [37m\[37m033[1;32m[INFO][DATA][14ms] START[0m
+01:19:49.648 > [37m\[37m033[1;32m[INFO][SDCard][14ms] Init SD Card.[0m
+01:19:49.649 > [37mI[37m (196) SDCARD: Mounting filesystem
+01:19:49.650 > [37mI[37m (196) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:19:49.677 > [37mE[37m (226) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).
+01:19:49.678 > [37mI[37m (226) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:19:59.786 > [37m\[37m033[1;32m[INFO][SETUP][10152ms] [USER] > Select log level:[0m[37m
+01:19:59.795 > [37m\[37m033[1;32m[INFO][SETUP][10162ms]   I - ERROR and INFO logs[0m
+01:19:59.796 > [37m\[37m033[1;32m[INFO][SETUP][10162ms]   D - ERROR, INFO, and DEBUG lo[37mg[37ms[0m
+01:19:59.805 > Guru Meditation Error: Core  0 panic'ed (LoadProhibited). Except[37mi[37mon was unhandled.
+01:19:59.807 > [37m[37m
+01:19:59.807 > Core  0 register dump:
+01:19:59.808 > [37mPC      : 0x4008f315  PS      : 0x00060030  A0      : 0x80087f09[37m [37m A1      : 0x3ffcdff0  
+01:19:59.809 > A2      : 0x3ffc89b8  A3      : 0x00000000  A4      : 0x40096a60[37m [37m A5      : 0x00000000  
+01:19:59.810 > A6      : 0x3ffc9380  A7      : 0x3ffcddcc  A8      : 0x00000000[37m [37m A9      : 0x3ffcdb50  
+01:19:59.811 > A10     : 0x3ffcdba0  A11     : 0x00000004  A12     : 0x00000005[37m [37m A13     : 0x00000080  
+01:19:59.812 > A14     : 0x3ffc9380  A15     : 0x3ffcba3c  SAR     : 0x0000001f[37m [37m EXCCAUSE: 0x0000001c  
+01:19:59.813 > EXCVADDR: 0x00000010  LBEG    : 0x00000005  LEND    : 0x00000080[37m [37m LCOUNT  : 0x4002a7e8  
+01:19:59.815 > [37m[37m
+01:19:59.816 > [37m[37m
+01:19:59.816 > Backtrace: 0x4008f312:0x3ffcdff0 0x40087f06:0x3ffce010 0x400880af:0x3ffce030 0x400884c7:0x3ffce050 0x400884b8:0x3ffce070 0x40088[37mf[37med:0x3ffce090 0x4008930b:0x3ffce0b0 0x400882d7:0x3ffce0e0 0x4008aab0:0x3ffce100 0x400bf823:0x3ffce120 0x4002d279:0x3ffce150
+01:19:59.818 > [37m[37m
+01:19:59.819 > [37m[37m
+01:19:59.820 > [37m[37m
+01:19:59.821 > [37m[37m
+01:19:59.821 > ELF file SHA256: 77daa708d
+01:19:59.822 > [37m[37m
+01:19:59.822 > Rebooting...
+01:19:59.855 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+01:19:59.856 > I (32) boot: compile time Jul  3 2025 00:41:34
+01:19:59.856 > D (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+01:19:59.857 > [37mD (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+01:19:59.858 > I (35) boot: chip revision: v0.0
+01:19:59.858 > [37mI (35) boot: efuse block revision: v0.2
+01:19:59.858 > [37mD (35) boot.esp32s2: magic e9
+01:19:59.858 > [37mD (35) boot.esp32s2: segments 04
+01:19:59.858 > [37mD (35) boot.esp32s2: spi_mode 02
+01:19:59.859 > [37mD[37m (35) boot.esp32s2: spi_speed 0f
+01:19:59.859 > D (36) boot.esp32s2: spi_size 02
+01:19:59.859 > [37mI (36) boot.esp32s2: SPI Speed      : 80MHz
+01:19:59.859 > I (36) boot.esp32s2: SPI Mode       : DIO
+01:19:59.860 > [37mI (36) boot.esp32s2: SPI Flash Size : 4MB
+01:19:59.860 > [37mD (37) boot: Enabling RTCWDT(9000 ms)
+01:19:59.860 > [37mI (37) boot: Enabling RNG early entropy source...
+01:19:59.860 > [37mD[37m (37) bootloader_flash: rodata starts from paddr=0x00008000, size=0xc00, will be mapped to vaddr=0x3f000000
+01:19:59.860 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:59.861 > [37mD (38) boot: mapped partition table 0x8000 at 0x3f008000
+01:19:59.862 > [37mD (38) flash_parts: partition table verified, 5 entries
+01:19:59.862 > I (39) boot: Partition Table:
+01:19:59.862 > [37mI (39) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+01:19:59.863 > [37mD (40) boot: load partition table entry 0x3f008000
+01:19:59.863 > D (40) boot: type=1 subtype=2
+01:19:59.863 > [37mI (40) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+01:19:59.864 > [37mD (41) boot: load partition table entry 0x3f008020
+01:19:59.864 > D (41) boot: type=1 subtype=1
+01:19:59.864 > [37mI (41) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+01:19:59.866 > D (42) boot: load partition table entry 0x3f008040
+01:19:59.866 > [37mD (43) boot: type=0 subtype=0
+01:19:59.866 > I (43) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+01:19:59.867 > D (44) boot: load partition table entry 0x3f008060
+01:19:59.867 > [37mD (44) boot: type=1 subtype=83
+01:19:59.867 > [37mI[37m (44) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+01:19:59.868 > I (45) boot: End of partition table
+01:19:59.868 > [37mD[37m (45) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+01:19:59.870 > [37mD (46) esp_image: reading image header @ 0x10000
+01:19:59.870 > [37mD[37m (47) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+01:19:59.871 > [37mD[37m (48) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a3c
+01:19:59.871 > V (48) esp_image: loading segment header 0 at offset 0x10018
+01:19:59.871 > [37mV[37m (48) esp_image: segment data length 0x14e08 data starts 0x1002[37m0[37m
+01:19:59.872 > V (49) esp_image: MMU page size 0x10000
+01:19:59.872 > [37mV (49) esp_image: segment 0 map_segment 1 segment_data_offs 0x10020 load_addr 0x3f000020
+01:19:59.873 > [37mI[37m (49) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=14e08h ( 85512) map
+01:19:59.873 > D (50) esp_image: free data page_count 0x00000038
+01:19:59.873 > [37mD[37m (50) bootloader_flash: rodata starts from paddr=0x00010020, size=0x14e08, will be mapped to vaddr=0x3f000000
+01:19:59.873 > [37mV[37m (50) bootloader_flash: after mapping, starting from paddr=0x00[37m010000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:59.890 > [37mV[37m (67) esp_image: loading segment header 1 at offset 0x24e28
+01:19:59.891 > D (67) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:59.892 > [37mV (68) esp_image: segment data length 0x1c data starts 0x24e30
+01:19:59.892 > [37mV (69) esp_image: MMU page size 0x10000
+01:19:59.892 > [37mV (69) esp_image: segment 1 map_segment 0 segment_data_offs 0x24[37me30 load_addr 0x3ff9e010
+01:19:59.892 > [37mI[37m (69) esp_image: segment 1: paddr=00024e30 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+01:19:59.893 > [37mD (70) esp_image: free data page_count 0x00000038
+01:19:59.893 > [37mD (70) bootloader_flash: rodata starts from paddr=0x00024e30, si[37mze=0x1c, will be mapped to vaddr=0x3f000000
+01:19:59.894 > V (70) bootloader_flash: after mapping, starting from paddr=0x00[37m020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:59.894 > [37mV[37m (71) esp_image: loading segment header 2 at offset 0x24e4c
+01:19:59.894 > [37mD (71) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:59.895 > [37mV[37m (72) esp_image: segment data length 0x2ed8 data starts 0x24e54[37m[37m
+01:19:59.896 > V (73) esp_image: MMU page size 0x10000
+01:19:59.896 > [37mV (73) esp_image: segment 2 map_segment 0 segment_data_offs 0x24e54 load_addr 0x3ffc5ad0
+01:19:59.897 > [37mI[37m (73) esp_image: segment 2: paddr=00024e54 vaddr=3ffc5ad0 size=02ed8h ( 11992) load
+01:19:59.897 > D (74) esp_image: free data page_count 0x00000038
+01:19:59.897 > [37mD (74) bootloader_flash: rodata starts from paddr=0x00024e54, si[37mze=0x2ed8, will be mapped to vaddr=0x3f000000
+01:19:59.897 > [37mV (74) bootloader_flash: after mapping, starting from paddr=0x00[37m020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:19:59.900 > [37mV[37m (77) esp_image: loading segment header 3 at offset 0x27d2c
+01:19:59.900 > [37mD (77) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:19:59.901 > [37mV (78) esp_image: segment data length 0x82e4 data starts 0x27d34[37m[37m
+01:19:59.902 > [37mV[37m (79) esp_image: MMU page size 0x10000
+01:19:59.903 > [37mV[37m (80) esp_image: segment 3 map_segment 0 segment_data_offs 0x27d34 load_addr 0x40024000
+01:19:59.903 > [37mI[37m (80) esp_image: segment 3: paddr=00027d34 vaddr=40024000 size=082e4h ( 33508) load
+01:19:59.903 > [37mD[37m (80) esp_image: free data page_count 0x00000038
+01:19:59.903 > [37mD[37m (80) bootloader_flash: rodata starts from paddr=0x00027d34, size=0x82e4, will be mapped to vaddr=0x3f000000
+01:19:59.903 > [37mV[37m (80) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:59.912 > [37mV[37m (89) esp_image: loading segment header 4 at offset 0x30018
+01:19:59.912 > D (89) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+01:19:59.913 > [37mV (90) esp_image: segment data length 0x3fe6c data starts 0x3002[37m0[37m
+01:19:59.915 > [37mV (91) esp_image: MMU page size 0x10000
+01:19:59.915 > [37mV (91) esp_image: segment 4 map_segment 1 segment_data_offs 0x30020 load_addr 0x40080020
+01:19:59.915 > [37mI (92) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=[37m3fe6ch (261740) map
+01:19:59.915 > D (92) esp_image: free data page_count 0x00000038
+01:19:59.915 > [37mD[37m (92) bootloader_flash: rodata starts from paddr=0x00030020, si[37mze=0x3fe6c, will be mapped to vaddr=0x3f000000
+01:19:59.915 > [37mV (92) bootloader_flash: after mapping, starting from paddr=0x00[37m030000 and vaddr=0x3f000000, 0x40000 bytes are mapped
+01:19:59.967 > [37mV[37m (144) esp_image: loading segment header 5 at offset 0x6fe8c
+01:19:59.967 > D (144) bootloader_flash: mmu set block paddr=0x00060000 (was 0x[37mf[37mfffffff)
+01:19:59.968 > [37mV (145) esp_image: segment data length 0x97e8 data starts 0x6fe9[37m4[37m
+01:19:59.969 > [37mV (146) esp_image: MMU page size 0x10000
+01:19:59.969 > [37mV[37m (146) esp_image: segment 5 map_segment 0 segment_data_offs 0x6fe94 load_addr 0x4002c2e4
+01:19:59.970 > [37mI[37m (147) esp_image: segment 5: paddr=0006fe94 vaddr=4002c2e4 size=097e8h ( 38888) load
+01:19:59.970 > [37mD[37m (147) esp_image: free data page_count 0x00000038
+01:19:59.970 > [37mD[37m (147) bootloader_flash: rodata starts from paddr=0x0006fe94, s[37mize=0x97e8, will be mapped to vaddr=0x3f000000
+01:19:59.970 > [37mV[37m (147) bootloader_flash: after mapping, starting from paddr=0x0[37m0[37m060000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:59.980 > [37mV[37m (157) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007967c
+01:19:59.981 > [37mD (158) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+01:19:59.991 > [37mI[37m (168) boot: Loaded app from partition at offset 0x10000
+01:19:59.991 > I (168) boot: Disabling RNG early entropy source...
+01:19:59.992 > [37mD[37m (168) boot: Mapping segment 0 as DROM
+01:19:59.992 > D (169) boot: Mapping segment 4 as IROM
+01:19:59.993 > [37mD (169) boot: calling set_cache_and_start_app
+01:19:59.993 > [37mD (169) boot: configure drom and irom and start
+01:19:59.993 > [37mV (170) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000[37m0[37m20, size=0x14e08
+01:19:59.994 > [37mV (171) boot: after mapping rodata, starting from paddr=0x000100[37m00 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:19:59.994 > V (171) boot: mapped one page of the rodata, from paddr=0x000100[37m00 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+01:19:59.994 > [37mV[37m (171) boot: text starts from paddr=0x00030020, vaddr=0x4008002[37m0[37m, size=0x3fe6c
+01:19:59.996 > [37mV (172) boot: after mapping text, starting from paddr=0x00030000[37m and vaddr=0x40080000, 0x40000 bytes are mapped
+01:19:59.996 > [37mD (173) boot: start: 0x40026a3c
+01:20:00.018 > [37mI[37m (195) main_task: Started on CPU0
+01:20:00.019 > [37mI[37m (195) main_task: Calling app_main()
+01:20:00.019 > [37m\[37m033[1;32m[INFO][MAIN][13ms] START[0m
+01:20:00.019 > [37m\[37m033[1;32m[INFO][DATA][14ms] START[0m
+01:20:00.020 > [37m\[37m033[1;32m[INFO][SDCard][14ms] Init SD Card.[0m
+01:20:00.020 > [37mI[37m (195) SDCARD: Mounting filesystem
+01:20:00.022 > [37mI[37m (195) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:20:00.049 > [37mE[37m (225) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).
+01:20:00.049 > [37mI[37m (225) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:20:10.157 > [37m\[37m033[1;32m[INFO][SETUP][10152ms] [USER] > Select log level:[0m[37m
+01:20:10.167 > [37m\[37m033[1;32m[INFO][SETUP][10162ms]   I - ERROR and INFO logs[0m
+01:20:10.167 > [37m\[37m033[1;32m[INFO][SETUP][10162ms]   D - ERROR, INFO, and DEBUG lo[37mg[37ms[0m
+01:20:10.177 > Guru Meditation Error: Core  0 panic'ed (LoadProhibited). Except[37mi[37mon was unhandled.
+01:20:10.179 > [37m[37m
+01:20:10.179 > Core  0 register dump:
+01:20:10.179 > [37mPC      : 0x4008f315  PS      : 0x00060030  A0      : 0x80087f09[37m [37m A1      : 0x3ffcdff0  
+01:20:10.180 > A2      : 0x3ffc89b8  A3      : 0x00000000  A4      : 0x40096a60[37m [37m A5      : 0x00000000  
+01:20:10.181 > A6      : 0x3ffc9380  A7      : 0x3ffcddcc  A8      : 0x00000000[37m [37m A9      : 0x3ffcdb50  
+01:20:10.182 > A10     : 0x3ffcdba0  A11     : 0x00000004  A12     : 0x00000005[37m [37m A13     : 0x00000080  
+01:20:10.184 > A14     : 0x3f001cf4  A15     : 0x3ffcba3c  SAR     : 0x0000001f[37m [37m EXCCAUSE: 0x0000001c  
+01:20:10.185 > [37mEXCVADDR: 0x00000010  LBEG    : 0x00000005  LEND    : 0x00000080[37m [37m LCOUNT  : 0x4002a7e8  
+01:20:10.187 > [37m[37m
+01:20:10.188 > [37m[37m
+01:20:10.188 > Backtrace: 0x4008f312:0x3ffcdff0 0x40087f06:0x3ffce010 0x400880a[37mf:0x3ffce030 0x400884c7:0x3ffce050 0x400884b8:0x3ffce070 0x40088[37mf[37med:0x3ffce090 0x4008930b:0x3ffce0b0 0x400882d7:0x3ffce0e0 0x4008aab0:0x3ffce100 0x400bf823:0x3ffce120 0x4002d279:0x3ffce150
+01:20:10.190 > [37m[37m
+01:20:10.191 > [37m[37m
+01:20:10.192 > [37m[37m
+01:20:10.193 > [37m[37m
+01:20:10.193 > ELF file SHA256: 77daa708d
+01:20:10.194 > [37m[37m
+01:20:10.194 > Rebooting...
+01:20:10.227 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+01:20:10.227 > I (32) boot: compile time Jul  3 2025 00:41:34
+01:20:10.227 > D (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+01:20:10.229 > [37mD (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+01:20:10.229 > I (35) boot: chip revision: v0.0
+01:20:10.230 > [37mI (35) boot: efuse block revision: v0.2
+01:20:10.230 > D (35) boot.esp32s2: magic e9
+01:20:10.230 > D (35) boot.esp32s2: segments 04
+01:20:10.230 > D (35) boot.esp32s2: spi_mode 02
+01:20:10.231 > [37mD[37m (35) boot.esp32s2: spi_speed 0f
+01:20:10.231 > D (36) boot.esp32s2: spi_size 02
+01:20:10.231 > [37mI[37m (36) boot.esp32s2: SPI Speed      : 80MHz
+01:20:10.231 > I (36) boot.esp32s2: SPI Mode       : DIO
+01:20:10.231 > [37mI[37m (36) boot.esp32s2: SPI Flash Size : 4MB
+01:20:10.231 > [37mD[37m (37) boot: Enabling RTCWDT(9000 ms)
+01:20:10.231 > [37mI (37) boot: Enabling RNG early entropy source...
+01:20:10.232 > [37mD[37m (37) bootloader_flash: rodata starts from paddr=0x00008000, si[37mze=0xc00, will be mapped to vaddr=0x3f000000
+01:20:10.232 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:20:10.233 > [37mD (38) boot: mapped partition table 0x8000 at 0x3f008000
+01:20:10.233 > [37mD[37m (38) flash_parts: partition table verified, 5 entries
+01:20:10.233 > I (39) boot: Partition Table:
+01:20:10.233 > [37mI[37m (39) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+01:20:10.234 > [37mD (40) boot: load partition table entry 0x3f008000
+01:20:10.235 > [37mD (40) boot: type=1 subtype=2
+01:20:10.235 > [37mI[37m (40) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+01:20:10.236 > [37mD[37m (41) boot: load partition table entry 0x3f008020
+01:20:10.236 > [37mD (41) boot: type=1 subtype=1
+01:20:10.236 > [37mI[37m (41) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+01:20:10.237 > [37mD[37m (42) boot: load partition table entry 0x3f008040
+01:20:10.237 > D (43) boot: type=0 subtype=0
+01:20:10.237 > [37mI[37m (43) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+01:20:10.239 > D (44) boot: load partition table entry 0x3f008060
+01:20:10.239 > [37mD (44) boot: type=1 subtype=83
+01:20:10.239 > [37mI[37m (44) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+01:20:10.240 > I (45) boot: End of partition table
+01:20:10.240 > [37mD[37m (45) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+01:20:10.241 > [37mD[37m (46) esp_image: reading image header @ 0x10000
+01:20:10.241 > [37mD[37m (47) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+01:20:10.242 > [37mD[37m (48) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a3c
+01:20:10.243 > [37mV (48) esp_image: loading segment header 0 at offset 0x10018
+01:20:10.243 > [37mV[37m (48) esp_image: segment data length 0x14e08 data starts 0x1002[37m0[37m
+01:20:10.244 > V (49) esp_image: MMU page size 0x10000
+01:20:10.244 > [37mV[37m (49) esp_image: segment 0 map_segment 1 segment_data_offs 0x10020 load_addr 0x3f000020
+01:20:10.244 > [37mI[37m (49) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=14e08h ( 85512) map
+01:20:10.244 > [37mD (50) esp_image: free data page_count 0x00000038
+01:20:10.244 > [37mD[37m (50) bootloader_flash: rodata starts from paddr=0x00010020, si[37mze=0x14e08, will be mapped to vaddr=0x3f000000
+01:20:10.245 > [37mV[37m (50) bootloader_flash: after mapping, starting from paddr=0x00[37m010000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:20:10.262 > [37mV[37m (67) esp_image: loading segment header 1 at offset 0x24e28
+01:20:10.262 > D (67) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:20:10.263 > [37mV[37m (68) esp_image: segment data length 0x1c data starts 0x24e30
+01:20:10.263 > [37mV (69) esp_image: MMU page size 0x10000
+01:20:10.263 > [37mV[37m (69) esp_image: segment 1 map_segment 0 segment_data_offs 0x24e30 load_addr 0x3ff9e010
+01:20:10.264 > [37mI[37m (69) esp_image: segment 1: paddr=00024e30 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+01:20:10.265 > [37mD[37m (70) esp_image: free data page_count 0x00000038
+01:20:10.265 > [37mD[37m (70) bootloader_flash: rodata starts from paddr=0x00024e30, si[37mz[37me=0x1c, will be mapped to vaddr=0x3f000000
+01:20:10.265 > [37mV[37m (70) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:20:10.265 > [37mV[37m (71) esp_image: loading segment header 2 at offset 0x24e4c
+01:20:10.266 > [37mD[37m (71) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:20:10.267 > [37mV[37m (72) esp_image: segment data length 0x2ed8 data starts 0x24e54[37m[37m
+01:20:10.268 > V (73) esp_image: MMU page size 0x10000
+01:20:10.268 > [37mV[37m (73) esp_image: segment 2 map_segment 0 segment_data_offs 0x24e54 load_addr 0x3ffc5ad0
+01:20:10.268 > [37mI[37m (73) esp_image: segment 2: paddr=00024e54 vaddr=3ffc5ad0 size=02ed8h ( 11992) load
+01:20:10.268 > [37mD[37m (74) esp_image: free data page_count 0x00000038
+01:20:10.268 > [37mD[37m (74) bootloader_flash: rodata starts from paddr=0x00024e54, si[37mze=0x2ed8, will be mapped to vaddr=0x3f000000
+01:20:10.269 > [37mV[37m (74) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:20:10.272 > [37mV[37m (77) esp_image: loading segment header 3 at offset 0x27d2c
+01:20:10.272 > [37mD (77) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:20:10.273 > [37mV[37m (78) esp_image: segment data length 0x82e4 data starts 0x27d34[37m[37m
+01:20:10.274 > [37mV (79) esp_image: MMU page size 0x10000
+01:20:10.274 > [37mV[37m (80) esp_image: segment 3 map_segment 0 segment_data_offs 0x27d34 load_addr 0x40024000
+01:20:10.274 > [37mI[37m (80) esp_image: segment 3: paddr=00027d34 vaddr=40024000 size=082e4h ( 33508) load
+01:20:10.275 > [37mD[37m (80) esp_image: free data page_count 0x00000038
+01:20:10.275 > [37mD[37m (80) bootloader_flash: rodata starts from paddr=0x00027d34, size=0x82e4, will be mapped to vaddr=0x3f000000
+01:20:10.275 > [37mV[37m (80) bootloader_flash: after mapping, starting from paddr=0x00[37m020000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:20:10.284 > [37mV[37m (89) esp_image: loading segment header 4 at offset 0x30018
+01:20:10.284 > D (89) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+01:20:10.285 > [37mV[37m (90) esp_image: segment data length 0x3fe6c data starts 0x3002[37m0[37m
+01:20:10.286 > [37mV (91) esp_image: MMU page size 0x10000
+01:20:10.286 > [37mV[37m (91) esp_image: segment 4 map_segment 1 segment_data_offs 0x30020 load_addr 0x40080020
+01:20:10.286 > [37mI[37m (92) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=[37m3fe6ch (261740) map
+01:20:10.287 > [37mD[37m (92) esp_image: free data page_count 0x00000038
+01:20:10.287 > [37mD[37m (92) bootloader_flash: rodata starts from paddr=0x00030020, si[37mze=0x3fe6c, will be mapped to vaddr=0x3f000000
+01:20:10.287 > [37mV[37m (92) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m30000 and vaddr=0x3f000000, 0x40000 bytes are mapped
+01:20:10.339 > [37mV[37m (144) esp_image: loading segment header 5 at offset 0x6fe8c
+01:20:10.339 > D (144) bootloader_flash: mmu set block paddr=0x00060000 (was 0x[37mf[37mfffffff)
+01:20:10.340 > [37mV (145) esp_image: segment data length 0x97e8 data starts 0x6fe9[37m4[37m
+01:20:10.341 > [37mV (146) esp_image: MMU page size 0x10000
+01:20:10.341 > V (146) esp_image: segment 5 map_segment 0 segment_data_offs 0x6fe94 load_addr 0x4002c2e4
+01:20:10.341 > [37mI (147) esp_image: segment 5: paddr=0006fe94 vaddr=4002c2e4 size=097e8h ( 38888) load
+01:20:10.342 > [37mD (147) esp_image: free data page_count 0x00000038
+01:20:10.342 > [37mD (147) bootloader_flash: rodata starts from paddr=0x0006fe94, s[37mize=0x97e8, will be mapped to vaddr=0x3f000000
+01:20:10.343 > [37mV[37m (147) bootloader_flash: after mapping, starting from paddr=0x00060000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:20:10.353 > [37mV[37m (158) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007967c
+01:20:10.354 > [37mD[37m (159) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+01:20:10.364 > [37mI[37m (169) boot: Loaded app from partition at offset 0x10000
+01:20:10.364 > I (169) boot: Disabling RNG early entropy source...
+01:20:10.365 > [37mD[37m (169) boot: Mapping segment 0 as DROM
+01:20:10.365 > D (170) boot: Mapping segment 4 as IROM
+01:20:10.365 > [37mD (170) boot: calling set_cache_and_start_app
+01:20:10.365 > [37mD (170) boot: configure drom and irom and start
+01:20:10.365 > [37mV[37m (171) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000[37m0[37m20, size=0x14e08
+01:20:10.366 > [37mV (172) boot: after mapping rodata, starting from paddr=0x000100[37m00 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:20:10.367 > [37mV (172) boot: mapped one page of the rodata, from paddr=0x000100[37m00 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+01:20:10.367 > [37mV (172) boot: text starts from paddr=0x00030020, vaddr=0x4008002[37m0[37m, size=0x3fe6c
+01:20:10.368 > [37mV[37m (173) boot: after mapping text, starting from paddr=0x00030000[37m [37mand vaddr=0x40080000, 0x40000 bytes are mapped
+01:20:10.368 > [37mD (174) boot: start: 0x40026a3c
+01:20:10.391 > [37mI[37m (196) main_task: Started on CPU0
+01:20:10.391 > [37mI[37m (196) main_task: Calling app_main()
+01:20:10.392 > [37m\[37m033[1;32m[INFO][MAIN][13ms] START[0m
+01:20:10.392 > [37m\[37m033[1;32m[INFO][DATA][14ms] START[0m
+01:20:10.392 > [37m\[37m033[1;32m[INFO][SDCard][14ms] Init SD Card.[0m
+01:20:10.393 > [37mI[37m (196) SDCARD: Mounting filesystem
+01:20:10.394 > [37mI[37m (196) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:20:10.422 > [37mE[37m (226) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).
+01:20:10.422 > [37mI[37m (226) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:20:20.531 > [37m\[37m033[1;32m[INFO][SETUP][10152ms] [USER] > Select log level:[0m[37m
+01:20:20.540 > [37m\[37m033[1;32m[INFO][SETUP][10162ms]   I - ERROR and INFO logs[0m
+01:20:20.540 > \033[1;32m[INFO][SETUP][10162ms]   D - ERROR, INFO, and DEBUG lo[37mg[37ms[0m
+01:20:20.550 > Guru Meditation Error: Core  0 panic'ed (LoadProhibited). Except[37mi[37mon was unhandled.
+01:20:20.552 > [37m[37m
+01:20:20.552 > Core  0 register dump:
+01:20:20.552 > [37mP[37mC      : 0x4008f315  PS      : 0x00060030  A0      : 0x80087f09[37m [37m A1      : 0x3ffcdff0  
+01:20:20.553 > A2      : 0x3ffc89b8  A3      : 0x00000000  A4      : 0x40096a60[37m [37m A5      : 0x00000000  
+01:20:20.554 > A6      : 0x3ffc9380  A7      : 0x3ffcddcc  A8      : 0x00000000[37m [37m A9      : 0x3ffcdb50  
+01:20:20.555 > [37mA10     : 0x3ffcdba0  A11     : 0x00000004  A12     : 0x00000005[37m [37m A13     : 0x00000080  
+01:20:20.556 > A14     : 0x3f001cf4  A15     : 0x3ffcba3c  SAR     : 0x0000001f[37m [37m EXCCAUSE: 0x0000001c  
+01:20:20.558 > EXCVADDR: 0x00000010  LBEG    : 0x00000005  LEND    : 0x00000080[37m [37m LCOUNT  : 0x4002a7e8  
+01:20:20.559 > [37m[37m
+01:20:20.560 > [37m[37m
+01:20:20.560 > [37mB[37macktrace: 0x4008f312:0x3ffcdff0 0x40087f06:0x3ffce010 0x400880a[37mf[37m:0x3ffce030 0x400884c7:0x3ffce050 0x400884b8:0x3ffce070 0x40088[37mf[37med:0x3ffce090 0x4008930b:0x3ffce0b0 0x400882d7:0x3ffce0e0 0x4008aab0:0x3ffce100 0x400bf823:0x3ffce120 0x4002d279:0x3ffce150
+01:20:20.564 > [37m[37m
+01:20:20.565 > [37m[37m
+01:20:20.566 > [37m[37m
+01:20:20.567 > [37m[37m
+01:20:20.567 > ELF file SHA256: 77daa708d
+01:20:20.568 > [37m[37m
+01:20:20.568 > Rebooting...
+01:20:20.601 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+01:20:20.601 > I (32) boot: compile time Jul  3 2025 00:41:34
+01:20:20.601 > D (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+01:20:20.602 > [37mD[37m (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+01:20:20.603 > [37mI (35) boot: chip revision: v0.0
+01:20:20.603 > [37mI (35) boot: efuse block revision: v0.2
+01:20:20.603 > [37mD[37m (35) boot.esp32s2: magic e9
+01:20:20.603 > D (35) boot.esp32s2: segments 04
+01:20:20.603 > [37mD[37m (35) boot.esp32s2: spi_mode 02
+01:20:20.604 > [37mD[37m (35) boot.esp32s2: spi_speed 0f
+01:20:20.605 > [37mD (36) boot.esp32s2: spi_size 02
+01:20:20.605 > I (36) boot.esp32s2: SPI Speed      : 80MHz
+01:20:20.605 > [37mI[37m (36) boot.esp32s2: SPI Mode       : DIO
+01:20:20.605 > [37mI (36) boot.esp32s2: SPI Flash Size : 4MB
+01:20:20.605 > [37mD[37m (37) boot: Enabling RTCWDT(9000 ms)
+01:20:20.605 > [37mI[37m (37) boot: Enabling RNG early entropy source...
+01:20:20.605 > [37mD[37m (37) bootloader_flash: rodata starts from paddr=0x00008000, si[37mze=0xc00, will be mapped to vaddr=0x3f000000
+01:20:20.605 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00000000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:20:20.606 > [37mD[37m (37) boot: mapped partition table 0x8000 at 0x3f008000
+01:20:20.606 > [37mD[37m (37) flash_parts: partition table verified, 5 entries
+01:20:20.606 > [37mI (38) boot: Partition Table:
+01:20:20.606 > [37mI[37m (38) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+01:20:20.607 > D (39) boot: load partition table entry 0x3f008000
+01:20:20.607 > [37mD (39) boot: type=1 subtype=2
+01:20:20.607 > [37mI (39) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+01:20:20.608 > [37mD[37m (40) boot: load partition table entry 0x3f008020
+01:20:20.609 > D (40) boot: type=1 subtype=1
+01:20:20.609 > [37mI[37m (40) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+01:20:20.610 > [37mD (41) boot: load partition table entry 0x3f008040
+01:20:20.610 > [37mD (42) boot: type=0 subtype=0
+01:20:20.610 > [37mI[37m (42) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+01:20:20.611 > [37mD[37m (43) boot: load partition table entry 0x3f008060
+01:20:20.611 > [37mD (43) boot: type=1 subtype=83
+01:20:20.612 > [37mI[37m (43) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+01:20:20.613 > [37mI (44) boot: End of partition table
+01:20:20.613 > [37mD[37m (44) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+01:20:20.614 > [37mD[37m (45) esp_image: reading image header @ 0x10000
+01:20:20.614 > [37mD[37m (46) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+01:20:20.615 > [37mD[37m (47) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a3c
+01:20:20.615 > [37mV (47) esp_image: loading segment header 0 at offset 0x10018
+01:20:20.615 > [37mV[37m (47) esp_image: segment data length 0x14e08 data starts 0x1002[37m0[37m
+01:20:20.617 > V (48) esp_image: MMU page size 0x10000
+01:20:20.617 > [37mV[37m (48) esp_image: segment 0 map_segment 1 segment_data_offs 0x10020 load_addr 0x3f000020
+01:20:20.617 > [37mI[37m (48) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=14e08h ( 85512) map
+01:20:20.617 > [37mD (49) esp_image: free data page_count 0x00000038
+01:20:20.617 > [37mD[37m (49) bootloader_flash: rodata starts from paddr=0x00010020, si[37mze=0x14e08, will be mapped to vaddr=0x3f000000
+01:20:20.617 > [37mV[37m (49) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m10000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:20:20.635 > [37mV[37m (66) esp_image: loading segment header 1 at offset 0x24e28
+01:20:20.635 > D (66) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:20:20.636 > [37mV[37m (67) esp_image: segment data length 0x1c data starts 0x24e30
+01:20:20.636 > [37mV (68) esp_image: MMU page size 0x10000
+01:20:20.636 > [37mV (68) esp_image: segment 1 map_segment 0 segment_data_offs 0x24[37me30 load_addr 0x3ff9e010
+01:20:20.636 > [37mI[37m (68) esp_image: segment 1: paddr=00024e30 vaddr=3ff9e010 size=0001ch (    28) load
+01:20:20.636 > [37mD[37m (68) esp_image: free data page_count 0x00000038
+01:20:20.637 > [37mD[37m (68) bootloader_flash: rodata starts from paddr=0x00024e30, si[37mz[37me=0x1c, will be mapped to vaddr=0x3f000000
+01:20:20.637 > [37mV[37m (68) bootloader_flash: after mapping, starting from paddr=0x00[37m020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:20:20.637 > [37mV[37m (69) esp_image: loading segment header 2 at offset 0x24e4c
+01:20:20.637 > [37mD[37m (69) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:20:20.639 > [37mV[37m (70) esp_image: segment data length 0x2ed8 data starts 0x24e54[37m[37m
+01:20:20.640 > [37mV (71) esp_image: MMU page size 0x10000
+01:20:20.640 > [37mV[37m (71) esp_image: segment 2 map_segment 0 segment_data_offs 0x24e54 load_addr 0x3ffc5ad0
+01:20:20.640 > [37mI[37m (71) esp_image: segment 2: paddr=00024e54 vaddr=3ffc5ad0 size=02ed8h ( 11992) load
+01:20:20.640 > D (72) esp_image: free data page_count 0x00000038
+01:20:20.640 > [37mD[37m (72) bootloader_flash: rodata starts from paddr=0x00024e54, size=0x2ed8, will be mapped to vaddr=0x3f000000
+01:20:20.641 > [37mV (72) bootloader_flash: after mapping, starting from paddr=0x00020000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:20:20.643 > [37mV[37m (75) esp_image: loading segment header 3 at offset 0x27d2c
+01:20:20.644 > D (75) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:20:20.645 > [37mV[37m (76) esp_image: segment data length 0x82e4 data starts 0x27d34[37m[37m
+01:20:20.646 > [37mV[37m (77) esp_image: MMU page size 0x10000
+01:20:20.646 > [37mV[37m (78) esp_image: segment 3 map_segment 0 segment_data_offs 0x27[37md[37m34 load_addr 0x40024000
+01:20:20.646 > [37mI[37m (78) esp_image: segment 3: paddr=00027d34 vaddr=40024000 size=082e4h ( 33508) load
+01:20:20.646 > [37mD[37m (78) esp_image: free data page_count 0x00000038
+01:20:20.647 > [37mD[37m (78) bootloader_flash: rodata starts from paddr=0x00027d34, size=0x82e4, will be mapped to vaddr=0x3f000000
+01:20:20.647 > [37mV[37m (78) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:20:20.655 > [37mV[37m (87) esp_image: loading segment header 4 at offset 0x30018
+01:20:20.656 > [37mD (87) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+01:20:20.657 > [37mV[37m (88) esp_image: segment data length 0x3fe6c data starts 0x3002[37m0[37m
+01:20:20.658 > [37mV[37m (89) esp_image: MMU page size 0x10000
+01:20:20.658 > [37mV[37m (89) esp_image: segment 4 map_segment 1 segment_data_offs 0x30[37m0[37m20 load_addr 0x40080020
+01:20:20.658 > [37mI[37m (90) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=3fe6ch (261740) map
+01:20:20.658 > [37mD[37m (90) esp_image: free data page_count 0x00000038
+01:20:20.658 > [37mD[37m (90) bootloader_flash: rodata starts from paddr=0x00030020, si[37mz[37me=0x3fe6c, will be mapped to vaddr=0x3f000000
+01:20:20.659 > [37mV[37m (90) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m30000 and vaddr=0x3f000000, 0x40000 bytes are mapped
+01:20:20.710 > [37mV[37m (142) esp_image: loading segment header 5 at offset 0x6fe8c
+01:20:20.711 > D (142) bootloader_flash: mmu set block paddr=0x00060000 (was 0x[37mf[37mfffffff)
+01:20:20.712 > V (143) esp_image: segment data length 0x97e8 data starts 0x6fe9[37m4[37m
+01:20:20.713 > V (144) esp_image: MMU page size 0x10000
+01:20:20.713 > [37mV (144) esp_image: segment 5 map_segment 0 segment_data_offs 0x6fe94 load_addr 0x4002c2e4
+01:20:20.713 > [37mI[37m (145) esp_image: segment 5: paddr=0006fe94 vaddr=4002c2e4 size=097e8h ( 38888) load
+01:20:20.713 > [37mD (145) esp_image: free data page_count 0x00000038
+01:20:20.713 > [37mD[37m (145) bootloader_flash: rodata starts from paddr=0x0006fe94, s[37mi[37mze=0x97e8, will be mapped to vaddr=0x3f000000
+01:20:20.715 > [37mV[37m (145) bootloader_flash: after mapping, starting from paddr=0x00060000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:20:20.725 > [37mV[37m (156) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007967c
+01:20:20.726 > [37mD[37m (157) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+01:20:20.735 > [37mI[37m (167) boot: Loaded app from partition at offset 0x10000
+01:20:20.736 > I (167) boot: Disabling RNG early entropy source...
+01:20:20.737 > [37mD[37m (167) boot: Mapping segment 0 as DROM
+01:20:20.737 > D (168) boot: Mapping segment 4 as IROM
+01:20:20.737 > [37mD (168) boot: calling set_cache_and_start_app
+01:20:20.737 > D (168) boot: configure drom and irom and start
+01:20:20.737 > [37mV (169) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000[37m0[37m20, size=0x14e08
+01:20:20.738 > [37mV[37m (170) boot: after mapping rodata, starting from paddr=0x000100[37m00 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:20:20.738 > [37mV (170) boot: mapped one page of the rodata, from paddr=0x000100[37m00 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+01:20:20.739 > [37mV (170) boot: text starts from paddr=0x00030020, vaddr=0x4008002[37m0[37m, size=0x3fe6c
+01:20:20.740 > [37mV (171) boot: after mapping text, starting from paddr=0x00030000 and vaddr=0x40080000, 0x40000 bytes are mapped
+01:20:20.740 > D (172) boot: start: 0x40026a3c
+01:20:20.762 > [37mI[37m (194) main_task: Started on CPU0
+01:20:20.763 > [37mI[37m (194) main_task: Calling app_main()
+01:20:20.763 > [37m\[37m033[1;32m[INFO][MAIN][13ms] START[0m
+01:20:20.764 > [37m\[37m033[1;32m[INFO][DATA][14ms] START[0m
+01:20:20.764 > [37m\033[1;32m[INFO][SDCard][14ms] Init SD Card.[0m
+01:20:20.765 > [37mI[37m (194) SDCARD: Mounting filesystem
+01:20:20.766 > [37mI[37m (194) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:20:20.793 > [37mE[37m (224) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).
+01:20:20.794 > [37mI[37m (224) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:20:30.902 > [37m\[37m033[1;32m[INFO][SETUP][10152ms] [USER] > Select log level:[0m[37m
+01:20:30.912 > [37m\[37m033[1;32m[INFO][SETUP][10162ms]   I - ERROR and INFO logs[0m
+01:20:30.912 > [37m\[37m033[1;32m[INFO][SETUP][10162ms]   D - ERROR, INFO, and DEBUG lo[37mg[37ms[0m
+01:20:30.921 > [37mG[37muru Meditation Error: Core  0 panic'ed (LoadProhibited). Except[37mi[37mon was unhandled.
+01:20:30.923 > [37m[37m
+01:20:30.923 > Core  0 register dump:
+01:20:30.924 > [37mP[37mC      : 0x4008f315  PS      : 0x00060030  A0      : 0x80087f09[37m [37m A1      : 0x3ffcdff0  
+01:20:30.925 > [37mA2      : 0x3ffc89b8  A3      : 0x00000000  A4      : 0x40096a60[37m [37m A5      : 0x00000000  
+01:20:30.926 > [37mA6      : 0x3ffc9380  A7      : 0x3ffcddcc  A8      : 0x00000000[37m [37m A9      : 0x3ffcdb50  
+01:20:30.927 > [37mA[37m10     : 0x3ffcdba0  A11     : 0x00000004  A12     : 0x00000005[37m [37m A13     : 0x00000080  
+01:20:30.928 > [37mA14     : 0x3ffc9380  A15     : 0x3ffcba3c  SAR     : 0x0000001f[37m [37m EXCCAUSE: 0x0000001c  
+01:20:30.929 > [37mE[37mXCVADDR: 0x00000010  LBEG    : 0x00000005  LEND    : 0x00000080[37m [37m LCOUNT  : 0x4002a7e8  
+01:20:30.931 > [37m[37m
+01:20:30.932 > [37m[37m
+01:20:30.932 > [37mB[37macktrace: 0x4008f312:0x3ffcdff0 0x40087f06:0x3ffce010 0x400880a[37mf[37m:0x3ffce030 0x400884c7:0x3ffce050 0x400884b8:0x3ffce070 0x40088[37mf[37med:0x3ffce090 0x4008930b:0x3ffce0b0 0x400882d7:0x3ffce0e0 0x400[37m8[37maab0:0x3ffce100 0x400bf823:0x3ffce120 0x4002d279:0x3ffce150
+01:20:30.935 > [37m[37m
+01:20:30.936 > [37m[37m
+01:20:30.937 > [37m[37m
+01:20:30.938 > [37m[37m
+01:20:30.938 > ELF file SHA256: 77daa708d
+01:20:30.939 > [37m[37m
+01:20:30.939 > [37mRebooting...
+01:20:30.972 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+01:20:30.972 > I (32) boot: compile time Jul  3 2025 00:41:34
+01:20:30.973 > [37mD[37m (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+01:20:30.974 > [37mD[37m (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+01:20:30.975 > [37mI (35) boot: chip revision: v0.0
+01:20:30.975 > [37mI[37m (35) boot: efuse block revision: v0.2
+01:20:30.975 > [37mD[37m (35) boot.esp32s2: magic e9
+01:20:30.975 > [37mD[37m (35) boot.esp32s2: segments 04
+01:20:30.975 > [37mD[37m (35) boot.esp32s2: spi_mode 02
+01:20:30.976 > [37mD[37m (35) boot.esp32s2: spi_speed 0f
+01:20:30.976 > D (36) boot.esp32s2: spi_size 02
+01:20:30.976 > [37mI[37m (36) boot.esp32s2: SPI Speed      : 80MHz
+01:20:30.976 > [37mI[37m (36) boot.esp32s2: SPI Mode       : DIO
+01:20:30.977 > [37mI[37m (36) boot.esp32s2: SPI Flash Size : 4MB
+01:20:30.977 > [37mD[37m (37) boot: Enabling RTCWDT(9000 ms)
+01:20:30.977 > [37mI[37m (37) boot: Enabling RNG early entropy source...
+01:20:30.977 > [37mD[37m (37) bootloader_flash: rodata starts from paddr=0x00008000, si[37mze=0xc00, will be mapped to vaddr=0x3f000000
+01:20:30.977 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:20:30.977 > [37mD[37m (37) boot: mapped partition table 0x8000 at 0x3f008000
+01:20:30.978 > [37mD[37m (37) flash_parts: partition table verified, 5 entries
+01:20:30.978 > [37mI (38) boot: Partition Table:
+01:20:30.978 > [37mI[37m (38) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+01:20:30.979 > [37mD[37m (39) boot: load partition table entry 0x3f008000
+01:20:30.979 > [37mD[37m (39) boot: type=1 subtype=2
+01:20:30.979 > [37mI[37m (39) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+01:20:30.980 > [37mD[37m (40) boot: load partition table entry 0x3f008020
+01:20:30.980 > [37mD (40) boot: type=1 subtype=1
+01:20:30.980 > [37mI[37m (40) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+01:20:30.982 > [37mD[37m (41) boot: load partition table entry 0x3f008040
+01:20:30.982 > D (42) boot: type=0 subtype=0
+01:20:30.982 > [37mI[37m (42) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+01:20:30.983 > [37mD[37m (43) boot: load partition table entry 0x3f008060
+01:20:30.983 > [37mD[37m (43) boot: type=1 subtype=83
+01:20:30.983 > [37mI[37m (43) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+01:20:30.984 > [37mI[37m (44) boot: End of partition table
+01:20:30.984 > [37mD[37m (44) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+01:20:30.986 > [37mD[37m (45) esp_image: reading image header @ 0x10000
+01:20:30.986 > [37mD[37m (46) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+01:20:30.987 > [37mD[37m (47) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a3c
+01:20:30.987 > [37mV[37m (47) esp_image: loading segment header 0 at offset 0x10018
+01:20:30.987 > [37mV[37m (47) esp_image: segment data length 0x14e08 data starts 0x1002[37m0[37m
+01:20:30.988 > [37mV[37m (48) esp_image: MMU page size 0x10000
+01:20:30.988 > [37mV[37m (48) esp_image: segment 0 map_segment 1 segment_data_offs 0x10020 load_addr 0x3f000020
+01:20:30.989 > [37mI[37m (48) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=14e08h ( 85512) map
+01:20:30.989 > [37mD[37m (49) esp_image: free data page_count 0x00000038
+01:20:30.989 > [37mD[37m (49) bootloader_flash: rodata starts from paddr=0x00010020, si[37mz[37me=0x14e08, will be mapped to vaddr=0x3f000000
+01:20:30.989 > [37mV[37m (49) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m10000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:20:31.006 > [37mV[37m (66) esp_image: loading segment header 1 at offset 0x24e28
+01:20:31.006 > D (66) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:20:31.008 > [37mV[37m (67) esp_image: segment data length 0x1c data starts 0x24e30
+01:20:31.008 > [37mV[37m (68) esp_image: MMU page size 0x10000
+01:20:31.008 > [37mV[37m (68) esp_image: segment 1 map_segment 0 segment_data_offs 0x24e30 load_addr 0x3ff9e010
+01:20:31.008 > [37mI[37m (68) esp_image: segment 1: paddr=00024e30 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+01:20:31.009 > [37mD[37m (69) esp_image: free data page_count 0x00000038
+01:20:31.009 > [37mD[37m (69) bootloader_flash: rodata starts from paddr=0x00024e30, si[37mz[37me=0x1c, will be mapped to vaddr=0x3f000000
+01:20:31.010 > [37mV[37m (69) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:20:31.010 > [37mV[37m (70) esp_image: loading segment header 2 at offset 0x24e4c
+01:20:31.010 > [37mD[37m (70) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:20:31.011 > [37mV[37m (71) esp_image: segment data length 0x2ed8 data starts 0x24e54[37m[37m
+01:20:31.012 > [37mV[37m (72) esp_image: MMU page size 0x10000
+01:20:31.012 > [37mV[37m (72) esp_image: segment 2 map_segment 0 segment_data_offs 0x24e54 load_addr 0x3ffc5ad0
+01:20:31.013 > [37mI[37m (72) esp_image: segment 2: paddr=00024e54 vaddr=3ffc5ad0 size=02ed8h ( 11992) load
+01:20:31.013 > [37mD[37m (73) esp_image: free data page_count 0x00000038
+01:20:31.013 > [37mD[37m (73) bootloader_flash: rodata starts from paddr=0x00024e54, si[37mz[37me=0x2ed8, will be mapped to vaddr=0x3f000000
+01:20:31.013 > [37mV[37m (73) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+01:20:31.016 > [37mV[37m (76) esp_image: loading segment header 3 at offset 0x27d2c
+01:20:31.016 > D (76) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+01:20:31.017 > [37mV[37m (77) esp_image: segment data length 0x82e4 data starts 0x27d34[37m[37m
+01:20:31.019 > [37mV[37m (78) esp_image: MMU page size 0x10000
+01:20:31.019 > [37mV[37m (79) esp_image: segment 3 map_segment 0 segment_data_offs 0x27d34 load_addr 0x40024000
+01:20:31.019 > [37mI[37m (79) esp_image: segment 3: paddr=00027d34 vaddr=40024000 size=082e4h ( 33508) load
+01:20:31.019 > [37mD[37m (79) esp_image: free data page_count 0x00000038
+01:20:31.019 > [37mD[37m (79) bootloader_flash: rodata starts from paddr=0x00027d34, size=0x82e4, will be mapped to vaddr=0x3f000000
+01:20:31.019 > [37mV[37m (79) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:20:31.028 > [37mV[37m (88) esp_image: loading segment header 4 at offset 0x30018
+01:20:31.028 > [37mD[37m (88) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+01:20:31.029 > [37mV[37m (89) esp_image: segment data length 0x3fe6c data starts 0x3002[37m0[37m
+01:20:31.030 > [37mV[37m (90) esp_image: MMU page size 0x10000
+01:20:31.031 > [37mV[37m (90) esp_image: segment 4 map_segment 1 segment_data_offs 0x30020 load_addr 0x40080020
+01:20:31.031 > [37mI[37m (91) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=3fe6ch (261740) map
+01:20:31.031 > [37mD[37m (91) esp_image: free data page_count 0x00000038
+01:20:31.031 > [37mD[37m (91) bootloader_flash: rodata starts from paddr=0x00030020, si[37mz[37me=0x3fe6c, will be mapped to vaddr=0x3f000000
+01:20:31.031 > [37mV[37m (91) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m30000 and vaddr=0x3f000000, 0x40000 bytes are mapped
+01:20:31.083 > [37mV[37m (143) esp_image: loading segment header 5 at offset 0x6fe8c
+01:20:31.083 > D (143) bootloader_flash: mmu set block paddr=0x00060000 (was 0x[37mf[37mfffffff)
+01:20:31.084 > [37mV (144) esp_image: segment data length 0x97e8 data starts 0x6fe9[37m4[37m
+01:20:31.085 > [37mV[37m (145) esp_image: MMU page size 0x10000
+01:20:31.086 > [37mV[37m (145) esp_image: segment 5 map_segment 0 segment_data_offs 0x6fe94 load_addr 0x4002c2e4
+01:20:31.086 > [37mI[37m (146) esp_image: segment 5: paddr=0006fe94 vaddr=4002c2e4 size=097e8h ( 38888) load
+01:20:31.086 > [37mD[37m (146) esp_image: free data page_count 0x00000038
+01:20:31.086 > [37mD[37m (146) bootloader_flash: rodata starts from paddr=0x0006fe94, s[37mi[37mze=0x97e8, will be mapped to vaddr=0x3f000000
+01:20:31.086 > [37mV (146) bootloader_flash: after mapping, starting from paddr=0x0[37m0[37m060000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:20:31.096 > [37mV[37m (156) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007967c
+01:20:31.097 > [37mD[37m (157) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+01:20:31.107 > [37mI[37m (167) boot: Loaded app from partition at offset 0x10000
+01:20:31.107 > [37mI[37m (167) boot: Disabling RNG early entropy source...
+01:20:31.108 > [37mD[37m (167) boot: Mapping segment 0 as DROM
+01:20:31.108 > [37mD (168) boot: Mapping segment 4 as IROM
+01:20:31.108 > [37mD[37m (168) boot: calling set_cache_and_start_app
+01:20:31.108 > [37mD[37m (168) boot: configure drom and irom and start
+01:20:31.109 > [37mV[37m (169) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000[37m0[37m20, size=0x14e08
+01:20:31.110 > [37mV[37m (170) boot: after mapping rodata, starting from paddr=0x000100[37m0[37m0 and vaddr=0x3f000000, 0x20000 bytes are mapped
+01:20:31.110 > [37mV[37m (170) boot: mapped one page of the rodata, from paddr=0x000100[37m0[37m0 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+01:20:31.110 > [37mV[37m (170) boot: text starts from paddr=0x00030020, vaddr=0x4008002[37m0[37m, size=0x3fe6c
+01:20:31.112 > [37mV[37m (171) boot: after mapping text, starting from paddr=0x00030000[37m [37mand vaddr=0x40080000, 0x40000 bytes are mapped
+01:20:31.112 > [37mD[37m (172) boot: start: 0x40026a3c
+01:20:31.134 > [37mI[37m (194) main_task: Started on CPU0
+01:20:31.135 > [37mI[37m (194) main_task: Calling app_main()
+01:20:31.135 > [37m\[37m033[1;32m[INFO][MAIN][13ms] START[0m
+01:20:31.135 > [37m\[37m033[1;32m[INFO][DATA][14ms] START[0m
+01:20:31.136 > [37m\[37m033[1;32m[INFO][SDCard][14ms] Init SD Card.[0m
+01:20:31.136 > [37mI[37m (194) SDCARD: Mounting filesystem
+01:20:31.138 > [37mI[37m (194) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 
+01:20:31.185 > [37mI[37m (244) sdspi_transaction: cmd=5, R1 response: command not suppo[37mr[37mted
+01:20:31.357 > [37mE[37m (414) vfs_fat_sdmmc: mount_to_vfs failed (0x102).
+01:20:31.357 > [37mI[37m (414) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pu[37ml[37mlup: 0| Pulldown: 0| Intr:0 

@@ -6,8 +6,7 @@
 #include "core/ui/userUI.h"
 #include "core/ui/userUIOled.h"
 
-bool initDataBackup();
-
+bool initDataBackup(bool initSD);
 /**
  * @brief buffers the Static RSSI scan data for later saving.
  * @param scanData The Static RSSI scan data to be buffered.

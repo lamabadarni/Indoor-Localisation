@@ -1,11 +1,12 @@
-#pragma once 
+#ifndef FILE_UTILITIES_H
+#define FILE_UTILITIES_H
 
 #include "core/utils/platform.h"
 #include "core/utils/utilities.h"
 #include "core/utils/logger.h"
 #include "core/ui/userUI.h"
 
-constexpr const char* MOUNT_POINT             = "/indoor-localisation-data";
+constexpr char* MOUNT_POINT = "/sdcard";
 
 /**
  * @brief Get the base directory for the current system state.
@@ -36,3 +37,5 @@ std::string getAccuracyFilePath(void);
  * @brief Get the full path to the log file of the current run.
  */
 std::string getLogFilePath(void);
+
+#endif

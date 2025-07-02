@@ -120,9 +120,9 @@ const std::string systemPredictionModes[SYSTEM_PREDICTION_NODES_NUM] {
 
 const std::string systemBootModes[SYSTEM_BOOT_MODES_NUM] {
     "MODE_TOF_DIAGNOSTIC",
-    "MODE_COLLECT_TOF_RESPONDERS_MAC",
     "MODE_ANCHORS_RSSI_DIAGNOSTIC",
     "MODE_APS_RSSI_DIAGNOSTIC",
+    "MODE_COLLECT_TOF_RESPONDERS_MAC",
     "MODE_INITIATOR_RESPONDER_TEST",
     "MODE_RESTORE_BACKUP_DATA_TEST"
 };
@@ -133,19 +133,13 @@ const std::string   coverages[COVERAGE_STATES_NUM] {
     "BAD COVERAGE",
 };
 
-const UI systemUI = UI::OLED;
+const UI systemUI = UI::SERIAL;
 
 // ====================== Utility Functions ======================
 
 int applyEMA(int prevRSSI, int newRSSI) {
     if (prevRSSI == RSSI_DEFAULT_VALUE) return newRSSI;
     return (int)(ALPHA * prevRSSI + (1.0 - ALPHA) * newRSSI);
-}
-
-int readIntFromUser() {
-    char input[16];
-    fgets(input, sizeof(input), stdin);
-    return atoi(input);
 }
 
 char getCharFromUserWithTimeout(int timeoutMs) {

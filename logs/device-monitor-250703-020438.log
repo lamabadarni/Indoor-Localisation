@@ -1,0 +1,455 @@
+02:04:38.254 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+02:04:38.254 > I (32) boot: compile time Jul  3 2025 01:21:27
+02:04:38.254 > D (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+02:04:38.255 > [37mD (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+02:04:38.256 > I (35) boot: chip revision: v0.0
+02:04:38.256 > [37mI (35) boot: efuse block revision: v0.2
+02:04:38.256 > D (35) boot.esp32s2: magic e9
+02:04:38.256 > [37mD (35) boot.esp32s2: segments 04
+02:04:38.256 > D (35) boot.esp32s2: spi_mode 02
+02:04:38.257 > [37mD[37m (35) boot.esp32s2: spi_speed 0f
+02:04:38.258 > D (36) boot.esp32s2: spi_size 02
+02:04:38.258 > [37mI (36) boot.esp32s2: SPI Speed      : 80MHz
+02:04:38.258 > I (36) boot.esp32s2: SPI Mode       : DIO
+02:04:38.258 > [37mI (36) boot.esp32s2: SPI Flash Size : 4MB
+02:04:38.258 > [37mD (37) boot: Enabling RTCWDT(9000 ms)
+02:04:38.258 > [37mI (37) boot: Enabling RNG early entropy source...
+02:04:38.258 > [37mD[37m (37) bootloader_flash: rodata starts from paddr=0x00008000, size=0xc00, will be mapped to vaddr=0x3f000000
+02:04:38.258 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+02:04:38.260 > [37mD (38) boot: mapped partition table 0x8000 at 0x3f008000
+02:04:38.260 > [37mD[37m (38) flash_parts: partition table verified, 5 entries
+02:04:38.260 > I (39) boot: Partition Table:
+02:04:38.260 > I (39) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+02:04:38.261 > D (40) boot: load partition table entry 0x3f008000
+02:04:38.261 > D (40) boot: type=1 subtype=2
+02:04:38.261 > [37mI (40) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+02:04:38.263 > [37mD (41) boot: load partition table entry 0x3f008020
+02:04:38.263 > D (41) boot: type=1 subtype=1
+02:04:38.263 > [37mI (41) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+02:04:38.264 > [37mD (42) boot: load partition table entry 0x3f008040
+02:04:38.264 > D (43) boot: type=0 subtype=0
+02:04:38.264 > [37mI (43) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+02:04:38.265 > [37mD (44) boot: load partition table entry 0x3f008060
+02:04:38.265 > D (44) boot: type=1 subtype=83
+02:04:38.265 > [37mI[37m (44) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+02:04:38.266 > I (45) boot: End of partition table
+02:04:38.267 > [37mD[37m (45) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+02:04:38.268 > D (46) esp_image: reading image header @ 0x10000
+02:04:38.268 > [37mD[37m (47) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+02:04:38.269 > [37mD[37m (48) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a80
+02:04:38.269 > [37mV[37m (48) esp_image: loading segment header 0 at offset 0x10018
+02:04:38.269 > [37mV[37m (48) esp_image: segment data length 0x15b38 data starts 0x1002[37m0[37m
+02:04:38.270 > V (49) esp_image: MMU page size 0x10000
+02:04:38.271 > [37mV[37m (49) esp_image: segment 0 map_segment 1 segment_data_offs 0x10020 load_addr 0x3f000020
+02:04:38.271 > [37mI[37m (49) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=15b38h ( 88888) map
+02:04:38.271 > [37mD[37m (50) esp_image: free data page_count 0x00000038
+02:04:38.271 > [37mD[37m (50) bootloader_flash: rodata starts from paddr=0x00010020, si[37mz[37me=0x15b38, will be mapped to vaddr=0x3f000000
+02:04:38.271 > [37mV[37m (50) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m10000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+02:04:38.289 > [37mV[37m (68) esp_image: loading segment header 1 at offset 0x25b58
+02:04:38.289 > D (68) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+02:04:38.290 > [37mV[37m (69) esp_image: segment data length 0x1c data starts 0x25b60
+02:04:38.290 > [37mV (69) esp_image: MMU page size 0x10000
+02:04:38.291 > [37mV[37m (69) esp_image: segment 1 map_segment 0 segment_data_offs 0x25b60 load_addr 0x3ff9e010
+02:04:38.291 > [37mI[37m (70) esp_image: segment 1: paddr=00025b60 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+02:04:38.292 > [37mD[37m (71) esp_image: free data page_count 0x00000038
+02:04:38.292 > [37mD[37m (71) bootloader_flash: rodata starts from paddr=0x00025b60, si[37mz[37me=0x1c, will be mapped to vaddr=0x3f000000
+02:04:38.292 > [37mV[37m (71) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+02:04:38.293 > [37mV[37m (71) esp_image: loading segment header 2 at offset 0x25b7c
+02:04:38.293 > [37mD[37m (71) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+02:04:38.294 > [37mV[37m (73) esp_image: segment data length 0x2f48 data starts 0x25b84[37m[37m
+02:04:38.295 > V (74) esp_image: MMU page size 0x10000
+02:04:38.295 > [37mV[37m (74) esp_image: segment 2 map_segment 0 segment_data_offs 0x25b84 load_addr 0x3ffc5f00
+02:04:38.295 > [37mI[37m (74) esp_image: segment 2: paddr=00025b84 vaddr=3ffc5f00 size=02f48h ( 12104) load
+02:04:38.296 > [37mD[37m (74) esp_image: free data page_count 0x00000038
+02:04:38.296 > [37mD[37m (74) bootloader_flash: rodata starts from paddr=0x00025b84, si[37mz[37me=0x2f48, will be mapped to vaddr=0x3f000000
+02:04:38.296 > [37mV[37m (75) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+02:04:38.299 > [37mV[37m (78) esp_image: loading segment header 3 at offset 0x28acc
+02:04:38.299 > [37mD (78) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+02:04:38.300 > [37mV[37m (79) esp_image: segment data length 0x7544 data starts 0x28ad4[37m[37m
+02:04:38.302 > [37mV (80) esp_image: MMU page size 0x10000
+02:04:38.302 > V (80) esp_image: segment 3 map_segment 0 segment_data_offs 0x28ad4 load_addr 0x40024000
+02:04:38.302 > [37mI[37m (80) esp_image: segment 3: paddr=00028ad4 vaddr=40024000 size=07544h ( 30020) load
+02:04:38.302 > [37mD[37m (81) esp_image: free data page_count 0x00000038
+02:04:38.302 > [37mD[37m (81) bootloader_flash: rodata starts from paddr=0x00028ad4, si[37mz[37me=0x7544, will be mapped to vaddr=0x3f000000
+02:04:38.302 > [37mV[37m (81) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+02:04:38.310 > [37mV[37m (89) esp_image: loading segment header 4 at offset 0x30018
+02:04:38.310 > [37mD[37m (89) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+02:04:38.311 > [37mV[37m (90) esp_image: segment data length 0x40de8 data starts 0x3002[37m0[37m
+02:04:38.312 > [37mV[37m (91) esp_image: MMU page size 0x10000
+02:04:38.313 > [37mV[37m (91) esp_image: segment 4 map_segment 1 segment_data_offs 0x30020 load_addr 0x40080020
+02:04:38.313 > [37mI[37m (91) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=40de8h (265704) map
+02:04:38.313 > [37mD[37m (92) esp_image: free data page_count 0x00000038
+02:04:38.313 > [37mD[37m (92) bootloader_flash: rodata starts from paddr=0x00030020, si[37mz[37me=0x40de8, will be mapped to vaddr=0x3f000000
+02:04:38.313 > [37mV[37m (92) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m30000 and vaddr=0x3f000000, 0x50000 bytes are mapped
+02:04:38.366 > [37mV[37m (144) esp_image: loading segment header 5 at offset 0x70e08
+02:04:38.366 > D (145) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+02:04:38.367 > [37mV[37m (146) esp_image: segment data length 0xa9b4 data starts 0x70e1[37m0[37m
+02:04:38.368 > [37mV (147) esp_image: MMU page size 0x10000
+02:04:38.368 > [37mV[37m (147) esp_image: segment 5 map_segment 0 segment_data_offs 0x7[37m0e10 load_addr 0x4002b544
+02:04:38.368 > [37mI[37m (147) esp_image: segment 5: paddr=00070e10 vaddr=4002b544 size=0a9b4h ( 43444) load
+02:04:38.369 > [37mD[37m (147) esp_image: free data page_count 0x00000038
+02:04:38.369 > [37mD[37m (147) bootloader_flash: rodata starts from paddr=0x00070e10, s[37mi[37mze=0xa9b4, will be mapped to vaddr=0x3f000000
+02:04:38.369 > [37mV[37m (148) bootloader_flash: after mapping, starting from paddr=0x0[37m0[37m070000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+02:04:38.380 > [37mV[37m (159) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007b7c4
+02:04:38.381 > [37mD[37m (160) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+02:04:38.391 > [37mI[37m (170) boot: Loaded app from partition at offset 0x10000
+02:04:38.391 > I (170) boot: Disabling RNG early entropy source...
+02:04:38.391 > [37mD[37m (170) boot: Mapping segment 0 as DROM
+02:04:38.391 > [37mD[37m (170) boot: Mapping segment 4 as IROM
+02:04:38.391 > D (170) boot: calling set_cache_and_start_app
+02:04:38.392 > [37mD[37m (170) boot: configure drom and irom and start
+02:04:38.392 > [37mV[37m (170) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000[37m0[37m20, size=0x15b38
+02:04:38.393 > [37mV[37m (172) boot: after mapping rodata, starting from paddr=0x000100[37m0[37m0 and vaddr=0x3f000000, 0x20000 bytes are mapped
+02:04:38.393 > [37mV[37m (172) boot: mapped one page of the rodata, from paddr=0x000100[37m0[37m0 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+02:04:38.393 > [37mV[37m (172) boot: text starts from paddr=0x00030020, vaddr=0x4008002[37m0[37m, size=0x40de8
+02:04:38.395 > [37mV[37m (173) boot: after mapping text, starting from paddr=0x00030000[37m [37mand vaddr=0x40080000, 0x50000 bytes are mapped
+02:04:38.395 > [37mD[37m (173) boot: start: 0x40026a80
+02:04:38.417 > [37mI[37m (195) main_task: Started on CPU0
+02:04:38.418 > [37mI[37m (195) main_task: Calling app_main()
+02:04:38.418 > [37m[1;32m[INFO][MAIN][13ms] START[0m
+02:04:39.517 > [37m[37m[1;32m[INFO][SETUP][1112ms] [USER] > Select log level:[0m
+02:04:39.517 > [37m[37m[1;32m[INFO][SETUP][1113ms]   I - ERROR and INFO logs[0m
+02:04:39.518 > [37m[37m[1;32m[INFO][SETUP][1113ms]   D - ERROR, INFO, and DEBUG logs[[37m0[37mm
+02:04:47.857 > [37m[37m[1;32m[INFO][SETUP][9452ms] [USER] > Select System Mode:[0m
+02:04:47.857 > [1;32m[INFO][SETUP][9453ms]   1 - MODE_SYSTEM_BOOT[0m
+02:04:47.858 > [37m[1;32m[INFO][SETUP][9453ms]   2 - MODE_SCANNING_SESSION[0m
+02:04:47.858 > [37m[1;32m[INFO][SETUP][9454ms]   3 - MODE_PREDICTION_SESSION[0m
+02:04:47.858 > [37m[37m[1;32m[INFO][SETUP][9454ms]   4 - MODE_FULL_SESSION[0m
+02:04:56.836 > [37m[37m[1;32m[INFO][SETUP][18432ms] [USER] > Select System Boot Mode:[37m[[37m0m
+02:04:56.846 > [37m[1;32m[INFO][SETUP][18442ms]   1 - MODE_TOF_DIAGNOSTIC[0m
+02:04:56.846 > [37m[37m[1;32m[INFO][SETUP][18443ms]   2 - MODE_COLLECT_TOF_RESPONDERS_[37mM[37mAC[0m
+02:04:56.856 > [37m[37m[1;32m[INFO][SETUP][18452ms]   3 - MODE_ANCHORS_RSSI_DIAGNOSTIC[37m[37m[0m
+02:04:56.866 > [37m[37m[1;32m[INFO][SETUP][18462ms]   4 - MODE_APS_RSSI_DIAGNOSTIC[0m[37m[37m
+02:04:56.876 > [37m[37m[1;32m[INFO][SETUP][18472ms]   5 - MODE_INITIATOR_RESPONDER_TES[37mT[37m[0m
+02:04:56.886 > [37m[37m[1;32m[INFO][SETUP][18482ms]   6 - MODE_RESTORE_BACKUP_DATA_TES[37mT[37m[0m
+02:05:03.029 > [37m[37m[1;32m[INFO][DATA][24626ms] START[0m
+02:05:03.030 > [37m[37m[1;32m[INFO][SDCard][24626ms] Init SD Card.[0m
+02:05:03.030 > [37m[37m[1;34m[DEBUG][SDCARD][24627ms] Using SPI peripheral[0m
+02:05:03.031 > [37m[37m[1;32m[INFO][SDCARD][24628ms] Mounting filesystem...[0m
+02:05:03.032 > [37mI[37m (24805) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| [37mP[37mullup: 0| Pulldown: 0| Intr:0 
+02:05:03.036 > [37mI[37m (24815) sdspi_transaction: cmd=52, R1 response: command CRC er[37mr[37mor
+02:05:03.045 > [37mE[37m (24825) sdmmc_io: sdmmc_io_reset: unexpected return: 0x109
+02:05:03.046 > [37mE[37m (24825) vfs_fat_sdmmc: sdmmc_card_init failed (0x109).
+02:05:03.046 > [37mI[37m (24825) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| [37mP[37mullup: 0| Pulldown: 0| Intr:0 
+02:05:03.056 > [37m[1;31m[ERROR][SDCARD][24652ms] esp_vfs_fat_sdspi_mount failed: [37mE[37mSP_ERR_INVALID_CRC (0x109)[0m
+02:05:03.065 > [37m[37m[1;31m[ERROR][MAIN][24662ms] Failed to initialize SD card or lo[37mg[37m file.[0m
+02:05:03.076 > [37m[1;32m[INFO][SESSION][24672ms] >>> Starting SYSTEM_BOOT...[0m[37m
+02:05:03.086 > [37m[37m[1;31m[ERROR][TOF][24682ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.096 > [37m[37m[1;31m[ERROR][TOF][24692ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.105 > [37m[37m[1;31m[ERROR][TOF][24702ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.115 > [37m[37m[1;31m[ERROR][TOF][24712ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.126 > [37m[37m[1;34m[DEBUG][DATA][24722ms] Buffered TOF scan for label 16[0m[37m[37m
+02:05:03.136 > [37m[37m[1;34m[DEBUG][TOF][24732ms] Scan 1 for label ���?[0m
+02:05:03.136 > [37m[37m[1;34m[DEBUG][TOF][24733ms] SSID[p��?], Diatance = 0[0m
+02:05:03.136 > [37m[37m[1;34m[DEBUG][TOF][24733ms] SSID[p��?], Diatance = 0[0m
+02:05:03.137 > [37m[37m[1;34m[DEBUG][TOF][24734ms] SSID[p��?], Diatance = 0[0m
+02:05:03.137 > [37m[37m[1;34m[DEBUG][TOF][24734ms] SSID[p��?], Diatance = 0[0m
+02:05:03.138 > [37m[37m[1;31m[ERROR][TOF][24734ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.145 > [37m[37m[1;31m[ERROR][TOF][24742ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.155 > [37m[37m[1;31m[ERROR][TOF][24752ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.165 > [37m[37m[1;31m[ERROR][TOF][24762ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.176 > [37m[37m[1;34m[DEBUG][DATA][24772ms] Buffered TOF scan for label 16[0m[37m[37m
+02:05:03.186 > [37m[37m[1;34m[DEBUG][TOF][24782ms] Scan 2 for label ���?[0m
+02:05:03.186 > [37m[37m[1;34m[DEBUG][TOF][24783ms] SSID[p��?], Diatance = 0[0m
+02:05:03.186 > [37m[37m[1;34m[DEBUG][TOF][24783ms] SSID[p��?], Diatance = 0[0m
+02:05:03.187 > [37m[37m[1;34m[DEBUG][TOF][24784ms] SSID[p��?], Diatance = 0[0m
+02:05:03.187 > [37m[37m[1;34m[DEBUG][TOF][24784ms] SSID[p��?], Diatance = 0[0m
+02:05:03.188 > [37m[37m[1;31m[ERROR][TOF][24784ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.196 > [37m[37m[1;31m[ERROR][TOF][24792ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.205 > [37m[37m[1;31m[ERROR][TOF][24802ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.215 > [37m[37m[1;31m[ERROR][TOF][24812ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.226 > [37m[37m[1;34m[DEBUG][DATA][24822ms] Buffered TOF scan for label 16[0m[37m[37m
+02:05:03.236 > [37m[37m[1;34m[DEBUG][TOF][24832ms] Scan 3 for label ���?[0m
+02:05:03.236 > [37m[37m[1;34m[DEBUG][TOF][24833ms] SSID[p��?], Diatance = 0[0m
+02:05:03.236 > [37m[37m[1;34m[DEBUG][TOF][24833ms] SSID[p��?], Diatance = 0[0m
+02:05:03.237 > [37m[37m[1;34m[DEBUG][TOF][24834ms] SSID[p��?], Diatance = 0[0m
+02:05:03.237 > [37m[37m[1;34m[DEBUG][TOF][24834ms] SSID[p��?], Diatance = 0[0m
+02:05:03.238 > [37m[37m[1;31m[ERROR][TOF][24834ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.246 > [37m[37m[1;31m[ERROR][TOF][24842ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.256 > [37m[37m[1;31m[ERROR][TOF][24852ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.265 > [37m[37m[1;31m[ERROR][TOF][24862ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.276 > [37m[37m[1;34m[DEBUG][DATA][24872ms] Buffered TOF scan for label 16[0m[37m[37m
+02:05:03.286 > [37m[37m[1;34m[DEBUG][TOF][24882ms] Scan 4 for label ���?[0m
+02:05:03.286 > [37m[37m[1;34m[DEBUG][TOF][24883ms] SSID[p��?], Diatance = 0[0m
+02:05:03.286 > [37m[37m[1;34m[DEBUG][TOF][24883ms] SSID[p��?], Diatance = 0[0m
+02:05:03.287 > [37m[37m[1;34m[DEBUG][TOF][24884ms] SSID[p��?], Diatance = 0[0m
+02:05:03.287 > [37m[37m[1;34m[DEBUG][TOF][24884ms] SSID[p��?], Diatance = 0[0m
+02:05:03.288 > [37m[37m[1;31m[ERROR][TOF][24884ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.296 > [37m[37m[1;31m[ERROR][TOF][24892ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.305 > [37m[37m[1;31m[ERROR][TOF][24902ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.315 > [37m[37m[1;31m[ERROR][TOF][24912ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.326 > [37m[37m[1;34m[DEBUG][DATA][24922ms] Buffered TOF scan for label 16[0m[37m[37m
+02:05:03.336 > [37m[37m[1;34m[DEBUG][TOF][24932ms] Scan 5 for label ���?[0m
+02:05:03.336 > [37m[37m[1;34m[DEBUG][TOF][24933ms] SSID[p��?], Diatance = 0[0m
+02:05:03.336 > [37m[37m[1;34m[DEBUG][TOF][24933ms] SSID[p��?], Diatance = 0[0m
+02:05:03.337 > [37m[37m[1;34m[DEBUG][TOF][24934ms] SSID[p��?], Diatance = 0[0m
+02:05:03.337 > [37m[37m[1;34m[DEBUG][TOF][24934ms] SSID[p��?], Diatance = 0[0m
+02:05:03.338 > [37m[37m[1;31m[ERROR][TOF][24934ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.346 > [37m[37m[1;31m[ERROR][TOF][24942ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.355 > [37m[37m[1;31m[ERROR][TOF][24952ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.365 > [37m[37m[1;31m[ERROR][TOF][24962ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.376 > [37m[37m[1;34m[DEBUG][DATA][24972ms] Buffered TOF scan for label 16[0m[37m[37m
+02:05:03.385 > [37m[37m[1;34m[DEBUG][TOF][24982ms] Scan 6 for label ���?[0m
+02:05:03.386 > [37m[37m[1;34m[DEBUG][TOF][24983ms] SSID[p��?], Diatance = 0[0m
+02:05:03.386 > [37m[37m[1;34m[DEBUG][TOF][24983ms] SSID[p��?], Diatance = 0[0m
+02:05:03.387 > [37m[37m[1;34m[DEBUG][TOF][24984ms] SSID[p��?], Diatance = 0[0m
+02:05:03.387 > [37m[37m[1;34m[DEBUG][TOF][24984ms] SSID[p��?], Diatance = 0[0m
+02:05:03.388 > [37m[37m[1;31m[ERROR][TOF][24984ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.395 > [37m[37m[1;31m[ERROR][TOF][24992ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.405 > [37m[37m[1;31m[ERROR][TOF][25002ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.415 > [37m[37m[1;31m[ERROR][TOF][25012ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.426 > [37m[37m[1;34m[DEBUG][DATA][25022ms] Buffered TOF scan for label 16[0m[37m[37m
+02:05:03.435 > [37m[37m[1;34m[DEBUG][TOF][25032ms] Scan 7 for label ���?[0m
+02:05:03.436 > [37m[37m[1;34m[DEBUG][TOF][25033ms] SSID[p��?], Diatance = 0[0m
+02:05:03.436 > [37m[37m[1;34m[DEBUG][TOF][25033ms] SSID[p��?], Diatance = 0[0m
+02:05:03.437 > [37m[37m[1;34m[DEBUG][TOF][25034ms] SSID[p��?], Diatance = 0[0m
+02:05:03.437 > [37m[37m[1;34m[DEBUG][TOF][25034ms] SSID[p��?], Diatance = 0[0m
+02:05:03.437 > [37m[37m[1;31m[ERROR][TOF][25034ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.445 > [37m[37m[1;31m[ERROR][TOF][25042ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.455 > [37m[37m[1;31m[ERROR][TOF][25052ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.465 > [37m[37m[1;31m[ERROR][TOF][25062ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.476 > [37m[37m[1;34m[DEBUG][DATA][25072ms] Buffered TOF scan for label 16[0m[37m[37m
+02:05:03.485 > [37m[37m[1;34m[DEBUG][TOF][25082ms] Scan 8 for label ���?[0m
+02:05:03.486 > [37m[37m[1;34m[DEBUG][TOF][25083ms] SSID[p��?], Diatance = 0[0m
+02:05:03.486 > [37m[37m[1;34m[DEBUG][TOF][25083ms] SSID[p��?], Diatance = 0[0m
+02:05:03.487 > [37m[37m[1;34m[DEBUG][TOF][25084ms] SSID[p��?], Diatance = 0[0m
+02:05:03.487 > [37m[37m[1;34m[DEBUG][TOF][25084ms] SSID[p��?], Diatance = 0[0m
+02:05:03.487 > [37m[37m[1;31m[ERROR][TOF][25084ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.495 > [37m[37m[1;31m[ERROR][TOF][25092ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.505 > [37m[37m[1;31m[ERROR][TOF][25102ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.515 > [37m[37m[1;31m[ERROR][TOF][25112ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.526 > [37m[37m[1;34m[DEBUG][DATA][25122ms] Buffered TOF scan for label 16[0m[37m[37m
+02:05:03.536 > [37m[37m[1;34m[DEBUG][TOF][25132ms] Scan 9 for label ���?[0m
+02:05:03.536 > [37m[37m[1;34m[DEBUG][TOF][25133ms] SSID[p��?], Diatance = 0[0m
+02:05:03.536 > [37m[37m[1;34m[DEBUG][TOF][25133ms] SSID[p��?], Diatance = 0[0m
+02:05:03.537 > [37m[37m[1;34m[DEBUG][TOF][25134ms] SSID[p��?], Diatance = 0[0m
+02:05:03.537 > [37m[37m[1;34m[DEBUG][TOF][25134ms] SSID[p��?], Diatance = 0[0m
+02:05:03.538 > [37m[37m[1;31m[ERROR][TOF][25134ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.546 > [37m[37m[1;31m[ERROR][TOF][25142ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.555 > [37m[37m[1;31m[ERROR][TOF][25152ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.565 > [37m[37m[1;31m[ERROR][TOF][25162ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.576 > [37m[37m[1;34m[DEBUG][DATA][25172ms] Buffered TOF scan for label 16[0m[37m[37m
+02:05:03.585 > [37m[37m[1;34m[DEBUG][TOF][25182ms] Scan 10 for label ���?[0m
+02:05:03.586 > [37m[37m[1;34m[DEBUG][TOF][25183ms] SSID[p��?], Diatance = 0[0m
+02:05:03.586 > [37m[37m[1;34m[DEBUG][TOF][25183ms] SSID[p��?], Diatance = 0[0m
+02:05:03.587 > [37m[37m[1;34m[DEBUG][TOF][25184ms] SSID[p��?], Diatance = 0[0m
+02:05:03.587 > [37m[37m[1;34m[DEBUG][TOF][25184ms] SSID[p��?], Diatance = 0[0m
+02:05:03.587 > [37m[37m[1;31m[ERROR][TOF][25184ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.595 > [37m[37m[1;31m[ERROR][TOF][25192ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.605 > [37m[37m[1;31m[ERROR][TOF][25202ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.615 > [37m[37m[1;31m[ERROR][TOF][25212ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.626 > [37m[37m[1;34m[DEBUG][DATA][25222ms] Buffered TOF scan for label 16[0m[37m[37m
+02:05:03.635 > [37m[37m[1;34m[DEBUG][TOF][25232ms] Scan 11 for label ���?[0m
+02:05:03.636 > [37m[37m[1;34m[DEBUG][TOF][25233ms] SSID[p��?], Diatance = 0[0m
+02:05:03.636 > [37m[37m[1;34m[DEBUG][TOF][25233ms] SSID[p��?], Diatance = 0[0m
+02:05:03.637 > [37m[37m[1;34m[DEBUG][TOF][25234ms] SSID[p��?], Diatance = 0[0m
+02:05:03.637 > [37m[37m[1;34m[DEBUG][TOF][25234ms] SSID[p��?], Diatance = 0[0m
+02:05:03.637 > [37m[37m[1;31m[ERROR][TOF][25234ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.645 > [37m[37m[1;31m[ERROR][TOF][25242ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.655 > [37m[37m[1;31m[ERROR][TOF][25252ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.665 > [37m[37m[1;31m[ERROR][TOF][25262ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.675 > [37m[37m[1;34m[DEBUG][DATA][25272ms] Buffered TOF scan for label 16[0m[37m[37m
+02:05:03.685 > [37m[37m[1;34m[DEBUG][TOF][25282ms] Scan 12 for label ���?[0m
+02:05:03.686 > [37m[37m[1;34m[DEBUG][TOF][25283ms] SSID[p��?], Diatance = 0[0m
+02:05:03.686 > [37m[37m[1;34m[DEBUG][TOF][25283ms] SSID[p��?], Diatance = 0[0m
+02:05:03.687 > [37m[37m[1;34m[DEBUG][TOF][25284ms] SSID[p��?], Diatance = 0[0m
+02:05:03.687 > [37m[37m[1;34m[DEBUG][TOF][25284ms] SSID[p��?], Diatance = 0[0m
+02:05:03.688 > [37m[37m[1;31m[ERROR][TOF][25284ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.695 > [37m[37m[1;31m[ERROR][TOF][25292ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.705 > [37m[37m[1;31m[ERROR][TOF][25302ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.715 > [37m[37m[1;31m[ERROR][TOF][25312ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.726 > [37m[37m[1;34m[DEBUG][DATA][25322ms] Buffered TOF scan for label 16[0m[37m[37m
+02:05:03.735 > [37m[37m[1;34m[DEBUG][TOF][25332ms] Scan 13 for label ���?[0m
+02:05:03.736 > [37m[37m[1;34m[DEBUG][TOF][25333ms] SSID[p��?], Diatance = 0[0m
+02:05:03.736 > [37m[37m[1;34m[DEBUG][TOF][25333ms] SSID[p��?], Diatance = 0[0m
+02:05:03.737 > [37m[37m[1;34m[DEBUG][TOF][25334ms] SSID[p��?], Diatance = 0[0m
+02:05:03.737 > [37m[37m[1;34m[DEBUG][TOF][25334ms] SSID[p��?], Diatance = 0[0m
+02:05:03.738 > [37m[37m[1;31m[ERROR][TOF][25334ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.746 > [37m[37m[1;31m[ERROR][TOF][25342ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.755 > [37m[37m[1;31m[ERROR][TOF][25352ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.765 > [37m[37m[1;31m[ERROR][TOF][25362ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.776 > [37m[37m[1;34m[DEBUG][DATA][25372ms] Buffered TOF scan for label 16[0m[37m[37m
+02:05:03.786 > [37m[37m[1;34m[DEBUG][TOF][25382ms] Scan 14 for label ���?[0m
+02:05:03.786 > [37m[37m[1;34m[DEBUG][TOF][25383ms] SSID[p��?], Diatance = 0[0m
+02:05:03.786 > [37m[37m[1;34m[DEBUG][TOF][25383ms] SSID[p��?], Diatance = 0[0m
+02:05:03.787 > [37m[37m[1;34m[DEBUG][TOF][25384ms] SSID[p��?], Diatance = 0[0m
+02:05:03.787 > [37m[37m[1;34m[DEBUG][TOF][25384ms] SSID[p��?], Diatance = 0[0m
+02:05:03.788 > [37m[37m[1;31m[ERROR][TOF][25384ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.795 > [37m[37m[1;31m[ERROR][TOF][25392ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.805 > [37m[37m[1;31m[ERROR][TOF][25402ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.815 > [37m[37m[1;31m[ERROR][TOF][25412ms] Failed to initiate session for resp[37mo[37mnder: ��?[0m
+02:05:03.825 > [37m[37m[1;34m[DEBUG][DATA][25422ms] Buffered TOF scan for label 16[0m[37m[37m
+02:05:03.835 > [37m[37m[1;34m[DEBUG][TOF][25432ms] Scan 15 for label ���?[0m
+02:05:03.836 > [37m[37m[1;34m[DEBUG][TOF][25433ms] SSID[p��?], Diatance = 0[0m
+02:05:03.836 > [37m[37m[1;34m[DEBUG][TOF][25433ms] SSID[p��?], Diatance = 0[0m
+02:05:03.837 > [37m[37m[1;34m[DEBUG][TOF][25434ms] SSID[p��?], Diatance = 0[0m
+02:05:03.837 > [37m[37m[1;34m[DEBUG][TOF][25434ms] SSID[p��?], Diatance = 0[0m
+02:05:03.838 > [37m[37m[1;31m[ERROR][DATA][25434ms] Failed to write TOF row.[0m
+02:05:03.838 > [37m[37m[1;31m[ERROR][DATA][25435ms] Failed to write TOF row.[0m
+02:05:03.838 > [37m[37m[1;31m[ERROR][DATA][25435ms] Failed to write TOF row.[0m
+02:05:03.839 > [37m[37m[1;31m[ERROR][DATA][25436ms] Failed to write TOF row.[0m
+02:05:03.839 > [37m[37m[1;31m[ERROR][DATA][25436ms] Failed to write TOF row.[0m
+02:05:03.840 > [37m[37m[1;31m[ERROR][DATA][25436ms] Failed to write TOF row.[0m
+02:05:03.840 > [37m[37m[1;31m[ERROR][DATA][25437ms] Failed to write TOF row.[0m
+02:05:03.840 > [37m[37m[1;31m[ERROR][DATA][25437ms] Failed to write TOF row.[0m
+02:05:03.841 > [37m[37m[1;31m[ERROR][DATA][25438ms] Failed to write TOF row.[0m
+02:05:03.841 > [37m[37m[1;31m[ERROR][DATA][25438ms] Failed to write TOF row.[0m
+02:05:03.842 > [37m[37m[1;31m[ERROR][DATA][25438ms] Failed to write TOF row.[0m
+02:05:03.842 > [37m[37m[1;31m[ERROR][DATA][25439ms] Failed to write TOF row.[0m
+02:05:03.842 > [37m[37m[1;31m[ERROR][DATA][25439ms] Failed to write TOF row.[0m
+02:05:03.843 > [37m[37m[1;31m[ERROR][DATA][25440ms] Failed to write TOF row.[0m
+02:05:03.843 > [37m[37m[1;31m[ERROR][DATA][25440ms] Failed to write TOF row.[0m
+02:05:03.844 > [37m[37m[1;31m[ERROR][DATA][25440ms] Failed to write TOF row.[0m
+02:05:03.844 > [37m[37m[1;31m[ERROR][DATA][25441ms] Failed to write TOF row.[0m
+02:05:03.844 > [37m[37m[1;31m[ERROR][DATA][25441ms] Failed to write TOF row.[0m
+02:05:03.845 > [37m[37m[1;31m[ERROR][DATA][25442ms] Failed to write TOF row.[0m
+02:05:03.845 > [37m[37m[1;31m[ERROR][DATA][25442ms] Failed to write TOF row.[0m
+02:05:03.846 > [37m[37m[1;31m[ERROR][DATA][25442ms] Failed to write TOF row.[0m
+02:05:03.846 > [37m[37m[1;31m[ERROR][DATA][25443ms] Failed to write TOF row.[0m
+02:05:03.847 > [37m[37m[1;31m[ERROR][DATA][25443ms] Failed to write TOF row.[0m
+02:05:03.847 > [37m[37m[1;31m[ERROR][DATA][25444ms] Failed to write TOF row.[0m
+02:05:03.847 > [37m[37m[1;31m[ERROR][DATA][25444ms] Failed to write TOF row.[0m
+02:05:03.848 > [37m[37m[1;31m[ERROR][DATA][25444ms] Failed to write TOF row.[0m
+02:05:03.848 > [37m[37m[1;31m[ERROR][DATA][25445ms] Failed to write TOF row.[0m
+02:05:03.848 > [37m[37m[1;31m[ERROR][DATA][25445ms] Failed to write TOF row.[0m
+02:05:03.849 > [37m[37m[1;31m[ERROR][DATA][25446ms] Failed to write TOF row.[0m
+02:05:03.849 > [37m[37m[1;31m[ERROR][DATA][25446ms] Failed to write TOF row.[0m
+02:05:03.850 > [37m[37m[1;32m[INFO][DATA][25446ms] Flush complete[0m
+02:05:03.850 > [37m[37m[1;32m[INFO][COVERAGE][25447ms] [TOF] Responders seen: 4 / 4, A[37mv[37mg distance: 1500.00 cm[0m
+02:05:03.855 > [37m[37m[1;32m[INFO][RESPONDERS][25452ms] Detected the following FTM re[37ms[37mponders:[0m
+02:05:03.866 > [37m[37m[1;32m[INFO][RESPONDERS][25462ms]   [1] 00:00:00:00:00:00[0m
+02:05:03.866 > [37m[37m[1;32m[INFO][RESPONDERS][25463ms]   [2] 00:00:00:00:00:00[0m
+02:05:03.867 > [37m[37m[1;32m[INFO][RESPONDERS][25464ms]   [3] 00:00:00:00:00:00[0m
+02:05:03.868 > [37m[37m[1;32m[INFO][RESPONDERS][25464ms]   [4] 00:00:00:00:00:00[0m
+02:05:03.868 > [37m[37m[1;32m[INFO][RESPONDERS][25465ms] Would you like to save these [37mM[37mACs? (y/n): [0m
+02:05:03.875 > [37mG[37muru Meditation Error: Core  0 panic'ed (LoadProhibited). Except[37mi[37mon was unhandled.
+02:05:03.877 > [37m[37m
+02:05:03.877 > [37mC[37more  0 register dump:
+02:05:03.877 > [37mP[37mC      : 0x4008f525  PS      : 0x00060e30  A0      : 0x800880f5[37m [37m A1      : 0x3ffce490  
+02:05:03.878 > [37mA[37m2      : 0x3ffc8e58  A3      : 0xffffffff  A4      : 0x3ffce2a4[37m [37m A5      : 0x00000000  
+02:05:03.880 > [37mA[37m6      : 0x3f001d01  A7      : 0x3ffce26c  A8      : 0x00000000[37m [37m A9      : 0x3ffce350  
+02:05:03.881 > [37mA[37m10     : 0x00060023  A11     : 0x00000000  A12     : 0x00060020[37m [37m A13     : 0x00000080  
+02:05:03.882 > A14     : 0x00000000  A15     : 0x3ffcbee4  SAR     : 0x0000001f[37m [37m EXCCAUSE: 0x0000001c  
+02:05:03.883 > [37mEXCVADDR: 0x00000010  LBEG    : 0x00060020  LEND    : 0x00000080[37m [37m LCOUNT  : 0x4002a82c  
+02:05:03.885 > [37m[37m
+02:05:03.886 > [37m[37m
+02:05:03.886 > [37mBacktrace: 0x4008f522:0x3ffce490 0x400880f2:0x3ffce4b0 0x4008829b:0x3ffce4d0 0x400886b3:0x3ffce4f0 0x400886a4:0x3ffce510 0x40088[37m065:0x3ffce530 0x4008adac:0x3ffce580 0x4008ace0:0x3ffce5a0 0x400[37mc[37m079f:0x3ffce5c0 0x4002d6a5:0x3ffce5f0
+02:05:03.888 > [37m[37m
+02:05:03.889 > [37m[37m
+02:05:03.890 > [37m[37m
+02:05:03.890 > 
+02:05:03.890 > ELF file SHA256: b6c97e432
+02:05:03.891 > [37m[37m
+02:05:03.891 > Rebooting...
+02:05:03.924 > [37mI[37m (32) boot: ESP-IDF 5.4.0 2nd stage bootloader
+02:05:03.924 > I (32) boot: compile time Jul  3 2025 01:21:27
+02:05:03.924 > D (32) bootloader_flash: XMC chip detected by RDID (00204016), s[37mk[37mip.
+02:05:03.926 > [37mD[37m (34) bootloader_flash: mmu set block paddr=0x00000000 (was 0xf[37mf[37mffffff)
+02:05:03.927 > [37mI[37m (35) boot: chip revision: v0.0
+02:05:03.928 > [37mI[37m (35) boot: efuse block revision: v0.2
+02:05:03.928 > [37mD (36) boot.esp32s2: magic e9
+02:05:03.928 > [37mD[37m (36) boot.esp32s2: segments 04
+02:05:03.928 > [37mD (36) boot.esp32s2: spi_mode 02
+02:05:03.928 > [37mD[37m (36) boot.esp32s2: spi_speed 0f
+02:05:03.928 > D (36) boot.esp32s2: spi_size 02
+02:05:03.928 > [37mI[37m (36) boot.esp32s2: SPI Speed      : 80MHz
+02:05:03.928 > [37mI[37m (36) boot.esp32s2: SPI Mode       : DIO
+02:05:03.928 > [37mI[37m (36) boot.esp32s2: SPI Flash Size : 4MB
+02:05:03.928 > [37mD[37m (37) boot: Enabling RTCWDT(9000 ms)
+02:05:03.929 > [37mI[37m (37) boot: Enabling RNG early entropy source...
+02:05:03.929 > [37mD[37m (37) bootloader_flash: rodata starts from paddr=0x00008000, si[37mz[37me=0xc00, will be mapped to vaddr=0x3f000000
+02:05:03.929 > [37mV[37m (37) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m00000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+02:05:03.929 > [37mD[37m (37) boot: mapped partition table 0x8000 at 0x3f008000
+02:05:03.929 > [37mD[37m (37) flash_parts: partition table verified, 5 entries
+02:05:03.929 > I (38) boot: Partition Table:
+02:05:03.929 > [37mI (38) boot: ## Label            Usage          Type ST Offset  [37m [37mLength
+02:05:03.931 > [37mD[37m (39) boot: load partition table entry 0x3f008000
+02:05:03.932 > [37mD[37m (39) boot: type=1 subtype=2
+02:05:03.932 > [37mI[37m (40) boot:  0 nvs              WiFi data        01 02 00009000[37m [37m00004000
+02:05:03.933 > [37mD[37m (41) boot: load partition table entry 0x3f008020
+02:05:03.933 > [37mD[37m (41) boot: type=1 subtype=1
+02:05:03.933 > [37mI[37m (41) boot:  1 phy_init         RF data          01 01 0000d000[37m [37m00001000
+02:05:03.934 > [37mD[37m (42) boot: load partition table entry 0x3f008040
+02:05:03.934 > [37mD (43) boot: type=0 subtype=0
+02:05:03.935 > [37mI[37m (43) boot:  2 factory          factory app      00 00 00010000[37m [37m00100000
+02:05:03.936 > [37mD[37m (44) boot: load partition table entry 0x3f008060
+02:05:03.936 > [37mD[37m (44) boot: type=1 subtype=83
+02:05:03.936 > [37mI[37m (44) boot:  3 storage          Unknown data     01 83 00110000[37m [37m000f0000
+02:05:03.937 > [37mI[37m (45) boot: End of partition table
+02:05:03.937 > [37mD[37m (45) boot: Trying partition index -1 offs 0x10000 size 0x10000[37m0[37m
+02:05:03.938 > [37mD[37m (46) esp_image: reading image header @ 0x10000
+02:05:03.938 > [37mD[37m (47) bootloader_flash: mmu set block paddr=0x00010000 (was 0xf[37mf[37mffffff)
+02:05:03.940 > [37mD[37m (48) esp_image: image header: 0xe9 0x06 0x02 0x02 40026a80
+02:05:03.940 > [37mV[37m (48) esp_image: loading segment header 0 at offset 0x10018
+02:05:03.940 > [37mV[37m (48) esp_image: segment data length 0x15b38 data starts 0x1002[37m0[37m
+02:05:03.941 > [37mV[37m (49) esp_image: MMU page size 0x10000
+02:05:03.941 > [37mV[37m (49) esp_image: segment 0 map_segment 1 segment_data_offs 0x10020 load_addr 0x3f000020
+02:05:03.941 > [37mI[37m (49) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=15b38h ( 88888) map
+02:05:03.942 > [37mD[37m (50) esp_image: free data page_count 0x00000038
+02:05:03.942 > [37mD[37m (50) bootloader_flash: rodata starts from paddr=0x00010020, si[37mz[37me=0x15b38, will be mapped to vaddr=0x3f000000
+02:05:03.942 > [37mV[37m (50) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m10000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+02:05:03.960 > [37mV[37m (68) esp_image: loading segment header 1 at offset 0x25b58
+02:05:03.960 > D (68) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+02:05:03.961 > [37mV[37m (69) esp_image: segment data length 0x1c data starts 0x25b60
+02:05:03.961 > [37mV (69) esp_image: MMU page size 0x10000
+02:05:03.961 > [37mV[37m (69) esp_image: segment 1 map_segment 0 segment_data_offs 0x25b60 load_addr 0x3ff9e010
+02:05:03.961 > [37mI[37m (70) esp_image: segment 1: paddr=00025b60 vaddr=3ff9e010 size=[37m0[37m001ch (    28) load
+02:05:03.963 > [37mD[37m (71) esp_image: free data page_count 0x00000038
+02:05:03.963 > [37mD[37m (71) bootloader_flash: rodata starts from paddr=0x00025b60, si[37mz[37me=0x1c, will be mapped to vaddr=0x3f000000
+02:05:03.963 > [37mV[37m (71) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+02:05:03.963 > [37mV[37m (71) esp_image: loading segment header 2 at offset 0x25b7c
+02:05:03.963 > [37mD[37m (71) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+02:05:03.965 > [37mV[37m (73) esp_image: segment data length 0x2f48 data starts 0x25b84[37m[37m
+02:05:03.967 > [37mV[37m (74) esp_image: MMU page size 0x10000
+02:05:03.967 > [37mV[37m (75) esp_image: segment 2 map_segment 0 segment_data_offs 0x25b84 load_addr 0x3ffc5f00
+02:05:03.967 > [37mI[37m (75) esp_image: segment 2: paddr=00025b84 vaddr=3ffc5f00 size=02f48h ( 12104) load
+02:05:03.967 > [37mD[37m (75) esp_image: free data page_count 0x00000038
+02:05:03.967 > [37mD[37m (75) bootloader_flash: rodata starts from paddr=0x00025b84, si[37mz[37me=0x2f48, will be mapped to vaddr=0x3f000000
+02:05:03.968 > [37mV[37m (76) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+02:05:03.971 > [37mV[37m (79) esp_image: loading segment header 3 at offset 0x28acc
+02:05:03.971 > [37mD[37m (79) bootloader_flash: mmu set block paddr=0x00020000 (was 0xf[37mf[37mffffff)
+02:05:03.972 > [37mV[37m (80) esp_image: segment data length 0x7544 data starts 0x28ad4[37m[37m
+02:05:03.973 > [37mV[37m (81) esp_image: MMU page size 0x10000
+02:05:03.973 > [37mV[37m (81) esp_image: segment 3 map_segment 0 segment_data_offs 0x28ad4 load_addr 0x40024000
+02:05:03.973 > [37mI[37m (81) esp_image: segment 3: paddr=00028ad4 vaddr=40024000 size=07544h ( 30020) load
+02:05:03.974 > [37mD[37m (82) esp_image: free data page_count 0x00000038
+02:05:03.974 > [37mD[37m (82) bootloader_flash: rodata starts from paddr=0x00028ad4, size=0x7544, will be mapped to vaddr=0x3f000000
+02:05:03.974 > [37mV[37m (82) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m20000 and vaddr=0x3f000000, 0x20000 bytes are mapped
+02:05:03.982 > [37mV[37m (90) esp_image: loading segment header 4 at offset 0x30018
+02:05:03.982 > D (90) bootloader_flash: mmu set block paddr=0x00030000 (was 0xf[37mf[37mffffff)
+02:05:03.983 > [37mV[37m (91) esp_image: segment data length 0x40de8 data starts 0x3002[37m0[37m
+02:05:03.984 > [37mV[37m (92) esp_image: MMU page size 0x10000
+02:05:03.984 > [37mV[37m (92) esp_image: segment 4 map_segment 1 segment_data_offs 0x30020 load_addr 0x40080020
+02:05:03.984 > [37mI[37m (92) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=40de8h (265704) map
+02:05:03.985 > [37mD[37m (93) esp_image: free data page_count 0x00000038
+02:05:03.985 > [37mD[37m (93) bootloader_flash: rodata starts from paddr=0x00030020, si[37mz[37me=0x40de8, will be mapped to vaddr=0x3f000000
+02:05:03.985 > [37mV[37m (93) bootloader_flash: after mapping, starting from paddr=0x00[37m0[37m30000 and vaddr=0x3f000000, 0x50000 bytes are mapped
+02:05:04.037 > [37mV[37m (145) esp_image: loading segment header 5 at offset 0x70e08
+02:05:04.038 > D (146) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+02:05:04.039 > [37mV[37m (147) esp_image: segment data length 0xa9b4 data starts 0x70e1[37m0[37m
+02:05:04.040 > V (148) esp_image: MMU page size 0x10000
+02:05:04.040 > [37mV[37m (148) esp_image: segment 5 map_segment 0 segment_data_offs 0x70e10 load_addr 0x4002b544
+02:05:04.040 > [37mI[37m (148) esp_image: segment 5: paddr=00070e10 vaddr=4002b544 size=0a9b4h ( 43444) load
+02:05:04.040 > [37mD[37m (148) esp_image: free data page_count 0x00000038
+02:05:04.040 > [37mD[37m (148) bootloader_flash: rodata starts from paddr=0x00070e10, s[37mi[37mze=0xa9b4, will be mapped to vaddr=0x3f000000
+02:05:04.041 > [37mV[37m (149) bootloader_flash: after mapping, starting from paddr=0x00070000 and vaddr=0x3f000000, 0x10000 bytes are mapped
+02:05:04.052 > [37mV[37m (160) esp_image: image start 0x00010000 end of last section 0x[37m0[37m007b7c4
+02:05:04.053 > [37mD[37m (161) bootloader_flash: mmu set block paddr=0x00070000 (was 0x[37mf[37mfffffff)
+02:05:04.063 > [37mI[37m (171) boot: Loaded app from partition at offset 0x10000
+02:05:04.063 > I (171) boot: Disabling RNG early entropy source...
+02:05:04.063 > [37mD (171) boot: Mapping segment 0 as DROM
+02:05:04.063 > [37mD[37m (171) boot: Mapping segment 4 as IROM
+02:05:04.063 > [37mD[37m (171) boot: calling set_cache_and_start_app
+02:05:04.063 > [37mD[37m (171) boot: configure drom and irom and start
+02:05:04.063 > [37mV[37m (171) boot: rodata starts from paddr=0x00010020, vaddr=0x3f000[37m0[37m20, size=0x15b38
+02:05:04.064 > [37mV[37m (173) boot: after mapping rodata, starting from paddr=0x000100[37m0[37m0 and vaddr=0x3f000000, 0x20000 bytes are mapped
+02:05:04.065 > [37mV[37m (173) boot: mapped one page of the rodata, from paddr=0x000100[37m0[37m0 and vaddr=0x3f3f0000, 0x10000 bytes are mapped
+02:05:04.065 > [37mV[37m (173) boot: text starts from paddr=0x00030020, vaddr=0x4008002[37m0[37m, size=0x40de8
+02:05:04.066 > [37mV[37m (174) boot: after mapping text, starting from paddr=0x00030000[37m [37mand vaddr=0x40080000, 0x50000 bytes are mapped
+02:05:04.066 > [37mD[37m (174) boot: start: 0x40026a80
+02:05:04.089 > [37mI[37m (196) main_task: Started on CPU0
+02:05:04.089 > [37mI[37m (196) main_task: Calling app_main()
+02:05:04.090 > [37m[37m[1;32m[INFO][MAIN][13ms] START[0m
+02:05:05.189 > [37m[37m[1;32m[INFO][SETUP][1112ms] [USER] > Select log level:[0m
+02:05:05.189 > [1;32m[INFO][SETUP][1113ms]   I - ERROR and INFO logs[0m
+02:05:05.189 > [1;32m[INFO][SETUP][1113ms]   D - ERROR, INFO, and DEBUG logs[[37m0[37mm
