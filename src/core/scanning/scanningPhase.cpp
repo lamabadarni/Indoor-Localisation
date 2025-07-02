@@ -32,7 +32,7 @@ void runScanningPhase() {
     bool reuse = false; 
     bool labelInvalid = false;
 
-    if (isDataLoaded()) {
+    if (isDataLoadedForScan()) {
         LOG_INFO("SCAN", "Backup data available");
         reuse = promptUserReuseDecision();
     }

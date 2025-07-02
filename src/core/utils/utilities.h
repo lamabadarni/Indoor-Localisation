@@ -96,9 +96,9 @@ typedef enum {
 
 typedef enum {
     MODE_TOF_DIAGNOSTIC = 0,
-    MODE_COLLECT_TOF_RESPONDERS_MAC,
     MODE_ANCHORS_RSSI_DIAGNOSTIC,
     MODE_APS_RSSI_DIAGNOSTIC,
+    MODE_COLLECT_TOF_RESPONDERS_MAC,
     MODE_INITIATOR_RESPONDER_TEST,
     MODE_RESTORE_BACKUP_DATA_TEST,
     SYSTEM_BOOT_MODES_NUM
@@ -227,7 +227,9 @@ bool isDynamicRSSIActiveForPrediction();
 
 bool isTOFActiveForPrediction();
 
-bool isDataLoaded();
+bool isDataLoadedForScan();
+
+bool isDataLoadedForPrediction();
 
 void resetStaticRssiBuffer();
 

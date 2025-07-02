@@ -245,7 +245,6 @@ bool promptUserForClearingDataAfterManyPredectionFailureSerial() {
 }
 
 bool promptUserRunAnotherSessionSerial() {
-
         LOG_INFO("MAIN", "Would you like to run another session?");
         LOG_INFO("MAIN", "(y - yes | n - no)");
         char again = readCharFromUser();

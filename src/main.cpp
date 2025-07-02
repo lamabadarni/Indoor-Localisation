@@ -7,7 +7,7 @@
 
 #include "systemStateHandler/bootHandler.h"
 #include "systemStateHandler/scanningSessionHandler.h"
-#include "systemStateHandler/predectionSessionHandler.h"
+#include "systemStateHandler/predictionSessionHandler.h"
 #include "systemStateHandler/fullSessionHandler.h"
 
 #include "esp_event.h"
@@ -32,45 +32,32 @@ extern "C" void app_main() {
         
         shouldAbort = false;
 
-        runUserSystemSetupOLED();  // Prompts user for system mode and settings
-
-        if(SystemSetup::enableBackup) {
-            //TODO: call init for backup
-        }
-
-        if(SystemSetup::enableRestore) {
-            //TODO: call init for 
-        }
+        runUserSystemSetup();  // Prompts user for system mode and settings
 
         switch (SystemSetup::currentSystemMode) {
-            case MODE_SYSTEM_BOOT:
-                handleSystemBoot();
-                break;
-
-            case MODE_SCANNING_SESSION:
-                handleScanningSession();
-                break;
-
-            case MODE_PREDICTION_SESSION:
-                handlePredictionSession();
-                break;
-
-            case MODE_FULL_SESSION:
-                handleFullSession();
-                break;
-
-            default:
-                LOG_ERROR("MAIN", "Unknown system mode.");
-                break;
+        case MODE_SYSTEM_BOOT:
+            handleSystemBoot();
+            break;
+        case MODE_SCANNING_SESSION:
+            handleScanningSession();
+            break;
+        case MODE_PREDICTION_SESSION:
+            handlePredictionSession();
+            break;
+        case MODE_FULL_SESSION:
+            handleFullSession();
+            break;
+        default:
+            LOG_ERROR("MAIN", "Unknown system mode. Exiting.");
+            break;
         }
-
+  
         if(shouldAbort) break;
 
         char again = promptUserRunAnotherSession();
-        if (again) {
+        if (!again) {
             break;
         }
     }
-
     handleSoftExit();
 }

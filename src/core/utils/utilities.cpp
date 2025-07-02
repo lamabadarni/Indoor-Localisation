@@ -228,7 +228,7 @@ bool isTOFActiveForPrediction() {
            SystemSetup::currentSystemPredictionMode == STATIC_RSSI_DYNAMIC_RSSI_TOF;
 }
 
-bool isDataLoaded() {
+bool isDataLoadedForScan() {
     switch (SystemSetup::currentSystemScannerMode) {
     case TOF:
         return DataLoaded::TOF;
@@ -239,7 +239,22 @@ bool isDataLoaded() {
     default:
         break;
     }
-        return DataLoaded::Static;
+    return false;
+}
+
+bool isDataLoadedForPrediction() {
+    bool loaded = false;
+    if(isDynamicRSSIActiveForPrediction) {
+        loaded = DataLoaded::Dynamic;
+    }
+    if(isStaticRSSIActiveForPrediction) {
+        loaded = DataLoaded::Static;
+    }
+    if(isTOFActiveForPrediction) {
+        loaded = DataLoaded::TOF;
+    }
+
+    return loaded;
 }
 
 std::vector<std::string> arrayToVector(const std::string arr[], int size) {

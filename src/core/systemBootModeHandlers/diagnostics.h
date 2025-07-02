@@ -1,26 +1,41 @@
+#ifndef DIAGNOSTICS_H
+#define DIAGNOSTICS_H
 
-#ifndef VEREFIER_H
-#define VEREFIER_H
-
-#include "core/utils/platform.h"
 #include "core/utils/utilities.h"
-#include "core/utils/logger.h"
-#include "core/ui/userUI.h"
-#include "core/ui/userUIOled.h"
 
-typedef struct {
-    int    seen    = 0;
-    double average = 0;
-} Coverage;
+/**
+ * @brief Runs interactive diagnostic flow based on boot mode
+ */
+void interactiveScanCoverage();
 
-bool interactiveScanCoverage();
-
-void performTOFScanCoverage();
-
+/**
+ * @brief Perform STATIC RSSI diagnostic
+ */
 void performRSSIScanCoverage();
 
-Coverage scanRSSIForCoverage();
+/**
+ * @brief Perform DYNAMIC RSSI diagnostic
+ */
+void performDynamicScanCoverage();
 
+/**
+ * @brief Perform TOF diagnostic
+ */
+void performTOFScanCoverage();
+
+/**
+ * @brief Compute STATIC RSSI coverage result
+ */
+Coverage scanStaticForCoverage();
+
+/**
+ * @brief Compute DYNAMIC RSSI coverage result
+ */
+Coverage scanDynamicForCoverage();
+
+/**
+ * @brief Compute TOF coverage result
+ */
 Coverage scanTOFForCoverage();
 
-#endif // VEREFIER_H
+#endif // DIAGNOSTICS_H
