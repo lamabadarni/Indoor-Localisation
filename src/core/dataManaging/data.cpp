@@ -17,7 +17,7 @@ static bool _fromCSVTofToVector(std::string &line);
 //-----------------------------------------------------------------------------
 // Public APIs
 //-----------------------------------------------------------------------------
-/*
+
 bool initDataBackup() {
     return initSDCard();
 }
@@ -440,4 +440,3 @@ static bool _deleteDirectory(const char* path) {
 
     return true;
 }
-    */
