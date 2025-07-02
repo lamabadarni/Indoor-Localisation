@@ -1,6 +1,3 @@
-#include "core/utils/platform.h"
-#include "core/utils/logger.h"
-
 #define RESPONDER_ID 1  // Change this before flashing each responder
 /*
 void initFTMResponder() {

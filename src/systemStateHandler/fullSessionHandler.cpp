@@ -11,9 +11,11 @@
 
 
 void handleFullSession() {
+    LOG_INFO("SESSION", ">>> Starting FULL_SESSION...");
     runScanningPhase();
     if(SystemSetup::enableValidationPhase) {
         runValidationPhase();
+        LOG_INFO("VALIDATE", "Validation phase complete.");
     }
     runPredictionPhase();
     return;

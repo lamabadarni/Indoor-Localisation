@@ -11,7 +11,7 @@
 void log_message_serial(const char* level, const char* tag, const char* format, ...);
 void log_message_oled(const char* level, const char* tag, const char* format, ...);
 
-#define LOG_ERROR(tag, ...) if(systemUI == SERIAL && SystemSetup::logLevel >= LOG_LEVEL_ERROR) \
+#define LOG_ERROR(tag, ...) if(systemUI == SERIAL && SystemSetup::logLevel >= LOG_LEVEL_ERROR) \ 
                                 log_message_serial("ERROR", tag, __VA_ARGS__); \ 
                             else if(systemUI == OLED && SystemSetup::logLevel >= LOG_LEVEL_ERROR) \
                                 log_message_oled("ERROR", tag, __VA_ARGS__);

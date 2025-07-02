@@ -42,7 +42,7 @@ bool saveDynamicRSSIScan(const DynamicMacData& macRow, const DynamicRSSIData& rs
     FILE* f = fopen(getDynamicRSSIFilePath().c_str(), "a");
 
     if (!f) {
-        LOG_ERROR("FLASH", "Failed to write dynamic RSSI row");
+        LOG_ERROR("DATA", "Failed to write dynamic RSSI row");
         return false;
     }
 
@@ -67,7 +67,7 @@ static bool saveStaticRSSIScan(const StaticRSSIData& row) {
     FILE* f = fopen(getStaticRSSIFilePath().c_str(), "a");
 
     if (!f) {
-        LOG_ERROR("FLASH", "Failed to write static RSSI row.");
+        LOG_ERROR("DATA", "Failed to write static RSSI row.");
         return false;
     }
 
@@ -85,7 +85,7 @@ static bool saveTOFScan(const TOFData& row) {
     FILE* f = fopen(getTOFFilePath().c_str(), "a");
 
     if (!f) {
-        LOG_ERROR("FLASH", "Failed to write TOF row.");
+        LOG_ERROR("DATA", "Failed to write TOF row.");
         return false;
     }
 
@@ -101,9 +101,6 @@ static bool saveTOFScan(const TOFData& row) {
 
 // save buffered data..
 void doneCollectingData() {
-    LOG_DEBUG("DATA", "Finishing scan collection. Buffered: RSSI=%d, TOF=%d",
-             (int)rssiDataSet.size(), (int)tofDataSet.size());
-
     if (SaveBufferedData::scanner == STATIC_RSSI) {
         int datasetSize = staticRSSIDataSet.size();
         
@@ -124,7 +121,6 @@ void doneCollectingData() {
     }
     else if (SaveBufferedData::scanner == DYNAMIC_RSSI) {
         int datasetSize = dynamicRSSIDataSet.size();
-        int macDatasetSize = dynamicMacDataSet.size();
 
         for (int row = datasetSize ; row >= datasetSize - SaveBufferedData::lastN ; row--) {
             if (!saveDynamicRSSIScan(dynamicMacDataSet[row], dynamicRSSIDataSet[row])) {
@@ -136,7 +132,7 @@ void doneCollectingData() {
     LOG_INFO("DATA", "Flush complete");
 
     // reset BufferedData
-    SaveBufferedData::scanner = NONE;
+    SaveBufferedData::scanner = SYSTEM_SCANNER_MODES_NUM;
     SaveBufferedData::lastN   = 0;
 }
 bool loadDataset(void) {
@@ -158,7 +154,7 @@ bool loadDataset(void) {
             // Now, loop through the rest of the file (the actual data)
             while (_readLineFromFile(f, line)) {
                 if(!_fromCSVStaticRssiToVector(line)) {
-                    LOG_ERROR("FLASH", "Dynamic RSSI Data is not in the correct format");
+                    LOG_ERROR("DATA", "Dynamic RSSI Data is not in the correct format");
                 }
                 else {
                     validData++;
@@ -167,7 +163,7 @@ bool loadDataset(void) {
 
             fclose(f);
         } else {
-            LOG_WARN("DATA", "RSSI file not found.");
+            LOG_ERROR("DATA", "RSSI file not found.");
 
             ok = false;
         }
@@ -187,7 +183,7 @@ bool loadDataset(void) {
             // Now, loop through the rest of the file (the actual data)
             while (_readLineFromFile(f, line)) {
                 if (!_fromCSVTofToVector(line)) {
-                    LOG_ERROR("FLASH", "TOF Data is not in the correct format");
+                    LOG_ERROR("DATA", "TOF Data is not in the correct format");
                 }
                 else {
                     validData++;
@@ -196,14 +192,14 @@ bool loadDataset(void) {
 
             fclose(f);
         } else {
-            LOG_WARN("DATA", "TOF file not found.");
+            LOG_ERROR("DATA", "TOF file not found.");
 
             ok = false;
         }
     }
     else if (currentState == DYNAMIC_RSSI) {
         FILE* f = fopen(getDynamicRSSIFilePath().c_str(), "r");
-        bool validData = 0;
+        int validData = 0;
 
         if (f) {
             LOG_INFO("DATA", "Loading RSSI dataset...");
@@ -220,12 +216,13 @@ bool loadDataset(void) {
                 }
                 else {
                     validData++;
+                    //Ward : modify DataLoaded
                 }
             }
 
             fclose(f);
         } else {
-            LOG_WARN("FLASH", "Could not open Dynamic RSSI file.");
+            LOG_ERROR("DATA", "Could not open Dynamic RSSI file.");
 
             ok = false;
         }
@@ -243,18 +240,18 @@ bool formatStorage(void) {
 
     // 2) Make a fresh directory
     if (mkdir(baseDir.c_str(), 0777) != 0) {
-        LOG_ERROR("FLASH", "Failed to mkdir: %s", baseDir.c_str());
+        LOG_ERROR("DATA", "Failed to mkdir: %s", baseDir.c_str());
         return false;
     }
 
-    LOG_DEBUG("FLASH", "Created directory: %s", baseDir.c_str());
+    LOG_DEBUG("DATA", "Created directory: %s", baseDir.c_str());
 
     return createCSV();
 }
 
 bool createCSV(void) {
     std::string header, colHeader, filePath;
-    int numOfCols;
+    int numOfCols = 0;
 
     switch (SystemSetup::currentSystemScannerMode) {
         case SystemScannerMode::STATIC_RSSI:
@@ -272,6 +269,8 @@ bool createCSV(void) {
             numOfCols = NUMBER_OF_RESPONDERS;
             filePath = getDynamicRSSIFilePath();
             break;
+        default:
+            LOG_ERROR("DATA" , "Invalid scanner mode");
     }
 
     for (int i = 0 ; i < numOfCols ; i++) {
@@ -354,8 +353,8 @@ static bool _fromCSVDynamicRssiToVector(std::string& line) {
     for (int i = 0 ; i < NUMBER_OF_DYNAMIC_APS ; i++) {
         rssiData.RSSIs[i] = std::stoi(splittedString[i].substr(2 * MAC_ADDRESS_SIZE + 1));
 
-        for (int j = 0, k = 0 ; j < MAC_ADDRESS_SIZE ; j++) {
-            macAddrData.macAddresses[i][j + 1] = 0;
+        for (int j = 0 ; j < MAC_ADDRESS_SIZE ; j++) {
+            macAddrData.macAddresses[i][j] = 0;
 
             macAddrData.macAddresses[i][j] |= __hexaCharToHexaInt(splittedString[i][3 * j + 1]) |
                                               (__hexaCharToHexaInt(splittedString[i][3 * j]) << 4);
@@ -427,7 +426,9 @@ static bool _deleteDirectory(const char* path) {
         if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, "..")) {
             continue;
         }
+
         std::string fullPath = std::string(path) + "/" + entry->d_name;
+
         if (entry->d_type == DT_DIR) {
             _deleteDirectory(fullPath.c_str());
         } else {

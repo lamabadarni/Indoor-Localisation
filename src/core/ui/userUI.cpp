@@ -19,11 +19,17 @@ void promptUserShowDebugLogs() {
     if(systemUI == SERIAL) promptUserShowDebugLogsSerial();
 }
 
+bool promptUserRunAnotherSession() {
+   // if(systemUI == OLED)  
+    if(systemUI == SERIAL) return promptUserRunAnotherSessionSerial();
+    return false;
+}
+
 // ======================== LOCATION LABELING ========================
 
-void promptUserLocationLabel() {
-    if(systemUI == OLED)   promptUserLocationLabelOLED();
-    if(systemUI == SERIAL) promptUserLocationLabelSerial();
+void promptUserLocationLabelForScan() {
+    if(systemUI == OLED)   promptUserLocationLabelForScanOLED();
+    if(systemUI == SERIAL) promptUserLocationLabelForScanSerial();
 }
 
 void promptLabelsValidToPredection() {
@@ -67,7 +73,7 @@ bool promptUserRescanAfterInvalidation() {
 }
 
 bool promptUserRetryValidation() {
-    if(systemUI == OLED)   return promptUserRetryValidationOLED();
+    // if(systemUI == OLED)   return promptUserRetryValidationOLED(); ! HALA !
     if(systemUI == SERIAL) return promptUserRetryValidationSerial();
     return false;
 }
@@ -87,7 +93,7 @@ Label promptUserChooseBetweenPredictions(Label left, Label right) {
 }
 
 Label promptUserChooseBetweenTriplePredictions(Label first, Label second, Label third) {
-    if(systemUI == OLED)  return promptUserChooseBetweenTriplePredictionsOLED(first, second, third);
+    // if(systemUI == OLED)  return promptUserChooseBetweenTriplePredictionsOLED(first, second, third); ! HALA !
     if(systemUI == SERIAL) return promptUserChooseBetweenTriplePredictionsSerial(first, second, third);
     return LABELS_COUNT;
 }
@@ -100,6 +106,13 @@ bool promptUserRetryPrediction() {
 
 bool promptUserForClearingDataAfterManyPredectionFailure() {
     if(systemUI == OLED)  return promptUserForClearingDataAfterManyPredectionFailureOLED();
-    if(systemUI == SERIAL) return promptUserForClearingDataAfterManyPredectionFailureSerial(currentLabel);
+    if(systemUI == SERIAL) return promptUserForClearingDataAfterManyPredectionFailureSerial();
     return false;
+}
+
+// ======================== UTILS ========================
+char readCharFromUser() {
+    if(systemUI == OLED)   return readCharFromUserSerial();
+    if(systemUI == SERIAL) return readCharFromUserOLED();
+    return ' ';
 }

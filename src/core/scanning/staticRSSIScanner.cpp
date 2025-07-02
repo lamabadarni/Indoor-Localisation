@@ -7,7 +7,7 @@
  * Populates global `accumulatedRSSIs` and writes `RSSIData` to buffer.
  */
 
-#include "rssiScanner.h"
+#include "staticRSSIScanner.h"
 #include "core/prediction/predictionPhase.h"
 #include "core/dataManaging/data.h"
 
@@ -18,7 +18,7 @@ void performStaticRSSIScan() {
     resetStaticRssiBuffer();
     for (int scan = 0; scan < STATIC_RSSI_SCAN_SAMPLE_PER_BATCH; scan++) {
         
-        RSSIData scanData = createSingleStaticRSSIScan();
+        StaticRSSIData scanData = createSingleStaticRSSIScan();
         SaveBufferedData::scanner = STATIC_RSSI;
         SaveBufferedData::lastN++;
         saveData(scanData);
@@ -34,7 +34,7 @@ void performStaticRSSIScan() {
 
 StaticRSSIData createSingleStaticRSSIScan() {
     //create single scan as an EMA of 3 scans
-    for (int sample = 0; sample < RSSI_SCAN_SAMPLE_PER_BATCH; ++sample) {
+    for (int sample = 0; sample < STATIC_RSSI_SCAN_SAMPLE_PER_BATCH; ++sample) {
         wifi_scan_config_t scan_config = {
             .ssid = NULL,
             .bssid = NULL,

@@ -6,9 +6,10 @@
 // ======================== SYSTEM SETUP ========================
 void runUserSystemSetup();
 void promptUserShowDebugLogs();
+bool promptUserRunAnotherSession();
 
 // ======================== LOCATION LABELING ========================
-void promptUserLocationLabel();
+void promptUserLocationLabelForScan();
 void promptLabelsValidToPredection();
 void promptUserProceedToNextLabel();
 
@@ -30,8 +31,7 @@ Label promptUserChooseBetweenTriplePredictions(Label first, Label second, Label 
 bool promptUserRetryPrediction();
 bool promptUserForClearingDataAfterManyPredectionFailure();
 
+// ======================== UTILS ========================
 char readCharFromUser();
-
-bool promptUserRunAnotherSession();
 
 #endif // USER_UI_H

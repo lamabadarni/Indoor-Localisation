@@ -7,12 +7,12 @@
 #include "core/systemBootModeHandlers/responderMACsCollector.h"
 
 void handleSystemBoot() {
+    LOG_INFO("SESSION", ">>> Starting SYSTEM_BOOT...");
     switch (SystemSetup::currentSystemBootMode) {
         case MODE_TOF_DIAGNOSTIC:
-            performTOFScanCoverage();
-            break;
-        case MODE_RSSI_DIAGNOSTIC:
-            performRSSIScanCoverage();
+        case MODE_ANCHORS_RSSI_DIAGNOSTIC:
+        case MODE_APS_RSSI_DIAGNOSTIC :
+            interactiveScanCoverage();
             break;
         case MODE_COLLECT_TOF_RESPONDERS_MAC:
             collectResponderMACs();
@@ -24,7 +24,7 @@ void handleSystemBoot() {
             //LAMA: after adding the data add the test here
             break;
         default:
-            LOG_WARN("BOOT", "Unsupported boot sub-mode.");
+            LOG_ERROR("BOOT", "Unsupported boot sub-mode.");
             break;
     }
 }

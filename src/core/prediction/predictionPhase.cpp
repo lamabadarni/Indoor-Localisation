@@ -4,7 +4,7 @@
 #include "core/utils/utilities.h"
 
 static double _euclidean(const double* a, const double* b, int size);
-static void   _preparePointRSSI(double toBeNormalised[NUMBER_OF_ANCHORS]);
+static void   _preparePointRSSI(double* toBeNormalised, int n);
 static void   _preparePointTOF(double TOF[NUMBER_OF_RESPONDERS], double toBeNormalised[NUMBER_OF_RESPONDERS]);
 static Label  _predict(std::vector<double>& distances, std::vector<Label>& labels, int k);
 static void  clearDataAfterPredectionFailure();
@@ -98,15 +98,12 @@ Label predict() {
     if(SystemSetup::currentSystemMode == MODE_PREDICTION_SESSION) {
         if( isStaticRSSIActiveForPrediction() ) {
             SystemSetup::currentSystemScannerMode = STATIC_RSSI;
-            createSingleScan();
         }
         if ( isDynamicRSSIActiveForPrediction() ) {
             SystemSetup::currentSystemScannerMode = DYNAMIC_RSSI;
-            createSingleScan();
         }
         if ( isTOFActiveForPrediction() ) {
             SystemSetup::currentSystemScannerMode = TOF;
-            createSingleScan();
         }
     }
 
@@ -226,10 +223,15 @@ static Label staticRSSIPredict() {
     std::vector<double> distances(sizeOfDataSet, 0);
     std::vector<Label> labels(sizeOfDataSet, LABELS_COUNT);
 
-    _preparePointRSSI(normalisedInput);
+    memcpy(normalisedInput, accumulatedStaticRSSIs, NUMBER_OF_DYNAMIC_APS);
+    _preparePointRSSI(normalisedInput, NUMBER_OF_DYNAMIC_APS);
+
     for (int i = 0; i < sizeOfDataSet; ++i) {
         double normalisedPoint[NUMBER_OF_ANCHORS];
-        _preparePointRSSI(normalisedPoint);
+
+        memcpy(normalisedPoint, staticRSSIDataSet[i].RSSIs, NUMBER_OF_DYNAMIC_APS);
+        _preparePointRSSI(normalisedPoint, NUMBER_OF_DYNAMIC_APS);
+
         distances[i] = _euclidean(normalisedPoint, normalisedInput, NUMBER_OF_ANCHORS);
         labels[i] = staticRSSIDataSet[i].label;
     }
@@ -237,8 +239,70 @@ static Label staticRSSIPredict() {
     return _predict(distances, labels, K_RSSI);
 }
 
+static int _macAddrCmp(uint8_t mac1[MAC_ADDRESS_SIZE], uint8_t mac2[MAC_ADDRESS_SIZE]) {
+    int cmp = 0;
+
+    for (int i = 0 ; i < MAC_ADDRESS_SIZE ; i++) {
+        cmp = mac1[i] - mac2[i];
+
+        if (cmp) {
+            return cmp;
+        }
+    }
+
+    return cmp;
+}
+
+static double _dynamicRSSIeuclidean(double rssi1[NUMBER_OF_DYNAMIC_APS],
+                            double rssi2[NUMBER_OF_DYNAMIC_APS],
+                            uint8_t mac1[NUMBER_OF_DYNAMIC_APS][MAC_ADDRESS_SIZE],
+                            uint8_t mac2[NUMBER_OF_DYNAMIC_APS][MAC_ADDRESS_SIZE]) {
+    int i_1 = 0, i_2 = 0, exactMatch = 0;
+    double sum = 0;
+
+    while (i_1 < NUMBER_OF_DYNAMIC_APS && i_2 < NUMBER_OF_DYNAMIC_APS) {
+        int cmp = _macAddrCmp(mac1[i_1], mac2[i_2]);
+
+        if (cmp > 0) {
+            i_1++;
+        }
+        else if (cmp < 0) {
+            i_2++;
+        }
+        else {
+            sum += (rssi1[i_1] - rssi2[i_2])*(rssi1[i_1] - rssi2[i_2]);
+
+            i_1++;
+            i_2++;
+            exactMatch++;
+        }
+    }
+
+    sum += NUMBER_OF_DYNAMIC_APS - exactMatch;
+
+    return sqrt(sum);
+}
+
 static Label dynamicRSSIPredict() {
-    return LABELS_COUNT; // TODO: implement logic
+    int sizeOfDataSet = dynamicRSSIDataSet.size();
+    double normalisedInput[NUMBER_OF_DYNAMIC_APS];
+    std::vector<double> distances(sizeOfDataSet, 0);
+    std::vector<Label> labels(sizeOfDataSet, LABELS_COUNT);
+
+    memcpy(normalisedInput, accumulatedDynamicRSSIs, NUMBER_OF_DYNAMIC_APS);
+    _preparePointRSSI(normalisedInput, NUMBER_OF_DYNAMIC_APS);
+
+    for (int i = 0 ; i < sizeOfDataSet ; i++) {
+        double normalisedPoint[NUMBER_OF_DYNAMIC_APS];
+
+        memcpy(normalisedPoint, dynamicRSSIDataSet[i].RSSIs, NUMBER_OF_DYNAMIC_APS);
+        _preparePointRSSI(normalisedPoint, NUMBER_OF_DYNAMIC_APS);
+        distances[i] = _dynamicRSSIeuclidean(normalisedInput, normalisedPoint,
+                       accumulatedMacAddresses, dynamicMacDataSet[i].macAddresses);
+        labels[i] = staticRSSIDataSet[i].label;
+    }
+
+    return _predict(distances, labels, K_RSSI);
 }
 
 static Label tofPredict() {
@@ -248,6 +312,7 @@ static Label tofPredict() {
     std::vector<Label> labels(sizeOfDataSet, LABELS_COUNT);
 
     _preparePointTOF(accumulatedTOFs, normalisedInput);
+
     for (int i = 0; i < sizeOfDataSet; ++i) {
         double normalisedPoint[NUMBER_OF_RESPONDERS];
         _preparePointTOF(tofDataSet[i].TOFs, normalisedPoint);
@@ -270,9 +335,9 @@ static double _euclidean(const double* a, const double* b, int size) {
     return sqrt(sum);
 }
 
-static void _preparePointRSSI(double toBeNormalised[NUMBER_OF_ANCHORS]) {
-    for (int i = 0; i < NUMBER_OF_ANCHORS; ++i) {
-        toBeNormalised[i] = ((double)(accumulatedStaticRSSIs[i] + 100)) / 100.0;
+static void _preparePointRSSI(double* toBeNormalised, int n) {
+    for (int i = 0 ; i < n ; ++i) {
+        toBeNormalised[i] = ((double)(toBeNormalised[i] + 100)) / 100.0;
     }
 }
 
