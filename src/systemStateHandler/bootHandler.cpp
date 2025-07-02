@@ -18,10 +18,10 @@ void handleSystemBoot() {
             collectResponderMACs();
             break;
         case MODE_INITIATOR_RESPONDER_TEST: 
-            //TOOD: after adding the inititor logic add test here
+            //LAMA: after adding the inititor logic add test here
             break;
         case MODE_RESTORE_BACKUP_DATA_TEST:
-            //TODO: after adding the data add the test here
+            //LAMA: after adding the data add the test here
             break;
         default:
             LOG_WARN("BOOT", "Unsupported boot sub-mode.");

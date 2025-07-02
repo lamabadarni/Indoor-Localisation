@@ -23,7 +23,6 @@ void runScanningPhase() {
     delay_ms(DELAY_BETWEEN_PHASES);
 
     LOG_INFO("SCAN", "=============== Scanning Phase Started ===============");
-    LOG_INFO("SCAN", "=============== Scanning Phase Started ===============");
     LOG_INFO("SCAN", "In this phase, the system will collect data for each defined location label.");
     LOG_INFO("SCAN", "Please stand still at the selected location during scanning.");
     LOG_INFO("SCAN", "You will be prompted to choose whether to reuse existing data or perform a new scan.");
@@ -45,9 +44,6 @@ void runScanningPhase() {
                 if (validForPredection[currentLabel]) continue; // Reuse backup if valid
             }
 
-            if (input == 'Y' || input == 'y') {
-                continue; // Accept backup
-            }
         }
 
         // Fresh scan path
@@ -95,7 +91,6 @@ bool startLabelScanningSession() {
         LOG_INFO("SCAN", "Validating scan accuracy...");
         startLabelValidationSession();
 
-        validScan = (getAccuracy() > VALIDATION_PASS_THRESHOLD);
         if (validScan) {
             LOG_INFO("SCAN", "Scan successful for label: %s", labels[currentLabel].c_str());
             break;
@@ -177,7 +172,7 @@ void createSingleScan() {
 void rescan() {
     LOG_INFO("SCAN", "Rescanning after failed invalidation for label: %s", labels[currentLabel].c_str());
 
-    // TODO: Consider clearing invalid measurements if needed
+    // LAMA: Consider clearing invalid measurements if needed
 
     collectMeasurements();
 

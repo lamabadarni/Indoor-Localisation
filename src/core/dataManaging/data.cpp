@@ -25,7 +25,7 @@ void saveData(const RSSIData &scanData) {
     if ((BufferedData::scanner != STATICRSSI) &&
         (BufferedData::scanner != BOTH)) {
         return;
-    }
+    } // TODO: change to assert
     rssiDataSet.push_back(scanData);
     LOG_DEBUG("DATA", "Buffered RSSI scan for label %d", scanData.label);
 }
@@ -34,7 +34,7 @@ void saveData(const TOFData &scanData) {
     if ((BufferedData::scanner != TOF_) &&
         (BufferedData::scanner != BOTH)) {
         return;
-    }
+    } // TODO: change to assert
     tofDataSet.push_back(scanData);
     LOG_DEBUG("DATA", "Buffered TOF scan for label %d", scanData.label);
 }
@@ -67,47 +67,35 @@ static bool saveTOFScan(const TOFData& row) {
     return true;
 }
 
+// save buffered data..
 void doneCollectingData() {
     LOG_DEBUG("DATA", "Finishing scan collection. Buffered: RSSI=%d, TOF=%d",
              (int)rssiDataSet.size(), (int)tofDataSet.size());
 
-    // ==== FIX #1: Check if scanner is STILL NONE. If so, no flush. ====
     if (BufferedData::scanner == NONE) {
         LOG_INFO("DATA", "bufferToCSV disabled — data not flushed.");
         return;
-    }
+    } // TODO: change to assert
 
     if (BufferedData::scanner == STATICRSSI) {
-        for (const auto& row : rssiDataSet) {
-            if (!saveRSSIScan(row)) {
+        int datasetSize = rssiDataSet.size();
+        
+        for (int row = datasetSize - 1; row >= datasetSize - BufferedData::lastN ; row--) {
+            if (!saveRSSIScan(rssiDataSet[row])) {
                 LOG_ERROR("DATA", "Failed to write RSSI row.");
             }
         }
     }
     else if (BufferedData::scanner == TOF_) {
-        for (const auto& row : tofDataSet) {
-            if (!saveTOFScan(row)) {
-                LOG_ERROR("DATA", "Failed to write TOF row.");
-            }
-        }
-    }
-    else if (BufferedData::scanner == BOTH) {
-        // If you want BOTH, flush both sets:
-        for (const auto& row : rssiDataSet) {
-            if (!saveRSSIScan(row)) {
-                LOG_ERROR("DATA", "Failed to write RSSI row.");
-            }
-        }
-        for (const auto& row : tofDataSet) {
-            if (!saveTOFScan(row)) {
+        int datasetSize = tofDataSet.size();
+
+        for (int row = datasetSize - 1 ; row >= datasetSize - BufferedData::lastN ; row--) {
+            if (!saveTOFScan(tofDataSet[row])) {
                 LOG_ERROR("DATA", "Failed to write TOF row.");
             }
         }
     }
 
-    // If you have a custom delay, fine. Otherwise you can replace with:
-    // vTaskDelay(pdMS_TO_TICKS(USER_PROMPTION_DELAY));
-    delay_ms(USER_PROMPTION_DELAY);
     LOG_INFO("DATA", "Flush complete");
 
     // reset BufferedData

@@ -1,5 +1,5 @@
 /**
- * @file rssiScanner.cpp
+ * @file staticRSSIScanner.cpp
  * @brief RSSI scanning logic using Wi-Fi APs and Exponential Moving Average (EMA).
  *
  * Implements batched RSSI collection across known anchor SSIDs.
@@ -13,14 +13,14 @@
 
 #define EXPECTED_NUM_NEAR_APS 30
 
-void performRSSIScan() {
+void performStaticRSSIScan() {
     //start scanning - make 15 scan, each scan contains 3 samples and calculate EMA
-    resetRssiBuffer();
-    for (int scan = 0; scan < RSSI_SCAN_BATCH_SIZE; scan++) {
+    resetStaticRssiBuffer();
+    for (int scan = 0; scan < STATIC_RSSI_SCAN_SAMPLE_PER_BATCH; scan++) {
         
-        RSSIData scanData = createSingleRSSIScan();
-        BufferedData::scanner = STATICRSSI;
-        BufferedData::lastN++;
+        RSSIData scanData = createSingleStaticRSSIScan();
+        SaveBufferedData::scanner = STATIC_RSSI;
+        SaveBufferedData::lastN++;
         saveData(scanData);
 
         LOG_DEBUG("RSSI", "Scan %d for label %s", scan + 1, labels[currentLabel]);
@@ -32,7 +32,7 @@ void performRSSIScan() {
     doneCollectingData();
 }
 
-RSSIData createSingleRSSIScan() {
+StaticRSSIData createSingleStaticRSSIScan() {
     //create single scan as an EMA of 3 scans
     for (int sample = 0; sample < RSSI_SCAN_SAMPLE_PER_BATCH; ++sample) {
         wifi_scan_config_t scan_config = {
@@ -52,9 +52,9 @@ RSSIData createSingleRSSIScan() {
         for (int j = 0; j < ap_num; ++j) {
             for (int k = 0; k < NUMBER_OF_ANCHORS; ++k) {
                 if (sample > 0 && strcmp((const char*)ap_records[j].ssid, anchorSSIDs[k].c_str()) == 0) {
-                    accumulatedRSSIs[k] = applyEMA(accumulatedRSSIs[k], ap_records[j].rssi);
+                    accumulatedStaticRSSIs[k] = applyEMA(accumulatedRSSIs[k], ap_records[j].rssi);
                 } else {
-                    accumulatedRSSIs[k] = RSSI_DEFAULT_VALUE;
+                    accumulatedStaticRSSIs[k] = RSSI_DEFAULT_VALUE;
                 }
             }
         }
@@ -67,6 +67,5 @@ RSSIData createSingleRSSIScan() {
     for (int i = 0; i < NUMBER_OF_ANCHORS; i++) {
         scanData.RSSIs[i] = accumulatedRSSIs[i];
     }
-
     return scanData;
 }

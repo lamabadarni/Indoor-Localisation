@@ -158,8 +158,8 @@ bool promptUserRescanAfterInvalidationOLED() {
     return display_prompt_yes_no("Validation Failed", "Rescan location?");
 }
 
-bool promptUserForClearingDataAfterManyPredectionFailureOLED() {
-    //TODO: ask user if to delete the data
+bool promptUserForClearingDataAfterManyPredectionFailure() {
+    //HALA: ask user if to delete the data
     return display_prompt_yes_no("Error", "Clear all data?");
 }
 

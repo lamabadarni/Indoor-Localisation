@@ -78,11 +78,11 @@ void runPredictionPhase(void) {
         delay_ms(USER_PROMPTION_DELAY);
     }
 
-    //TODO: should print predection summary
+    //Lama TODO: should print predection summary
     LOG_INFO("PREDICT", "Aborting predection phase");
 }
 
-// Ward Lama :: need implementation -- should update validForPredection and make user choose only from them
+// Ward TODO :: need implementation -- should update validForPredection and make user choose only from them
 // update data
 bool clearDataAfterPredectionFailure() {
     return true;
@@ -155,11 +155,9 @@ Label predict() {
                 break;
             }
         
-            // Ward :: here , should we add weighting ?? 
-            LOG_ERROR("PREDICT", " !! CONFLICT !! RSSI and TOF predictions differ:");
-            LOG_ERROR("PREDICT", " ! RSSI Prediction: %s, with accuracy: %d", labels[rssiLabel], rssiAccuracy[rssiLabel]);
-            LOG_ERROR("PREDICT", " ! TOF  Prediction: %s, with accuracy: %d", labels[tofLabel],  tofAccuracy[tofLabel]);
-                
+            LOG_ERROR("PREDICT", " !! CONFLICT !! RSSI and TOF predictions differ:"); // Lama TODO: print predictions
+            LOG_DEBUG("PREDICT", " ! RSSI Prediction: %s, with accuracy: %d", labels[rssiLabel], rssiAccuracy[rssiLabel]);
+            LOG_DEBUG("PREDICT", " ! TOF  Prediction: %s, with accuracy: %d", labels[tofLabel],  tofAccuracy[tofLabel]);
             Label user = promptUserChooseBetweenPredictions(rssiLabel, tofLabel);
             if(user == rssiLabel)      { flag = STATICRSSI; tofAccuracy[tofLabel]   = 0;}
             else if(user == tofLabel)  { flag = TOF_;        rssiAccuracy[rssiLabel] = 0;}
@@ -191,7 +189,7 @@ Label createSamplePredict() {
     for(int i = 0; i < PREDICTION_SAMPLES; i++) {
         samples[i] = flag == STATICRSSI ? rssiPredict() : tofPredict() ;
         if(i > 0 && samples[i] == samples[i-1]) c++;
-        if(c > PREDICTION_SAMPLES_THRESHOLD) return samples[i];
+        if(c == PREDICTION_SAMPLES_THRESHOLD) return samples[i];
     }
 
     int most[LABELS_COUNT] = {0};
@@ -214,7 +212,7 @@ Label createSamplePredict() {
     }
 
     if(labelNumHaveMax > 1) {
-        return LABELS_COUNT;
+        return LABELS_COUNT; // Lama TODO: fix
     }
 
     if(flag == STATIC_RSSI) {
