@@ -4,6 +4,7 @@
 #include "core/utils/logger.h"
 #include "core/ui/userUI.h"
 #include "core/ui/userUIOled.h"
+#include "core/dataManaging/data.h"
 
 #include "systemStateHandler/bootHandler.h"
 #include "systemStateHandler/scanningSessionHandler.h"
@@ -26,6 +27,7 @@ static void handleSoftExit() {
 
 extern "C" void app_main() {
     initLogger();     // Replace Serial.begin() for ESP-IDF logging
+    initDataBackup();
     delay_ms(10000);  // Optional startup delay
 
     while (true) {

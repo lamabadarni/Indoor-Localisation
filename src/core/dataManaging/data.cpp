@@ -19,7 +19,13 @@ static bool _fromCSVTofToVector(std::string &line);
 //-----------------------------------------------------------------------------
 
 bool initDataBackup() {
-    return initSDCard();
+    if (initSDCard()) {
+        _createFileWithHeader("", std::string(""));
+
+        return true;
+    }
+
+    return false;
 }
 void saveData(const StaticRSSIData &scanData) {
     staticRSSIDataSet.push_back(scanData);
