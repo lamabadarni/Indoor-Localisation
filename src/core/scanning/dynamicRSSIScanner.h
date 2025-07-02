@@ -14,7 +14,7 @@
  * 
  * @return RSSIData containing current label and all anchor RSSIs.
  */
-DynamicRSSIData createSingleDynamicRSSIScan();
+std::pair<DynamicRSSIData , DynamicMacData> createSingleDynamicRSSIScan();
 
 /**
  * @brief Collects a batch of RSSI scans and saves them to internal storage.

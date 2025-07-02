@@ -4,6 +4,9 @@
 #include <string>
 #include <cstring>
 #include <vector>
+#include <map>
+#include <algorithm>
+#include <string.h>
 #include <cstdarg>
 #include <cstdio>
 #include <cstdio> 
@@ -16,6 +19,7 @@
 #include <errno.h>
 #include <dirent.h>
 #include <fcntl.h>
+
 
 #ifdef ESP_PLATFORM
 #include "freertos/FreeRTOS.h"
