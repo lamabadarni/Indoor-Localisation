@@ -4,7 +4,7 @@
 #include <dirent.h>    // <-- needed for opendir/readdir
 #include <unistd.h>    // <-- needed for unlink()/rmdir()
 #include "sdCardInit.h"
-/*
+
 static std::vector<std::string> splittedString;
 static void _splitBySeparator(const std::string &data, char separator);
 static bool _deleteDirectory(const char* path);
@@ -22,23 +22,50 @@ bool initDataBackup() {
     return initSDCard();
 }
 void saveData(const StaticRSSIData &scanData) {
-    if (SaveBufferedData::scanner != STATIC_RSSI) {
-        return;
-    } // TODO: change to assert
     staticRSSIDataSet.push_back(scanData);
-    LOG_DEBUG("DATA", "Buffered RSSI scan for label %d", scanData.label);
+    LOG_DEBUG("DATA", "Buffered Static RSSI scan for label %d", scanData.label);
 }
 
 void saveData(const TOFData &scanData) {
-    if (SaveBufferedData::scanner != TOF) {
-        return;
-    } // TODO: change to assert
     tofDataSet.push_back(scanData);
     LOG_DEBUG("DATA", "Buffered TOF scan for label %d", scanData.label);
 }
 
-static bool saveRSSIScan(const StaticRSSIData& row) {
-    FILE* f = fopen(getRSSIFilePath().c_str(), "a");
+void saveData(const DynamicMacData& macData, const DynamicRSSIData& scanData) {
+    dynamicMacDataSet.push_back(macData);
+    dynamicRSSIDataSet.push_back(scanData);
+
+    LOG_DEBUG("DATA", "Buffered Dynamic RSSI scan for label %d", scanData.label);
+}
+
+bool saveDynamicRSSIScan(const DynamicMacData& macRow, const DynamicRSSIData& rssiData) {
+    FILE* f = fopen(getDynamicRSSIFilePath().c_str(), "a");
+
+    if (!f) {
+        LOG_ERROR("FLASH", "Failed to write dynamic RSSI row");
+        return false;
+    }
+
+    for (int i = 0 ; i < NUMBER_OF_DYNAMIC_APS ; i++) {
+        fprintf(f, "%X%X:%X%X:%X%X:%X%X:%X%X:%X%X-%d,",
+            (macRow.macAddresses[i][0] & 0xF0) >> 4, macRow.macAddresses[i][0] & 0xF,
+            (macRow.macAddresses[i][1] & 0xF0) >> 4, macRow.macAddresses[i][1] & 0xF,
+            (macRow.macAddresses[i][2] & 0xF0) >> 4, macRow.macAddresses[i][2] & 0xF,
+            (macRow.macAddresses[i][3] & 0xF0) >> 4, macRow.macAddresses[i][3] & 0xF,
+            (macRow.macAddresses[i][4] & 0xF0) >> 4, macRow.macAddresses[i][4] & 0xF,
+            (macRow.macAddresses[i][5] & 0xF0) >> 4, macRow.macAddresses[i][5] & 0xF,
+            rssiData.RSSIs[i]);
+    }
+
+    fprintf(f, "%d\n", rssiData.label);
+    fclose(f);
+
+    return true;
+}
+
+static bool saveStaticRSSIScan(const StaticRSSIData& row) {
+    FILE* f = fopen(getStaticRSSIFilePath().c_str(), "a");
+
     if (!f) {
         LOG_ERROR("FLASH", "Failed to write static RSSI row.");
         return false;
@@ -75,27 +102,20 @@ static bool saveTOFScan(const TOFData& row) {
 // save buffered data..
 void doneCollectingData() {
     LOG_DEBUG("DATA", "Finishing scan collection. Buffered: RSSI=%d, TOF=%d",
-             (int)staticRSSIDataSet.size(), (int)tofDataSet.size());
-
-    if (SaveBufferedData::scanner == SYSTEM_SCANNER_MODES_NUM) {
-        LOG_INFO("DATA", "bufferToCSV disabled — data not flushed.");
-        return;
-    } // TODO: change to assert
+             (int)rssiDataSet.size(), (int)tofDataSet.size());
 
     if (SaveBufferedData::scanner == STATIC_RSSI) {
         int datasetSize = staticRSSIDataSet.size();
         
         for (int row = datasetSize - 1; row >= datasetSize - SaveBufferedData::lastN ; row--) {
-            if (!saveRSSIScan(staticRSSIDataSet[row])) {
+            if (!saveStaticRSSIScan(staticRSSIDataSet[row])) {
                 LOG_ERROR("DATA", "Failed to write RSSI row.");
             }
         }
     }
     else if (SaveBufferedData::scanner == TOF) {
-    else if (SaveBufferedData::scanner == TOF) {
         int datasetSize = tofDataSet.size();
 
-        for (int row = datasetSize - 1 ; row >= datasetSize - SaveBufferedData::lastN ; row--) {
         for (int row = datasetSize - 1 ; row >= datasetSize - SaveBufferedData::lastN ; row--) {
             if (!saveTOFScan(tofDataSet[row])) {
                 LOG_ERROR("DATA", "Failed to write TOF row.");
@@ -116,7 +136,7 @@ void doneCollectingData() {
     LOG_INFO("DATA", "Flush complete");
 
     // reset BufferedData
-    SaveBufferedData::scanner = SYSTEM_SCANNER_MODES_NUM;
+    SaveBufferedData::scanner = NONE;
     SaveBufferedData::lastN   = 0;
 }
 bool loadDataset(void) {
@@ -127,9 +147,6 @@ bool loadDataset(void) {
         FILE* f = fopen(getStaticRSSIFilePath().c_str(), "r");
         int validData = 0;
 
-    // This logic is based on the version you provided in the previous turn
-    if (isStaticRSSIActiveForPrediction()) {
-        FILE* f = fopen(getRSSIFilePath().c_str(), "r");
         if (f) {
             LOG_INFO("DATA", "Loading RSSI dataset...");
 
@@ -155,8 +172,7 @@ bool loadDataset(void) {
             ok = false;
         }
     }
-
-    if (isTOFActiveForPrediction()) {
+    else if (currentState == TOF) {
         FILE* f = fopen(getTOFFilePath().c_str(), "r");
         int validData = 0;
 
@@ -246,54 +262,20 @@ bool createCSV(void) {
             numOfCols = NUMBER_OF_ANCHORS;
             filePath = getStaticRSSIFilePath();
             break;
+        case SystemScannerMode::DYNAMIC_RSSI:
+            colHeader = "mac_address-rssi_";
+            numOfCols = NUMBER_OF_DYNAMIC_APS;
+            filePath = getDynamicRSSIFilePath();
+            break;
         case SystemScannerMode::TOF:
             colHeader = "tof_";
             numOfCols = NUMBER_OF_RESPONDERS;
             filePath = getDynamicRSSIFilePath();
             break;
     }
-    LOG_DEBUG("FLASH", "Storage reset complete for state: %s", systemScannerModes[SystemSetup::currentSystemScannerMode].c_str());
-    return true;
-}
 
-bool filterNonValidData(const bool validMap[LABELS_COUNT]) {
-    bool success = true;
-
-    if (isStaticRSSIActiveForPrediction()) {
-        FILE* in = fopen(getRSSIFilePath().c_str(), "r");
-        if (!in) return false;
-        std::string tmpPath = getBaseDir()  + TMP_SUFFIX;
-        FILE* out = fopen(tmpPath.c_str(), "w");
-        if (!out) {
-            fclose(in);
-            return false;
-        }
-
-        // Write header
-        for (int i = 1; i <= NUMBER_OF_ANCHORS; ++i) {
-            fprintf(out, "%d_rssi,", i);
-        }
-        fprintf(out, "Label\n");
-
-        std::string line;
-        // consume first line (header)
-        _readLineFromFile(in, line);
-
-        while (_readLineFromFile(in, line)) {
-            _splitBySeparator(line, ',');
-            if (splittedString.size() != (size_t)(NUMBER_OF_ANCHORS + 1)) {
-                continue;
-            }
-            Label label = static_cast<Label>(std::stoi(splittedString.back()));
-            if (validMap[label]) {
-                fprintf(out, "%s", line.c_str());
-            }
-        }
-        fclose(in);
-        fclose(out);
-        remove(getRSSIFilePath().c_str());
-        rename(tmpPath.c_str(), getRSSIFilePath().c_str());
-        LOG_INFO("FLASH", "RSSI CSV cleaned.");
+    for (int i = 0 ; i < numOfCols ; i++) {
+        header += colHeader + std::to_string(i) + ",";
     }
 
     header += "Label\n";
@@ -458,5 +440,3 @@ static bool _deleteDirectory(const char* path) {
 
     return true;
 }
-
-*/
