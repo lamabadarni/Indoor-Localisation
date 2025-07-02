@@ -52,6 +52,8 @@ double  accumulatedDynamicRSSIs[NUMBER_OF_DYNAMIC_APS];
 uint8_t accumulatedMacAddresses[NUMBER_OF_DYNAMIC_APS][MAC_ADDRESS_SIZE];
 uint8_t responderMacs[NUMBER_OF_RESPONDERS][MAC_ADDRESS_SIZE];
 
+FILE* logFile = NULL;
+
 
 // ======================  CONST Globals    ======================
 

@@ -20,8 +20,8 @@ static void initLogger() {
 }
 
 static void handleSoftExit() {
-
     LOG_INFO("MAIN", "Session ended. Goodbye.");
+    fclose(logFile);
 }
 
 

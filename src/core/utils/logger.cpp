@@ -23,6 +23,9 @@ void log_message_serial(const char* level, const char* tag, const char* format, 
     va_end(args);
     unsigned long timestamp = millis_since_boot();
     printf("[%s][%s][%lums] %s\n", level, tag, timestamp, buffer);
+    if (!logFile) {
+        fprintf("[%s][%s][%lums] %s\n", level, tag, timestamp, buffer);
+    }
 }
 
 void log_message_oled(const char* level, const char* tag, const char* format, ...) {
@@ -41,6 +44,10 @@ void log_message_oled(const char* level, const char* tag, const char* format, ..
     
     // Send the complete, formatted string to our new OLED log viewer
     display_add_log_line(std::string(full_log_cstr));
+
+    if (!logFile) {
+        fprintf(full_log_cstr);
+    }
 
     // The original printf to the serial terminal is now removed.
     // unsigned long timestamp = millis_since_boot();
