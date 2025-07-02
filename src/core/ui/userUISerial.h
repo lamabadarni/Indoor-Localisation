@@ -86,6 +86,8 @@ bool promptUserApprovePredictionSerial();
  */
 Label promptUserChooseBetweenPredictionsSerial(Label left, Label right);
 
+Label promptUserChooseBetweenTriplePredictionsSerial(Label first, Label second, Label third);
+
 bool promptUserRetryPredictionSerial();
 
 bool promptUserForClearingDataAfterManyPredectionFailureSerial();

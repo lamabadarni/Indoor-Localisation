@@ -52,7 +52,7 @@ StaticRSSIData createSingleStaticRSSIScan() {
         for (int j = 0; j < ap_num; ++j) {
             for (int k = 0; k < NUMBER_OF_ANCHORS; ++k) {
                 if (sample > 0 && strcmp((const char*)ap_records[j].ssid, anchorSSIDs[k].c_str()) == 0) {
-                    accumulatedStaticRSSIs[k] = applyEMA(accumulatedRSSIs[k], ap_records[j].rssi);
+                    accumulatedStaticRSSIs[k] = applyEMA(accumulatedStaticRSSIs[k], ap_records[j].rssi);
                 } else {
                     accumulatedStaticRSSIs[k] = RSSI_DEFAULT_VALUE;
                 }
@@ -62,10 +62,10 @@ StaticRSSIData createSingleStaticRSSIScan() {
         delay_ms(RSSI_SCAN_DELAY_MS);
     }
 
-    RSSIData scanData;
+    StaticRSSIData scanData;
     scanData.label = currentLabel;
     for (int i = 0; i < NUMBER_OF_ANCHORS; i++) {
-        scanData.RSSIs[i] = accumulatedRSSIs[i];
+        scanData.RSSIs[i] = accumulatedStaticRSSIs[i];
     }
     return scanData;
 }

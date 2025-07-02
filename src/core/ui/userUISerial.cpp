@@ -203,14 +203,30 @@ bool promptUserApprovePredictionSerial() {
 
 Label promptUserChooseBetweenPredictionsSerial(Label left, Label right) {
     LOG_INFO("PREDICT", "[USER] > Choose the correct prediction:");
-    LOG_INFO("PREDICT", "  1 - left (%s)", labels[left].c_str());
-    LOG_INFO("PREDICT", "  2 - right  (%s)", labels[right].c_str());
+    LOG_INFO("PREDICT", "  1 -  (%s)", labels[left].c_str());
+    LOG_INFO("PREDICT", "  2 -  (%s)", labels[right].c_str());
     LOG_INFO("PREDICT", "  X - Both predictions are invalid");
 
     int sel = readIntFromUser();
     if (sel == 1) return left;
     if (sel == 2) return right;
     return LABELS_COUNT;
+}
+
+Label promptUserChooseBetweenTriplePredictionsSerial(Label first, Label second, Label third) {
+    LOG_INFO("PREDICT", "[USER] > Choose the correct prediction:");
+    LOG_INFO("PREDICT", "  1 - (%s)", labels[first].c_str());
+    LOG_INFO("PREDICT", "  2 - (%s)", labels[second].c_str());
+    LOG_INFO("PREDICT", "  3 - (%s)", labels[third].c_str());
+    LOG_INFO("PREDICT", "  X - None of these");
+
+    char choice = readCharFromUser();
+    switch (choice) {
+        case '1': return first;
+        case '2': return second;
+        case '3': return third;
+        default:  return LABELS_COUNT;
+    }
 }
 
 bool promptUserRetryPredictionSerial() {
