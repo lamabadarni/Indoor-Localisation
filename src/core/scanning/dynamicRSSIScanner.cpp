@@ -82,16 +82,25 @@ std::pair<DynamicRSSIData , DynamicMacData> createSingleDynamicRSSIScan() {
 
     int idx = 0;
     for (auto &[macStr, rssi] : topMacs) {
-        sscanf(macStr.c_str(), "%hhX:%hhX:%hhX:%hhX:%hhX:%hhX",
-               &macData.macAddresses[idx][0], &macData.macAddresses[idx][1], &macData.macAddresses[idx][2],
-               &macData.macAddresses[idx][3], &macData.macAddresses[idx][4], &macData.macAddresses[idx][5]);
-        scanData.RSSIs[idx] = rssi;
-        idx++;
+    sscanf(macStr.c_str(), "%hhX:%hhX:%hhX:%hhX:%hhX:%hhX",
+           &macData.macAddresses[idx][0], &macData.macAddresses[idx][1], &macData.macAddresses[idx][2],
+           &macData.macAddresses[idx][3], &macData.macAddresses[idx][4], &macData.macAddresses[idx][5]);
+
+    scanData.RSSIs[idx] = rssi;
+
+    // ✅ Update accumulated values
+    accumulatedDynamicRSSIs[idx] = rssi;
+    memcpy(accumulatedMacAddresses[idx], macData.macAddresses[idx], MAC_ADDRESS_SIZE);
+
+    idx++;
     }
 
     for (; idx < NUMBER_OF_DYNAMIC_APS; ++idx) {
-        memset(macData.macAddresses[idx], 0, MAC_ADDRESS_SIZE);
-        scanData.RSSIs[idx] = RSSI_DEFAULT_VALUE;
+    memset(macData.macAddresses[idx], 0, MAC_ADDRESS_SIZE);
+    scanData.RSSIs[idx] = RSSI_DEFAULT_VALUE;
+
+    accumulatedDynamicRSSIs[idx] = RSSI_DEFAULT_VALUE;
+    memset(accumulatedMacAddresses[idx], 0, MAC_ADDRESS_SIZE);
     }
 
     return std::pair<DynamicRSSIData, DynamicMacData>{scanData, macData};
