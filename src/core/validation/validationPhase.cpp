@@ -31,7 +31,7 @@ void runValidationPhase() {
     while (!shouldAbort) {
         LOG_INFO("VALIDATE", "Please stand still at a label, press enter when you're ready");
 
-        promptUserLocationLabel();
+        promptUserLocationLabelForScan();
         startLabelValidationSession();
 
         if (!validForPredection[currentLabel]) {
@@ -58,7 +58,7 @@ void runValidationPhase() {
         currentLabel = (Label)i;
         const char* result = validForPredection[i] ? "VALIDATED" : "NOT VALIDATED";
 
-        LOG_INFO("VALIDATE", "Label %d - %s: %s, with accuracyL %.2f%%", i, labels[i], result, getAccuracy()*100);
+        LOG_INFO("VALIDATE", "Label %d - %s: %s, with accuracyL %.2f%%", i, labels[i], result, getAccuracyForValidation()*100);
     }
 
     currentLabel = (Label)LABELS_COUNT;

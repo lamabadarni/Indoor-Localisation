@@ -19,7 +19,7 @@ void promptUserShowDebugLogsOLED();
 /**
  * @brief Prompts the user to choose a label from the label list.
  */
-void promptUserLocationLabelOLED();
+void promptUserLocationLabelForScanOLED();
 
 /**
  * @brief Displays all available labels before prediction begins.
@@ -103,3 +103,4 @@ char readCharFromUserOLED();
 bool promptUserRunAnotherSessionOLED();
 
 bool promptUserForClearingDataAfterManyPredectionFailureOLED();
+

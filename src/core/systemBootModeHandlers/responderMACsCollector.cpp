@@ -1,74 +1,68 @@
-#include "responderMACsCollector.h"
-#include "core/systemBootModeHandlers/diagnostics.h"
+/**
+ * @file responderMACsCollector.cpp
+ * @brief Collects MAC addresses of visible FTM responders and allows user to store them.
+ */
 
-static bool isMACUnset(const uint8_t mac[6]) {
-    for (int i = 0; i < 6; ++i) {
-        if (mac[i] != 0x00) {
-            return false;
-        }
+#include "responderMACsCollector.h"
+#include "diagnostics.h"
+
+bool isMACUnset(const uint8_t* mac) {
+    for (int i = 0; i < MAC_ADDRESS_SIZE; ++i) {
+        if (mac[i] != 0) return false;
     }
     return true;
 }
 
-static void clearResponderMacs(uint8_t macs[NUMBER_OF_RESPONDERS][6]) {
+void clearResponderMacs() {
     for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
-        memset(macs[i], 0x00, 6);
+        memset(responderMacs[i], 0, MAC_ADDRESS_SIZE);
     }
 }
 
-static std::string formatMac(const uint8_t mac[6]) {
-    char buffer[18]; // "AA:BB:CC:DD:EE:FF" + null
-    snprintf(buffer, sizeof(buffer),
-             "%02X:%02X:%02X:%02X:%02X:%02X",
-             mac[0], mac[1], mac[2],
-             mac[3], mac[4], mac[5]);
-    return std::string(buffer);
+std::string formatMac(const uint8_t* mac) {
+    char buf[18];
+    snprintf(buf, sizeof(buf), "%02X:%02X:%02X:%02X:%02X:%02X",
+             mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+    return std::string(buf);
 }
 
 void collectResponderMACs() {
-    LOG_INFO("MAC", "========== Responder MAC Collection ==========");
-
-    // Check if already filled
-    bool allSet = true;
+    // Check if already configured
+    bool alreadyConfigured = true;
     for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
         if (isMACUnset(responderMacs[i])) {
-            allSet = false;
+            alreadyConfigured = false;
             break;
         }
     }
 
-    if (allSet) {
-        LOG_INFO("MAC", "All responder MACs are already configured.");
-        LOG_INFO("MAC", "Would you like to scan again anyway? (y/n)");
-        char c = readCharFromUser();
-        if (c != 'y' && c != 'Y') return;
-    }
-
-    delay_ms(USER_PROMPTION_DELAY);
-
-    int found = scanTOFForCoverage().seen;
-
-    if (found == 0) {
-        LOG_ERROR("MAC", " No FTM-capable responders found.");
-        LOG_INFO("MAC", "Please make sure responders are powered and within range.");
-        return;
-    }
-
-    LOG_INFO("MAC", "Discovered %d responder(s).", found);
-    for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
-        if (!isMACUnset(responderMacs[i])) {
-            LOG_INFO("MAC", "Responder %d MAC: %s", i + 1, formatMac(responderMacs[i]).c_str());
+    if (alreadyConfigured) {
+        LOG_INFO("RESPONDERS", "[USER] > All responder MACs are already configured.");
+        LOG_INFO("RESPONDERS", "[USER] > Would you like to scan again anyway? (y/n): ");
+        char res = readCharFromUser();
+        if (res != 'y' && res != 'Y') {
+            return;
         }
     }
 
-    LOG_INFO("MAC", "Would you like to save these MACs? (y/n)");
-    char confirm = readCharFromUser();
-    if (confirm != 'y' && confirm != 'Y') {
-        LOG_ERROR("MAC", "User chose not to save MAC addresses. Reverting.");
-        clearResponderMacs(responderMacs);
-    } else {
-        LOG_INFO("MAC", "Responder MACs saved.");
+    // Perform scan
+    Coverage coverage = scanTOFForCoverage();
+    if (coverage == COVERAGE_NONE) {
+        LOG_ERROR("RESPONDERS", "No FTM responders found. Aborting.");
+        return;
     }
 
-    LOG_INFO("MAC", "==============================================");
+    LOG_INFO("RESPONDERS", "Detected the following FTM responders:");
+    for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
+        LOG_INFO("RESPONDERS", "  [%d] %s", i + 1, formatMac(responderMacs[i]).c_str());
+    }
+
+    LOG_INFO("RESPONDERS", "Would you like to save these MACs? (y/n): ");
+    char confirm = readCharFromUser();
+    if (confirm != 'y' && confirm != 'Y') {
+        clearResponderMacs();
+        LOG_INFO("RESPONDERS", "MAC list cleared.");
+    } else {
+        LOG_INFO("RESPONDERS", "MACs saved to global table.");
+    }
 }

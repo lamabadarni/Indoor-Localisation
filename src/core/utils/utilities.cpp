@@ -10,10 +10,10 @@
 // ====================== System Setup ======================
 
 // == System Mode ==
-SystemMode         SystemSetup::currentSystemMode           = MODES_NUM;
-SystemScannerMode  SystemSetup::currentSystemScannerMode    = SYSTEM_SCANNER_MODES_NUM;
-SystemBootMode     SystemSetup::currentSystemPredictionMode = SYSTEM_PREDICTION_NODES_NUM;
-SystemBootMode     SystemSetup::currentSystemBootMode       = SYSTEM_BOOT_MODES_NUM; 
+SystemMode            SystemSetup::currentSystemMode           = MODES_NUM;
+SystemScannerMode     SystemSetup::currentSystemScannerMode    = SYSTEM_SCANNER_MODES_NUM;
+SystemPredictionMode  SystemSetup::currentSystemPredictionMode = SYSTEM_PREDICTION_NODES_NUM;
+SystemBootMode        SystemSetup::currentSystemBootMode       = SYSTEM_BOOT_MODES_NUM; 
 
 // == Features ==
 bool SystemSetup::enableValidationPhase = false;
@@ -26,9 +26,9 @@ SystemScannerMode DeleteBufferedData::scanner = SYSTEM_SCANNER_MODES_NUM;
 int               SaveBufferedData::lastN     = 0;
 int               DeleteBufferedData::lastN   = 0;
 
-DataLoaded::Dynamic = false;
-DataLoaded::Static  = false;
-DataLoaded::TOF     = false;
+bool DataLoaded::Dynamic = false;
+bool DataLoaded::Static  = false;
+bool DataLoaded::TOF     = false;
 
 // ======================   Globals    ======================
 
@@ -38,9 +38,9 @@ bool   shouldAbort  = false;
 bool   validForPredection[LABELS_COUNT]  = {0};
 double tofAccuracy[LABELS_COUNT]         = {0};
 double staticRSSIAccuracy[LABELS_COUNT]  = {0};
-double dynamicRSSIAccuracy[LABELS_COUNT] = {0}
+double dynamicRSSIAccuracy[LABELS_COUNT] = {0};
 
-std::vector<StaticRSSIData>  rssiDataSet        = {};
+std::vector<StaticRSSIData>  staticRSSIDataSet  = {};
 std::vector<DynamicMacData>  dynamicMacDataSet  = {};
 std::vector<DynamicRSSIData> dynamicRSSIDataSet = {};
 std::vector<TOFData>         tofDataSet         = {};
@@ -49,6 +49,7 @@ std::vector<std::string> log_buffer;
 double  accumulatedStaticRSSIs[NUMBER_OF_ANCHORS];
 double  accumulatedTOFs[NUMBER_OF_RESPONDERS];
 double  accumulatedDynamicRSSIs[NUMBER_OF_DYNAMIC_APS];
+uint8_t accumulatedMacAddresses[NUMBER_OF_DYNAMIC_APS][MAC_ADDRESS_SIZE];
 uint8_t responderMacs[NUMBER_OF_RESPONDERS][MAC_ADDRESS_SIZE];
 
 
@@ -105,7 +106,7 @@ const std::string systemScannerModes[SYSTEM_SCANNER_MODES_NUM] {
     "DYNAMIC"
 };
 
-const std::string SystemPredictionModes[SYSTEM_PREDICTION_NODES_NUM] {
+const std::string systemPredictionModes[SYSTEM_PREDICTION_NODES_NUM] {
     "STATIC_RSSI", 
     "DYNAMIC_RSSI",
     "TOF",
@@ -113,7 +114,7 @@ const std::string SystemPredictionModes[SYSTEM_PREDICTION_NODES_NUM] {
     "STATIC_RSSI_TOF",
     "DYNAMIC_RSSI_TOF",
     "STATIC_RSSI_DYNAMIC_RSSI_TOF",
-}
+};
 
 const std::string systemBootModes[SYSTEM_BOOT_MODES_NUM] {
     "MODE_TOF_DIAGNOSTIC",
@@ -124,6 +125,12 @@ const std::string systemBootModes[SYSTEM_BOOT_MODES_NUM] {
     "MODE_RESTORE_BACKUP_DATA_TEST"
 };
 
+const std::string   coverages[COVERAGE_STATES_NUM] {
+    "GOOD COVERAGE",
+    "WEAK COVERAGE",
+    "BAD COVERAGE",
+};
+
 const UI systemUI = UI::OLED;
 
 // ====================== Utility Functions ======================
@@ -131,12 +138,6 @@ const UI systemUI = UI::OLED;
 int applyEMA(int prevRSSI, int newRSSI) {
     if (prevRSSI == RSSI_DEFAULT_VALUE) return newRSSI;
     return (int)(ALPHA * prevRSSI + (1.0 - ALPHA) * newRSSI);
-}
-
-char readCharFromUserSerial() {
-    char input[8];
-    fgets(input, sizeof(input), stdin);
-    return input[0];
 }
 
 int readIntFromUser() {
@@ -192,43 +193,40 @@ void setValidForPredection() {
 
 float getAccuracyForValidation() {
     switch ( SystemSetup::currentSystemPredictionMode ) {
-        case SystemPredictionMode::STATICRSSI {
+        case SystemPredictionMode::STATICRSSI :
             return staticRSSIAccuracy[currentLabel];
-        }
-        case SystemPredictionMode::DYNAMICRSSI {
+        case SystemPredictionMode::DYNAMICRSSI :
             return dynamicRSSIAccuracy[currentLabel];
-        }
-        case SystemPredictionMode::TOfF {
+        case SystemPredictionMode::TOfF :
             return tofAccuracy[currentLabel];
-        }
         default:
-        break;
+            break;
     } 
     return 0.0;
 }
 
 bool isStaticRSSIActiveForPrediction() {
-    return SystemSetup::currentSystemPredictionMode == STATIC_RSSI || 
+    return SystemSetup::currentSystemPredictionMode == STATICRSSI || 
            SystemSetup::currentSystemPredictionMode == STATIC_RSSI_DYNAMIC_RSSI || 
            SystemSetup::currentSystemPredictionMode == STATIC_RSSI_TOF ||
            SystemSetup::currentSystemPredictionMode == STATIC_RSSI_DYNAMIC_RSSI_TOF;
 }
 
 bool isDynamicRSSIActiveForPrediction() {
-    return SystemSetup::currentSystemPredictionMode == DYNAMIC_RSSI || 
+    return SystemSetup::currentSystemPredictionMode == DYNAMICRSSI || 
            SystemSetup::currentSystemPredictionMode == STATIC_RSSI_DYNAMIC_RSSI || 
            SystemSetup::currentSystemPredictionMode == DYNAMIC_RSSI_TOF ||
            SystemSetup::currentSystemPredictionMode == STATIC_RSSI_DYNAMIC_RSSI_TOF;
 }
 
 bool isTOFActiveForPrediction() {
-    return SystemSetup::currentSystemPredictionMode == TOF || 
+    return SystemSetup::currentSystemPredictionMode == TOfF || 
            SystemSetup::currentSystemPredictionMode == STATIC_RSSI_TOF || 
            SystemSetup::currentSystemPredictionMode == DYNAMIC_RSSI_TOF ||
            SystemSetup::currentSystemPredictionMode == STATIC_RSSI_DYNAMIC_RSSI_TOF;
 }
 
-bool isDataLoaded() {
+bool isDataLoadedForScan() {
     switch (SystemSetup::currentSystemScannerMode) {
     case TOF:
         return DataLoaded::TOF;
@@ -239,7 +237,22 @@ bool isDataLoaded() {
     default:
         break;
     }
-        return DataLoaded::Static;
+    return false;
+}
+
+bool isDataLoadedForPrediction() {
+    bool loaded = false;
+    if(isDynamicRSSIActiveForPrediction()) {
+        loaded = DataLoaded::Dynamic;
+    }
+    if(isStaticRSSIActiveForPrediction()) {
+        loaded = DataLoaded::Static;
+    }
+    if(isTOFActiveForPrediction()) {
+        loaded = DataLoaded::TOF;
+    }
+
+    return loaded;
 }
 
 std::vector<std::string> arrayToVector(const std::string arr[], int size) {

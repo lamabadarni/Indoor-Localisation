@@ -18,12 +18,17 @@ void runUserSystemSetupSerial();
  */
 void promptUserShowDebugLogsSerial();
 
+/**
+ * @brief Prompts the user to run another session.
+ */
+bool promptUserRunAnotherSessionSerial();
+
 // ======================== LOCATION LABELING ========================
 
 /**
  * @brief Prompts the user to choose a label from the label list.
  */
-void promptUserLocationLabelSerial();
+void promptUserLocationLabelForScanSerial();
 
 /**
  * @brief Displays all available labels before prediction begins.
@@ -92,5 +97,9 @@ bool promptUserRetryPredictionSerial();
 
 bool promptUserForClearingDataAfterManyPredectionFailureSerial();
 
-bool promptUserRunAnotherSessionSerial();
+
+// ======================== UTILS ========================
+
+
+
 #endif 

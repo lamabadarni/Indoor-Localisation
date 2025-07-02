@@ -121,7 +121,6 @@ void doneCollectingData() {
     }
     else if (SaveBufferedData::scanner == DYNAMIC_RSSI) {
         int datasetSize = dynamicRSSIDataSet.size();
-        int macDatasetSize = dynamicMacDataSet.size();
 
         for (int row = datasetSize ; row >= datasetSize - SaveBufferedData::lastN ; row--) {
             if (!saveDynamicRSSIScan(dynamicMacDataSet[row], dynamicRSSIDataSet[row])) {
@@ -200,7 +199,7 @@ bool loadDataset(void) {
     }
     else if (currentState == DYNAMIC_RSSI) {
         FILE* f = fopen(getDynamicRSSIFilePath().c_str(), "r");
-        bool validData = 0;
+        int validData = 0;
 
         if (f) {
             LOG_INFO("DATA", "Loading RSSI dataset...");
@@ -217,6 +216,7 @@ bool loadDataset(void) {
                 }
                 else {
                     validData++;
+                    //Ward : modify DataLoaded
                 }
             }
 
@@ -251,7 +251,7 @@ bool formatStorage(void) {
 
 bool createCSV(void) {
     std::string header, colHeader, filePath;
-    int numOfCols;
+    int numOfCols = 0;
 
     switch (SystemSetup::currentSystemScannerMode) {
         case SystemScannerMode::STATIC_RSSI:
@@ -269,6 +269,8 @@ bool createCSV(void) {
             numOfCols = NUMBER_OF_RESPONDERS;
             filePath = getDynamicRSSIFilePath();
             break;
+        default:
+            LOG_ERROR("DATA" , "Invalid scanner mode");
     }
 
     for (int i = 0 ; i < numOfCols ; i++) {
@@ -351,8 +353,8 @@ static bool _fromCSVDynamicRssiToVector(std::string& line) {
     for (int i = 0 ; i < NUMBER_OF_DYNAMIC_APS ; i++) {
         rssiData.RSSIs[i] = std::stoi(splittedString[i].substr(2 * MAC_ADDRESS_SIZE + 1));
 
-        for (int j = 0, k = 0 ; j < MAC_ADDRESS_SIZE ; j++) {
-            macAddrData.macAddresses[i][j + 1] = 0;
+        for (int j = 0 ; j < MAC_ADDRESS_SIZE ; j++) {
+            macAddrData.macAddresses[i][j] = 0;
 
             macAddrData.macAddresses[i][j] |= __hexaCharToHexaInt(splittedString[i][3 * j + 1]) |
                                               (__hexaCharToHexaInt(splittedString[i][3 * j]) << 4);
