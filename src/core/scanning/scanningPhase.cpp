@@ -172,7 +172,7 @@ void createSingleScan() {
 void rescan() {
     LOG_INFO("SCAN", "Rescanning after failed invalidation for label: %s", labels[currentLabel].c_str());
 
-    // TODO: Consider clearing invalid measurements if needed
+    // LAMA: Consider clearing invalid measurements if needed
 
     collectMeasurements();
 

@@ -10,18 +10,20 @@
 
 // == Coverage ==
 #define MIN_ANCHORS_VISIBLE          (3)
-#define MIN_AVERAGE_RSSI             (-75)
+#define MIN_APS_VISIBLE              (3)
 #define TOF_MIN_RESPONDERS_VISIBLE   (2)
+#define MIN_AVERAGE_RSSI             (-75)
 #define TOF_MAX_AVERAGE_DISTANCE_CM  (600)
 
+// == Scanner Defines ==
 #define MAX_RETRIES_FOR_RSSI         (3)
 #define RSSI_DEFAULT_VALUE           (-100)
 #define RSSI_SCAN_DELAY_MS           (150)
 #define MAC_ADDRESS_SIZE             (6)
 
 // == Static RSSI Scanner ==
-#define RSSI_SCAN_BATCH_SIZE         (15)
-#define RSSI_SCAN_SAMPLE_PER_BATCH   (3)
+#define STATIC_RSSI_SCAN_BATCH_SIZE         (15)
+#define STATIC_RSSI_SCAN_SAMPLE_PER_BATCH   (3)
 #define NUMBER_OF_ANCHORS            (9)
 
 // == Dynamic RSSI Scanner ==
@@ -94,7 +96,8 @@ typedef enum {
 typedef enum {
     MODE_TOF_DIAGNOSTIC = 0,
     MODE_COLLECT_TOF_RESPONDERS_MAC,
-    MODE_RSSI_DIAGNOSTIC,
+    MODE_ANCHORS_RSSI_DIAGNOSTIC,
+    MODE_APS_RSSI_DIAGNOSTIC,
     MODE_INITIATOR_RESPONDER_TEST,
     MODE_RESTORE_BACKUP_DATA_TEST,
     SYSTEM_BOOT_MODES_NUM
@@ -102,10 +105,21 @@ typedef enum {
 
 typedef enum {
     STATIC_RSSI = 0,
+    DYNAMIC_RSSI,
     TOF,
-    STATIC_RSSI_TOF,
     SYSTEM_SCANNER_MODES_NUM
 } SystemScannerMode;
+
+typedef enum {
+    STATIC_RSSI = 0,
+    DYNAMIC_RSSI,
+    TOF,
+    STATIC_RSSI_DYNAMIC_RSSI,
+    STATIC_RSSI_TOF,
+    DYNAMIC_RSSI_TOF,
+    STATIC_RSSI_DYNAMIC_RSSI_TOF,
+    SYSTEM_PREDICTION_NODES_NUM
+} SystemPredictionMode;
 
 typedef enum {
     LOG_LEVEL_ERROR = 0,
@@ -115,11 +129,9 @@ typedef enum {
 } LogLevel;
 
 typedef enum {
-    NONE,
-    STATICRSSI,
-    TOF_,
-    BOTH
-} ScannerFlag; 
+    OLED,
+    SERIAL
+} UI;
 
 // ====================== Data Structures ======================
 
@@ -144,33 +156,30 @@ struct TOFData {
 };
 
 struct SaveBufferedData {
-   static ScannerFlag scanner;
+   static SystemScannerMode scanner;
    static int lastN;
 };
 
 struct DeleteBufferedData {
-   static ScannerFlag scanner;
+   static SystemScannerMode scanner;
    static int lastN;
 };
 
 // ====================== System Setup ======================
 
 struct SystemSetup {
-    static SystemMode         currentSystemMode;
-    static SystemScannerMode  currentSystemScannerMode;
-    static SystemBootMode     currentSystemBootMode;
-    static bool               enableBackup;
-    static bool               enableRestore;
-    static bool               enableValidationPhase;
-    static LogLevel           logLevel;
+    static SystemMode           currentSystemMode;
+    static SystemScannerMode    currentSystemScannerMode;
+    static SystemPredictionMode currentSystemPredictionMode;
+    static SystemBootMode       currentSystemBootMode;
+    static bool                 enableValidationPhase;
+    static LogLevel             logLevel;
 };
 
 // ====================== Globals ======================
 
 extern Label   currentLabel;
 extern bool    shouldAbort;
-extern bool    reuseFromMemory[LABELS_COUNT];
-extern bool    validForPredection[LABELS_COUNT];
 extern double  accumulatedStaticRSSIs[NUMBER_OF_ANCHORS];
 extern double  accumulatedDynamicRSSIs[NUMBER_OF_DYNAMIC_APS];
 extern double  accumulatedTOFs[NUMBER_OF_RESPONDERS];
@@ -178,8 +187,8 @@ extern uint8_t responderMacs[NUMBER_OF_RESPONDERS][MAC_ADDRESS_SIZE];
 extern double  tofAccuracy[LABELS_COUNT];
 extern double  staticRSSIAccuracy[LABELS_COUNT];
 extern double  dynamicRSSIAccuracy[LABELS_COUNT];
+extern bool    validForPredection[LABELS_COUNT];
 
-extern std::vector<Label>           skippedLabels;
 extern std::vector<StaticRSSIData>  staticRSSIDataSet;
 extern std::vector<DynamicRSSIData> dynamicRSSIDataSet;
 extern std::vector<DynamicMacData>  dynamicMacDataSet;
@@ -190,14 +199,12 @@ extern const std::string   tofSSIDs[NUMBER_OF_RESPONDERS];
 extern const std::string   labels[LABELS_COUNT];
 extern const std::string   systemModes[MODES_NUM];
 extern const std::string   systemScannerModes[SYSTEM_SCANNER_MODES_NUM];
+extern const std::string   systemPredictionModes[SYSTEM_SCANNER_MODES_NUM];
 extern const std::string   systemBootMode[SYSTEM_BOOT_MODES_NUM];
-extern const std::string   systemStates[SYSTEM_SCANNER_MODES_NUM];
+extern const UI            systemUI;
 
 // ====================== Utility Functions ======================
 
-/**
- * @brief Apply EMA (exponential moving average) to RSSI.
- */
 int applyEMA(int prevRSSI, int newRSSI);
 
 char readCharFromUser();
@@ -206,17 +213,15 @@ int readIntFromUser();
 
 char getCharFromUserWithTimeout(int timeoutMs);
 
-bool isStaticRSSIActive();
+bool isStaticRSSIActiveForPrediction();
 
-bool isTOFActive();
+bool isDynamicRSSIActiveForPrediction();
 
-bool isDynamicRSSIActive();
+bool isTOFActiveForPrediction();
 
 void resetStaticRssiBuffer();
 
 void resetDynamicRssiBuffer();
-
-void resetDynamicMacBuffer();
 
 void resetTOFScanBuffer();
 
@@ -224,7 +229,7 @@ void setValidForPredection();
 
 float getAccuracy();
 
- std::vector<std::string> arrayToVector(const std::string arr[], int size);
+std::vector<std::string> arrayToVector(const std::string arr[], int size);
 
 
 #endif // UTILITIES_H

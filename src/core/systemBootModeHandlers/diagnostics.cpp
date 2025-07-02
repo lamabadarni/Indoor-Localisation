@@ -45,7 +45,7 @@ bool interactiveScanCoverage() {
             case MODE_INITIATOR_RESPONDER_TEST:
             return false;
             case SYSTEM_BOOT_MODES_NUM:
-            //TODO: should have assert or something
+            //LAMA: should have assert or something
             return false;
         }
 
