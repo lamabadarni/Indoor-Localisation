@@ -123,12 +123,10 @@ bool promptUserProceedToNextLabel() {
 // =======================================================
 
 char promptUserReuseDecision() {
-
-
-    std::vector<std::string> items = {"Yes, reuse", "Validate first", "No, rescan"};
+    std::vector<std::string> items = {"Yes, reuse", "No, rescan"};
     int choice = display_prompt_menu("Reuse saved scan?", items);
     if (choice == 0) return 'Y';
-    if (choice == 1) return 'V';
+    if (choice == 1) return 'N';
     return 'N';
 }
 

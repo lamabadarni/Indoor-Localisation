@@ -111,9 +111,9 @@ typedef enum {
 } SystemScannerMode;
 
 typedef enum {
-    STATIC_RSSI = 0,
-    DYNAMIC_RSSI,
-    TOF,
+    STATICRSSI = 0,
+    DYNAMICRSSI,
+    TOfF,
     STATIC_RSSI_DYNAMIC_RSSI,
     STATIC_RSSI_TOF,
     DYNAMIC_RSSI_TOF,
@@ -165,6 +165,12 @@ struct DeleteBufferedData {
    static int lastN;
 };
 
+struct DataLoaded {
+    static bool TOF;
+    static bool Dynamic;
+    static bool Static;
+};
+
 // ====================== System Setup ======================
 
 struct SystemSetup {
@@ -200,7 +206,7 @@ extern const std::string   labels[LABELS_COUNT];
 extern const std::string   systemModes[MODES_NUM];
 extern const std::string   systemScannerModes[SYSTEM_SCANNER_MODES_NUM];
 extern const std::string   systemPredictionModes[SYSTEM_SCANNER_MODES_NUM];
-extern const std::string   systemBootMode[SYSTEM_BOOT_MODES_NUM];
+extern const std::string   systemBootModes[SYSTEM_BOOT_MODES_NUM];
 extern const UI            systemUI;
 
 // ====================== Utility Functions ======================
@@ -219,6 +225,8 @@ bool isDynamicRSSIActiveForPrediction();
 
 bool isTOFActiveForPrediction();
 
+bool isDataLoaded();
+
 void resetStaticRssiBuffer();
 
 void resetDynamicRssiBuffer();
@@ -227,7 +235,9 @@ void resetTOFScanBuffer();
 
 void setValidForPredection();
 
-float getAccuracy();
+float getAccuracyForValidation();
+
+float getAccuracyForPrediction();
 
 std::vector<std::string> arrayToVector(const std::string arr[], int size);
 

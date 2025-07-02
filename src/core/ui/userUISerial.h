@@ -34,7 +34,7 @@ void promptLabelsValidToPredectionSerial();
  * @brief Prompts whether to continue scanning other labels.
  * @return true to continue, false to exit or abort.
  */
-bool promptUserProceedToNextLabelSerial();
+void promptUserProceedToNextLabelSerial()
 
 // ======================== BACKUP / RESTORE ========================
 
@@ -66,11 +66,8 @@ bool promptUserAbortToImproveEnvironmentSerial();
  */
 bool promptUserRescanAfterInvalidationSerial();
 
-/**
- * @brief Placeholder for prompt after multiple prediction failures.
- * @return true if user confirms clearing data.
- */
-bool promptUserForClearingDataAfterManyPredectionFailureSerial(); // To be implemented
+bool promptUserRetryValidationSerial();
+
 
 // ======================== PREDICTION FLOW ========================
 
@@ -90,4 +87,4 @@ Label promptUserChooseBetweenPredictionsSerial(Label rssi, Label tof);
 
 bool promptUserRetryPredictionSerial();
 
-bool promptUserForClearingDataAfterManyPredectionFailureSerial(Label label) 
+bool promptUserForClearingDataAfterManyPredectionFailureSerial(Label label);

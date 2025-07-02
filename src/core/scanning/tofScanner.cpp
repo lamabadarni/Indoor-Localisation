@@ -62,8 +62,8 @@ void performTOFScan() {
         
         TOFData scanData = createSingleTOFScan();
         saveData(scanData);
-        BufferedData::scanner = TOF_;
-        BufferedData::lastN++;
+        SaveBufferedData::scanner = TOF;
+        SaveBufferedData::lastN++;
         
         LOG_DEBUG("TOF", "Scan %d for label %s", scan + 1, labels[currentLabel]);
 

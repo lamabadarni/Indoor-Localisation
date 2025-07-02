@@ -140,7 +140,7 @@ bool promptUserRetryPredictionl() {
     }
 }
 
-bool promptUserForClearingDataAfterManyPredectionFailure(Label label) {
+bool promptUserForClearingDataAfterManyPredectionFailure() {
     if(systemUI == OLED) {
         promptUserForClearingDataAfterManyPredectionFailureOLED();
     }
