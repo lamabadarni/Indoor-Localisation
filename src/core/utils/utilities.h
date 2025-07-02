@@ -134,6 +134,13 @@ typedef enum {
     SERIAL
 } UI;
 
+typedef enum {
+    COVERAGE_GOOD,
+    COVERAGE_WEAK,
+    COVERAGE_NONE,
+    COVERAGE_STATES_NUM
+} Coverage;
+
 // ====================== Data Structures ======================
 
 struct StaticRSSIData {
@@ -209,6 +216,7 @@ extern const std::string   systemModes[MODES_NUM];
 extern const std::string   systemScannerModes[SYSTEM_SCANNER_MODES_NUM];
 extern const std::string   systemPredictionModes[SYSTEM_PREDICTION_NODES_NUM];
 extern const std::string   systemBootModes[SYSTEM_BOOT_MODES_NUM];
+extern const std::string   coverages[COVERAGE_STATES_NUM];
 extern const UI            systemUI;
 
 // ====================== Utility Functions ======================

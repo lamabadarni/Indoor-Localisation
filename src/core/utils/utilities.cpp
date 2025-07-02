@@ -124,6 +124,13 @@ const std::string systemBootModes[SYSTEM_BOOT_MODES_NUM] {
     "MODE_RESTORE_BACKUP_DATA_TEST"
 };
 
+const std::string   coverages[COVERAGE_STATES_NUM] {
+    "GOOD COVERAGE",
+    "WEAK COVERAGE",
+    "BAD COVERAGE",
+}
+
+
 const UI systemUI = UI::OLED;
 
 // ====================== Utility Functions ======================

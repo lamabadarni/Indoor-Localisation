@@ -12,12 +12,12 @@
 // ================= STATIC RSSI =================
 
 Coverage scanStaticForCoverage() {
-    createSingleRSSIScan();
+    createSingleStaticRSSIScan();
 
     int anchorsSeen = 0;
     double sum = 0;
     for (int i = 0; i < NUMBER_OF_ANCHORS; ++i) {
-        if (accumulatedStaticRSSIs[i] > RSSI_COVERAGE_THRESHOLD) {
+        if (accumulatedStaticRSSIs[i] > MIN_AVERAGE_RSSI) {
             anchorsSeen++;
             sum += accumulatedStaticRSSIs[i];
         }
@@ -34,7 +34,7 @@ Coverage scanStaticForCoverage() {
 void performRSSIScanCoverage() {
     LOG_INFO("COVERAGE", "Performing STATIC RSSI diagnostic scan...");
     Coverage cov = scanStaticForCoverage();
-    LOG_INFO("COVERAGE", "Static RSSI Coverage: %s", coverageNames[cov]);
+    LOG_INFO("COVERAGE", "Static RSSI Coverage: %s", coverages[cov]);
 }
 
 // ================= DYNAMIC RSSI =================
@@ -60,7 +60,7 @@ Coverage scanDynamicForCoverage() {
 void performDynamicScanCoverage() {
     LOG_INFO("COVERAGE", "Performing DYNAMIC RSSI diagnostic scan...");
     Coverage cov = scanDynamicForCoverage();
-    LOG_INFO("COVERAGE", "Dynamic RSSI Coverage: %s", coverageNames[cov]);
+    LOG_INFO("COVERAGE", "Dynamic RSSI Coverage: %s", coverages[cov]);
 }
 
 // ================= TOF =================
@@ -88,7 +88,7 @@ Coverage scanTOFForCoverage() {
 void performTOFScanCoverage() {
     LOG_INFO("COVERAGE", "Performing TOF diagnostic scan...");
     Coverage cov = scanTOFForCoverage();
-    LOG_INFO("COVERAGE", "TOF Coverage: %s", coverageNames[cov]);
+    LOG_INFO("COVERAGE", "TOF Coverage: %s", coverages[cov]);
 }
 
 // ================== INTERACTIVE MODE ==================
