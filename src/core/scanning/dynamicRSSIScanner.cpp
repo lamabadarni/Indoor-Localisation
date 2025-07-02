@@ -10,11 +10,11 @@ void performDynamicRSSIScan() {
         std::pair<DynamicRSSIData , DynamicMacData> scanData = createSingleDynamicRSSIScan();
         SaveBufferedData::scanner = DYNAMIC_RSSI;
         SaveBufferedData::lastN++;
-        saveData(scanData.first , scanData.second);
+        saveData(scanData.second, scanData.first);
 
         LOG_DEBUG("Dynamic RSSI", "Scan %d for label %s", scan + 1, labels[currentLabel]);
     }
-
+    
     doneCollectingData();
 }
 
@@ -89,7 +89,7 @@ std::pair<DynamicRSSIData , DynamicMacData> createSingleDynamicRSSIScan() {
         idx++;
     }
 
-    for (int idx; idx < NUMBER_OF_DYNAMIC_APS; ++idx) {
+    for (; idx < NUMBER_OF_DYNAMIC_APS; ++idx) {
         memset(macData.macAddresses[idx], 0, MAC_ADDRESS_SIZE);
         scanData.RSSIs[idx] = RSSI_DEFAULT_VALUE;
     }

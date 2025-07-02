@@ -46,7 +46,7 @@ std::vector<DynamicRSSIData> dynamicRSSIDataSet = {};
 std::vector<TOFData>         tofDataSet         = {};
 std::vector<std::string> log_buffer;
 
-double  accumulatedRSSIs[NUMBER_OF_ANCHORS];
+double  accumulatedStaticRSSIs[NUMBER_OF_ANCHORS];
 double  accumulatedTOFs[NUMBER_OF_RESPONDERS];
 double  accumulatedDynamicRSSIs[NUMBER_OF_DYNAMIC_APS];
 uint8_t responderMacs[NUMBER_OF_RESPONDERS][MAC_ADDRESS_SIZE];

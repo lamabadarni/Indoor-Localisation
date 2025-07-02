@@ -43,7 +43,7 @@ void runPredictionPhase(void) {
                 break;
             }
             else {
-                
+
                 if(count > PREDICTION_MAX_RETRIES) {
                     LOG_INFO("PREDICT", "Predection failed %d times", count);
                     LOG_INFO("PREDICT", "Move to another label to check overall data validity ...");
@@ -60,7 +60,7 @@ void runPredictionPhase(void) {
             delay_ms(USER_PROMPTION_DELAY);
 
             retry = promptUserRetryPrediction();
-            
+
             if(retry) {
                 LOG_INFO("PREDICT", "Retrying label predection after failure ...");
                 count++;
@@ -74,7 +74,6 @@ void runPredictionPhase(void) {
         delay_ms(USER_PROMPTION_DELAY);
     }
 
-    //Lama TODO: should print predection summary
     LOG_INFO("PREDICT", "Aborting predection phase");
 }
 
@@ -186,13 +185,29 @@ Label predict() {
         }
 
         case STATIC_RSSI_DYNAMIC_RSSI_TOF: {
-            //LAMA TODO
+            Label staticLabel  = staticRSSIPredict();
+            Label dynamicLabel = dynamicRSSIPredict();
+            Label tofLabel     = tofPredict();
+
+            if (staticLabel == dynamicLabel && dynamicLabel == tofLabel) {
+                label = staticLabel;
+                break;
+            }
+
+            LOG_ERROR("PREDICT", "!! TRIPLE CONFLICT !! Predictions differ:");
+            LOG_ERROR("PREDICT", "Static: %s | Dynamic: %s | ToF: %s", labels[staticLabel], labels[dynamicLabel], labels[tofLabel]);
+
+            if(SystemSetup::logLevel == LOG_LEVEL_DEBUG) {
+                Label user = promptUserChooseBetweenTriplePredictions(staticLabel, dynamicLabel, tofLabel);
+                LOG_DEBUG("PREDICT", "User selected prediction: %s", labels[user]);
+                label = user;
+            }
+            break;
         }
 
         case SYSTEM_PREDICTION_NODES_NUM:
             break;
     }
-
 
     if(label != LABELS_COUNT) {
         LOG_INFO("PREDICT", " Predicted label: %s", labels[label]);
@@ -202,7 +217,6 @@ Label predict() {
             return label;
         }
     }
-    
     return label;
 }
 
@@ -224,8 +238,7 @@ static Label staticRSSIPredict() {
 }
 
 static Label dynamicRSSIPredict() {
-    //WARD TODO
-    return LABELS_COUNT;
+    return LABELS_COUNT; // TODO: implement logic
 }
 
 static Label tofPredict() {
@@ -247,9 +260,7 @@ static Label tofPredict() {
 
 static void clearDataAfterPredectionFailure() {
     DeleteBufferedData::scanner = SystemSetup::currentSystemScannerMode;
-    //WARD: how to know how much to delete??
 }
-
 
 static double _euclidean(const double* a, const double* b, int size) {
     double sum = 0;
