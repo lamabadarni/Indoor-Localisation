@@ -221,6 +221,7 @@ Label promptUserChooseBetweenPredictionsOLED(Label left, Label right) { //TODO  
     return LABELS_COUNT;
 }
 
+
 bool promptUserRetryPredictionOLED() {
     LOG_INFO("PREDICT", "[USER] > Retry prediction? (y/n): ");
     return display_prompt_yes_no("Prediction Failed", "Retry prediction?");
