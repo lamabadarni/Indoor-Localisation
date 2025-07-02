@@ -1,4 +1,5 @@
-
+#ifndef USER_UI_OLED_H
+#define USER_UI_OLED_H
 #include "core/utils/utilities.h"
 
 // ======================== SYSTEM SETUP ========================
@@ -103,3 +104,5 @@ char readCharFromUserOLED();
 bool promptUserRunAnotherSessionOLED();
 
 bool promptUserForClearingDataAfterManyPredectionFailureOLED();
+
+#endif // USER_UI_OLED_H

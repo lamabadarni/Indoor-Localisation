@@ -62,9 +62,15 @@ static SystemScannerMode promptUserScannerMode() {
     while (sel < 1 || sel > SYSTEM_SCANNER_MODES_NUM) sel = readIntFromUser();
     return static_cast<SystemScannerMode>(sel - 1);
 }
-
-static SystemPredictionMode promptUserPredictionMode() {
-    //LAMA TODO
+static SystemPredictionMode promptUserSystemPredictionMode() {
+    delay_ms(USER_PROMPTION_DELAY);
+    LOG_INFO("SETUP", "[USER] > Select System Boot Mode:");
+        for (int i = 0; i < SYSTEM_PREDICTION_NODES_NUM; ++i) {
+        LOG_INFO("SETUP", "  %d - %s", i + 1, systemPredictionModes[i].c_str());
+    }
+     int sel = -1;
+    while (sel < 1 || sel > SYSTEM_PREDICTION_NODES_NUM) sel = readIntFromUser();
+    return static_cast<SystemPredictionMode>(sel - 1);
 }
 
 void runUserSystemSetupSerial() {
@@ -79,6 +85,10 @@ void runUserSystemSetupSerial() {
     if( SystemSetup::currentSystemMode == MODE_SCANNING_SESSION || 
         SystemSetup::currentSystemMode == MODE_FULL_SESSION ) {
             SystemSetup::currentSystemScannerMode = promptUserScannerMode();
+    }
+        if( SystemSetup::currentSystemMode == MODE_PREDICTION_SESSION || 
+        SystemSetup::currentSystemMode == MODE_FULL_SESSION ) {
+            SystemSetup::currentSystemPredictionMode = promptUserSystemPredictionMode();
     }
 
     struct {

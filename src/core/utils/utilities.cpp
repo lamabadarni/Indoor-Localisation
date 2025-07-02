@@ -38,7 +38,7 @@ bool   shouldAbort  = false;
 bool   validForPredection[LABELS_COUNT]  = {0};
 double tofAccuracy[LABELS_COUNT]         = {0};
 double staticRSSIAccuracy[LABELS_COUNT]  = {0};
-double dynamicRSSIAccuracy[LABELS_COUNT] = {0}
+double dynamicRSSIAccuracy[LABELS_COUNT] = {0};
 
 std::vector<StaticRSSIData>  rssiDataSet        = {};
 std::vector<DynamicMacData>  dynamicMacDataSet  = {};
@@ -113,7 +113,7 @@ const std::string SystemPredictionModes[SYSTEM_PREDICTION_NODES_NUM] {
     "STATIC_RSSI_TOF",
     "DYNAMIC_RSSI_TOF",
     "STATIC_RSSI_DYNAMIC_RSSI_TOF",
-}
+};
 
 const std::string systemBootModes[SYSTEM_BOOT_MODES_NUM] {
     "MODE_TOF_DIAGNOSTIC",

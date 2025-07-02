@@ -91,4 +91,5 @@ bool promptUserRetryPredictionSerial();
 bool promptUserForClearingDataAfterManyPredectionFailureSerial();
 
 bool promptUserRunAnotherSessionSerial();
-#endif 
+
+#endif//USER_UI_SERIAL_H 
