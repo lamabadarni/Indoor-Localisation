@@ -224,8 +224,6 @@ extern const UI            systemUI;
 
 int applyEMA(int prevRSSI, int newRSSI);
 
-char readCharFromUserSerial();
-
 int readIntFromUser();
 
 char getCharFromUserWithTimeout(int timeoutMs);
