@@ -4,23 +4,21 @@
 #include "core/utils/utilities.h"
 
 static double _euclidean(const double* a, const double* b, int size);
-static void _preparePointRSSI(double toBeNormalised[NUMBER_OF_ANCHORS]);
-static void _preparePointTOF(double TOF[NUMBER_OF_RESPONDERS], double toBeNormalised[NUMBER_OF_RESPONDERS]);
-static Label _predict(std::vector<double>& distances, std::vector<Label>& labels, int k);
-static Label rssiPredict();
+static void   _preparePointRSSI(double toBeNormalised[NUMBER_OF_ANCHORS]);
+static void   _preparePointTOF(double TOF[NUMBER_OF_RESPONDERS], double toBeNormalised[NUMBER_OF_RESPONDERS]);
+static Label  _predict(std::vector<double>& distances, std::vector<Label>& labels, int k);
+static void  clearDataAfterPredectionFailure();
+static Label staticRSSIPredict();
+static Label dynamicRSSIPredict();
 static Label tofPredict();
-
-static ScannerFlag flag = NONE;
-#define accuracy_ (flag == STATICRSSI ? rssiAccuracy : tofAccuracy)
 
 void runPredictionPhase(void) {
     LOG_INFO("PREDICT", " ");
     LOG_INFO("PREDICT", "=============== Prediction Phase Started ===============");
 
     int invalidLabels = 0;
-    bool cont = true;
 
-    while (!shouldAbort && cont) {
+    while ( !shouldAbort ) {
         if(invalidLabels >= PREDICTION_MAX_LABEL_FAILURE) {
             LOG_INFO("PREDICT", "Encountered failure at %d different labels", PREDICTION_MAX_LABEL_FAILURE);
             bool clearData = promptUserForClearingDataAfterManyPredectionFailure();
@@ -68,13 +66,11 @@ void runPredictionPhase(void) {
                 count++;
             }
             else {
-                break;
+                retry = false;
             }
         }
 
-        cont = promptUserProceedToNextLabel();
-        LOG_INFO("PREDICT", "Move to next label to start predecting ...");
-        doneCollectingData();
+        promptUserProceedToNextLabel();
         delay_ms(USER_PROMPTION_DELAY);
     }
 
@@ -82,47 +78,17 @@ void runPredictionPhase(void) {
     LOG_INFO("PREDICT", "Aborting predection phase");
 }
 
-// Ward TODO :: need implementation -- should update validForPredection and make user choose only from them
-// update data
-bool clearDataAfterPredectionFailure() {
-    return true;
-}
-
 bool startLabelPredectionSession() {
 
     LOG_INFO("PREDICT", "Starting label predection ...");
-
-    createSingleScan();
 
     Label predictLabel = predict();
 
     if((int)predictLabel == LABELS_COUNT) {
        LOG_INFO("PREDICT", "Prediction failed ..,");
-       if(flag == NONE) {
-        LOG_DEBUG("PREDICT", "Both rssi prediction and tof prediction failed");
-       }
        return false;
     }
-    else if(SystemSetup::currentSystemScannerMode == STATIC_RSSI_TOF) {
-        BufferedData::scanner = flag;
-        BufferedData::lastN++;
 
-        RSSIData rssiData;
-        rssiData.label = predictLabel;
-        for(int i = 0; i < NUMBER_OF_ANCHORS; i++) {
-            rssiData.RSSIs[i] = accumulatedRSSIs[i];
-        }
-
-        TOFData tofData;
-        tofData.label = predictLabel;
-        for (int i =0; i > NUMBER_OF_RESPONDERS; i++) {
-            tofData.TOFs[i] = accumulatedTOFs[i];
-        }
-
-        saveData(rssiData);
-        saveData(tofData);
-    }
- 
     return true;
 }
 
@@ -130,43 +96,100 @@ Label predict() {
 
     Label label = LABELS_COUNT;
 
-    switch (SystemSetup::currentSystemScannerMode) {
-        case STATIC_RSSI: {
-            flag  = STATICRSSI;
-            label =  createSamplePredict();
+    if(SystemSetup::currentSystemMode == MODE_PREDICTION_SESSION) {
+        if( isStaticRSSIActiveForPrediction() ) {
+            SystemSetup::currentSystemScannerMode = STATIC_RSSI;
+            createSingleScan();
+        }
+        if ( isDynamicRSSIActiveForPrediction() ) {
+            SystemSetup::currentSystemScannerMode = DYNAMIC_RSSI;
+            createSingleScan();
+        }
+        if ( isTOFActiveForPrediction() ) {
+            SystemSetup::currentSystemScannerMode = TOF;
+            createSingleScan();
+        }
+    }
+
+    switch (SystemSetup::currentSystemPredictionMode) {
+        case STATICRSSI: {
+            label =  staticRSSIPredict();
             break;
         }
-
-        case TOF: {
-            flag  = TOF_;
-            label =  createSamplePredict();
+        case DYNAMICRSSI: {
+            label =  dynamicRSSIPredict();
             break;
         }
-
-        case STATIC_RSSI_TOF: {
-            flag = STATICRSSI;
-            Label rssiLabel = createSamplePredict();
-            flag = TOF_;
-            Label tofLabel  = createSamplePredict();
-
-            if(rssiLabel == tofLabel) {
-                label = rssiLabel;
-                flag = BOTH;
+        case TOfF: {
+            label =  tofPredict();
+            break;
+        }
+        case STATIC_RSSI_DYNAMIC_RSSI: {
+            Label staticLabel  = staticRSSIPredict();
+            Label dynamicLabel = dynamicRSSIPredict();
+            if(staticLabel == dynamicLabel) {
+                label = staticLabel;
                 break;
             }
-        
-            LOG_ERROR("PREDICT", " !! CONFLICT !! RSSI and TOF predictions differ:"); // Lama TODO: print predictions
-            LOG_DEBUG("PREDICT", " ! RSSI Prediction: %s, with accuracy: %d", labels[rssiLabel], rssiAccuracy[rssiLabel]);
-            LOG_DEBUG("PREDICT", " ! TOF  Prediction: %s, with accuracy: %d", labels[tofLabel],  tofAccuracy[tofLabel]);
-            Label user = promptUserChooseBetweenPredictions(rssiLabel, tofLabel);
-            if(user == rssiLabel)      { flag = STATICRSSI; tofAccuracy[tofLabel]   = 0;}
-            else if(user == tofLabel)  { flag = TOF_;        rssiAccuracy[rssiLabel] = 0;}
-            else { flag = NONE; tofAccuracy[tofLabel] = 0; rssiAccuracy[rssiLabel] = 0;}
-            label = user;
-            return label;
+            LOG_ERROR("PREDICT", " !! CONFLICT !! Static Anchors RSSI Predict and Dynamic APs RSSI Predict differ: Static RSSI Prediction %s | Dynamic RSSI Prediction %s",
+                        labels[staticLabel] , labels[dynamicLabel]);
+            if(SystemSetup::logLevel == LOG_LEVEL_DEBUG) {
+                Label user = promptUserChooseBetweenPredictions(staticLabel, dynamicLabel);
+                if( user == staticLabel )  {
+                    LOG_DEBUG("PREDICT", "Static Anchors RSSI Prediction valid");
+                }
+                if( user == dynamicLabel ) {
+                    LOG_DEBUG("PREDICT", "Dynamic APs RSSI Prediction valid");
+                }
+            }
+            break;
+        }
+        case DYNAMIC_RSSI_TOF: {
+            Label tofLabel     = tofPredict();
+            Label dynamicLabel = dynamicRSSIPredict();
+            if(tofLabel == dynamicLabel) {
+                label = tofLabel;
+                break;
+            }
+            LOG_ERROR("PREDICT", " !! CONFLICT !! Time of flight Predict and Dynamic APs RSSI Predict differ: Time of flight Prediction %s | Dynamic RSSI Prediction %s ", 
+                labels[tofLabel] , labels[dynamicLabel]);
+            if(SystemSetup::logLevel == LOG_LEVEL_DEBUG) {
+                Label user = promptUserChooseBetweenPredictions(tofLabel, dynamicLabel);
+                if ( user == tofLabel ) {
+                    LOG_DEBUG("PREDICT", "Time of flight Prediction valid");
+                }
+                if ( user == dynamicLabel ) {
+                     LOG_DEBUG("PREDICT", "Dynamic APs RSSI Prediction valid");
+                }
+            }
+            break;
+        }
+        case STATIC_RSSI_TOF: {
+            Label staticLabel  = staticRSSIPredict();
+            Label tofLabel     = tofPredict();
+            if(staticLabel == tofLabel) {
+                label = staticLabel;
+                break;
+            }
+            LOG_ERROR("PREDICT", " !! CONFLICT !! Static Anchors RSSI Predict and Time of flight Predict Predict differ: Static RSSI Prediction %s | Time of flight Predict Prediction %s", 
+                labels[staticLabel] , labels[tofLabel]);
+            if(SystemSetup::logLevel == LOG_LEVEL_DEBUG) {
+                Label user = promptUserChooseBetweenPredictions(staticLabel, tofLabel);
+                if ( user == staticLabel ) {
+                    LOG_DEBUG("PREDICT", "Static Anchors RSSI Prediction valid");
+                }
+                if ( user == tofLabel ) {
+                    LOG_DEBUG("PREDICT", "Time of flight Prediction valid");
+                }
+            }
+            break;
         }
 
-        case SYSTEM_SCANNER_MODES_NUM:
+        case STATIC_RSSI_DYNAMIC_RSSI_TOF: {
+            //LAMA TODO
+        }
+
+        case SYSTEM_PREDICTION_NODES_NUM:
             break;
     }
 
@@ -183,50 +206,8 @@ Label predict() {
     return label;
 }
 
-Label createSamplePredict() {
-    Label samples[PREDICTION_SAMPLES];
-    int c = 1;
-    for(int i = 0; i < PREDICTION_SAMPLES; i++) {
-        samples[i] = flag == STATICRSSI ? rssiPredict() : tofPredict() ;
-        if(i > 0 && samples[i] == samples[i-1]) c++;
-        if(c == PREDICTION_SAMPLES_THRESHOLD) return samples[i];
-    }
-
-    int most[LABELS_COUNT] = {0};
-    for(int i = 0; i < PREDICTION_SAMPLES; i++) {
-        most[samples[i]]++;
-    }
-
-    int maxIndex = 0;
-    for (int i = 1; i < LABELS_COUNT; ++i) {
-        if (most[i] > most[maxIndex]) {
-            maxIndex = i;
-        }
-    }
-
-    int labelNumHaveMax = 0;
-    for (int i = maxIndex; i < LABELS_COUNT; ++i) {
-        if(most[maxIndex] == most[i]) {
-            labelNumHaveMax++;
-        }
-    }
-
-    if(labelNumHaveMax > 1) {
-        return LABELS_COUNT; // Lama TODO: fix
-    }
-
-    if(flag == STATIC_RSSI) {
-        rssiAccuracy[maxIndex] = most[maxIndex] / PREDICTION_SAMPLES;
-    }
-    else if (flag == TOF_) {
-        tofAccuracy[maxIndex] = most[maxIndex] / PREDICTION_SAMPLES;
-    }
-
-    return (Label)maxIndex;
-}
-
-static Label rssiPredict() {
-    int sizeOfDataSet = rssiDataSet.size();
+static Label staticRSSIPredict() {
+    int sizeOfDataSet = staticRSSIDataSet.size();
     double normalisedInput[NUMBER_OF_ANCHORS];
     std::vector<double> distances(sizeOfDataSet, 0);
     std::vector<Label> labels(sizeOfDataSet, LABELS_COUNT);
@@ -236,10 +217,15 @@ static Label rssiPredict() {
         double normalisedPoint[NUMBER_OF_ANCHORS];
         _preparePointRSSI(normalisedPoint);
         distances[i] = _euclidean(normalisedPoint, normalisedInput, NUMBER_OF_ANCHORS);
-        labels[i] = rssiDataSet[i].label;
+        labels[i] = staticRSSIDataSet[i].label;
     }
 
     return _predict(distances, labels, K_RSSI);
+}
+
+static Label dynamicRSSIPredict() {
+    //WARD TODO
+    return LABELS_COUNT;
 }
 
 static Label tofPredict() {
@@ -259,6 +245,11 @@ static Label tofPredict() {
     return _predict(distances, labels, K_TOF);
 }
 
+static void clearDataAfterPredectionFailure() {
+    DeleteBufferedData::scanner = SystemSetup::currentSystemScannerMode;
+    //WARD: how to know how much to delete??
+}
+
 
 static double _euclidean(const double* a, const double* b, int size) {
     double sum = 0;
@@ -270,7 +261,7 @@ static double _euclidean(const double* a, const double* b, int size) {
 
 static void _preparePointRSSI(double toBeNormalised[NUMBER_OF_ANCHORS]) {
     for (int i = 0; i < NUMBER_OF_ANCHORS; ++i) {
-        toBeNormalised[i] = ((double)(accumulatedRSSIs[i] + 100)) / 100.0;
+        toBeNormalised[i] = ((double)(accumulatedStaticRSSIs[i] + 100)) / 100.0;
     }
 }
 

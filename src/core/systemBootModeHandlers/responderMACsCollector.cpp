@@ -49,7 +49,7 @@ void collectResponderMACs() {
     int found = scanTOFForCoverage().seen;
 
     if (found == 0) {
-        LOG_WARN("MAC", " No FTM-capable responders found.");
+        LOG_ERROR("MAC", " No FTM-capable responders found.");
         LOG_INFO("MAC", "Please make sure responders are powered and within range.");
         return;
     }
@@ -64,7 +64,7 @@ void collectResponderMACs() {
     LOG_INFO("MAC", "Would you like to save these MACs? (y/n)");
     char confirm = readCharFromUser();
     if (confirm != 'y' && confirm != 'Y') {
-        LOG_WARN("MAC", "User chose not to save MAC addresses. Reverting.");
+        LOG_ERROR("MAC", "User chose not to save MAC addresses. Reverting.");
         clearResponderMacs(responderMacs);
     } else {
         LOG_INFO("MAC", "Responder MACs saved.");
