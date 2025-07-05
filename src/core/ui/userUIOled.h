@@ -105,3 +105,4 @@ bool promptUserRunAnotherSessionOLED();
 
 bool promptUserForClearingDataAfterManyPredectionFailureOLED();
 
+#endif // USER_UI_OLED_H
