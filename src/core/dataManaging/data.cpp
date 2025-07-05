@@ -17,15 +17,19 @@ static bool _fromCSVTofToVector(std::string &line);
 // Public APIs
 //-----------------------------------------------------------------------------
 
-bool initDataBackup() {
-    if (initSDCard()) {
-        logFile = fopen(getLogFilePath(), "w");
+bool initDataBackup(bool initSD) {
+    LOG_INFO("DATA", "START");
+    if (initSD) {
+        if(initSDCard()) {
+            formatStorage();
+            logFile = fopen(getLogFilePath().c_str(), "w");
 
-        if (!f) {
-            return false;
+            if (!logFile) {
+                return false;
+            }
+
+            return true;
         }
-
-        return true;
     }
 
     return false;
@@ -249,7 +253,8 @@ bool formatStorage(void) {
 
     // 2) Make a fresh directory
     if (mkdir(baseDir.c_str(), 0777) != 0) {
-        LOG_ERROR("DATA", "Failed to mkdir: %s", baseDir.c_str());
+        LOG_ERROR("DATA", "Failed to mkdir: %s (errno: %d = %s)",
+              baseDir.c_str(), errno, strerror(errno));
         return false;
     }
 
@@ -298,7 +303,7 @@ bool createCSV(void) {
     fprintf(f, header.c_str());
     fclose(f);
 
-    return return true;
+    return true;
 }
 
 //-----------------------------------------------------------------------------
