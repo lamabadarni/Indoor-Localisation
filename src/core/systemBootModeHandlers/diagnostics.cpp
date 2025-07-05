@@ -41,6 +41,7 @@ void performRSSIScanCoverage() {
 
 Coverage scanDynamicForCoverage() {
     createSingleDynamicRSSIScan();
+    if (shouldAbort) return COVERAGE_NONE;
 
     int count = 0;
     double sum = 0;

@@ -25,6 +25,13 @@ static void promptUserLoggerConfiguration() {
     } else if (choosen == 'd' || choosen == 'D') {
         SystemSetup::logLevel = LogLevel::LOG_LEVEL_DEBUG;
     }
+
+    if(SystemSetup::logLevel == LogLevel::LOG_LEVEL_DEBUG) {
+        LOG_INFO("SETUP", "ERROR, INFO, and DEBUG Log Level was choosen");
+    }
+    else if(SystemSetup::logLevel == LogLevel::LOG_LEVEL_INFO) {
+        LOG_INFO("SETUP", "ERROR and INFO Log Level was choosen");
+    }
 }
 
 static SystemMode promptUserSystemMode() {
@@ -36,6 +43,7 @@ static SystemMode promptUserSystemMode() {
 
     int sel = -1;
     while (sel < 1 || sel > MODES_NUM) sel = readIntFromUserSerial();
+    LOG_INFO("SETUP", "System Mode : %s" , systemModes[sel].c_str());
     return static_cast<SystemMode>(sel - 1);
 }
 
@@ -48,6 +56,7 @@ static SystemBootMode promptUserSystemBootMode() {
 
     int sel = -1;
     while (sel < 1 || sel > SYSTEM_BOOT_MODES_NUM) sel = readIntFromUserSerial();
+    LOG_INFO("SETUP", "System Boot Mode : %s" , systemBootModes[sel].c_str());
     return static_cast<SystemBootMode>(sel - 1);
 }
 
@@ -60,6 +69,7 @@ static SystemScannerMode promptUserScannerMode() {
 
     int sel = -1;
     while (sel < 1 || sel > SYSTEM_SCANNER_MODES_NUM) sel = readIntFromUserSerial();
+    LOG_INFO("SETUP", "System Scanner Mode : %s" , systemScannerModes[sel].c_str());
     return static_cast<SystemScannerMode>(sel - 1);
 }
 
@@ -72,6 +82,7 @@ static SystemPredictionMode promptUserPredictionMode() {
 
     int sel = -1;
     while (sel < 1 || sel > SYSTEM_PREDICTION_NODES_NUM) sel = readIntFromUserSerial();
+    LOG_INFO("SETUP", "System Prediction Mode : %s" , systemPredictionModes[sel].c_str());
     return static_cast<SystemPredictionMode>(sel - 1);
 }
 
