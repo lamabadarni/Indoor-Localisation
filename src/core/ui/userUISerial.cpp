@@ -18,7 +18,7 @@ static void promptUserLoggerConfiguration() {
     LOG_INFO("SETUP", "  I - ERROR and INFO logs");
     LOG_INFO("SETUP", "  D - ERROR, INFO, and DEBUG logs");
 
-    char choosen = readCharFromUser();
+    char choosen = readCharFromUserSerial();
     delay_ms(USER_PROMPTION_DELAY);
     if (choosen == 'i' || choosen == 'I') {
         SystemSetup::logLevel = LogLevel::LOG_LEVEL_INFO;
@@ -35,7 +35,7 @@ static SystemMode promptUserSystemMode() {
     }
 
     int sel = -1;
-    while (sel < 1 || sel > MODES_NUM) sel = readIntFromUser();
+    while (sel < 1 || sel > MODES_NUM) sel = readIntFromUserSerial();
     return static_cast<SystemMode>(sel - 1);
 }
 
@@ -47,7 +47,7 @@ static SystemBootMode promptUserSystemBootMode() {
     }
 
     int sel = -1;
-    while (sel < 1 || sel > SYSTEM_BOOT_MODES_NUM) sel = readIntFromUser();
+    while (sel < 1 || sel > SYSTEM_BOOT_MODES_NUM) sel = readIntFromUserSerial();
     return static_cast<SystemBootMode>(sel - 1);
 }
 
@@ -59,7 +59,7 @@ static SystemScannerMode promptUserScannerMode() {
     }
 
     int sel = -1;
-    while (sel < 1 || sel > SYSTEM_SCANNER_MODES_NUM) sel = readIntFromUser();
+    while (sel < 1 || sel > SYSTEM_SCANNER_MODES_NUM) sel = readIntFromUserSerial();
     return static_cast<SystemScannerMode>(sel - 1);
 }
 static SystemPredictionMode promptUserSystemPredictionMode() {
@@ -68,8 +68,9 @@ static SystemPredictionMode promptUserSystemPredictionMode() {
         for (int i = 0; i < SYSTEM_PREDICTION_NODES_NUM; ++i) {
         LOG_INFO("SETUP", "  %d - %s", i + 1, systemPredictionModes[i].c_str());
     }
-     int sel = -1;
-    while (sel < 1 || sel > SYSTEM_PREDICTION_NODES_NUM) sel = readIntFromUser();
+
+    int sel = -1;
+    while (sel < 1 || sel > SYSTEM_PREDICTION_NODES_NUM) sel = readIntFromUserSerial();
     return static_cast<SystemPredictionMode>(sel - 1);
 }
 
@@ -100,13 +101,14 @@ void runUserSystemSetupSerial() {
 
     for (auto& opt : toggles) {
         LOG_INFO("SETUP", "[USER] > %s", opt.prompt);
-        *opt.flag = (readCharFromUser() == 'y' || readCharFromUser() == 'Y');
+        char c = readCharFromUserSerial();
+        *opt.flag = (c == 'y' || c == 'Y');
     }
 }
 
 void promptUserShowDebugLogsSerial() {
     LOG_INFO("FEEDBACK", "[USER] > Show debug logs during rescan? (y/n): ");
-    char c = readCharFromUser();
+    char c = readCharFromUserSerial();
     if (c == 'y' || c == 'Y') {
         SystemSetup::logLevel = LogLevel::LOG_LEVEL_DEBUG;
     }
@@ -115,7 +117,7 @@ void promptUserShowDebugLogsSerial() {
 bool promptUserRunAnotherSessionSerial() {
         LOG_INFO("MAIN", "Would you like to run another session?");
         LOG_INFO("MAIN", "(y - yes | n - no)");
-        char again = readCharFromUser();
+        char again = readCharFromUserSerial();
         if (again != 'y' && again != 'Y') {
             return true;
         }
@@ -134,7 +136,7 @@ void promptUserLocationLabelForScanSerial() {
 
     int sel = -1;
     while (sel < 1 || sel > LABELS_COUNT) {
-        sel = readIntFromUser();        
+        sel = readIntFromUserSerial();        
     }
     
     currentLabel = static_cast<Label>(sel - 1);
@@ -150,7 +152,7 @@ void promptLabelsValidPredectionSerial() {
 
 void promptUserProceedToNextLabelSerial() {
     LOG_INFO("LABEL", "[USER] > Proceed to another label? (y/n): ");
-    char c = readCharFromUser();
+    char c = readCharFromUserSerial();
     shouldAbort = (c == 'N' || c == 'n'); //HALA : SEE CHANGE
 }
 
@@ -162,7 +164,7 @@ bool promptUserReuseDecisionSerial() {
     LOG_INFO("BACKUP", "[USER] > Reuse saved scan?");
     LOG_INFO("UI", "  Y - Yes, reuse");
     LOG_INFO("UI", "  N - No, rescan");
-    char c = readCharFromUser();
+    char c = readCharFromUserSerial();
     if (c == 'y' || c == 'Y') return true;
     return false;
 }
@@ -176,12 +178,12 @@ char promptUserRunCoverageDiagnosticSerial() {
     LOG_INFO("UI", "  Y - Yes");
     LOG_INFO("UI", "  N - No");
     LOG_INFO("UI", "  D - Don't ask again");
-    return readCharFromUser();
+    return readCharFromUserSerial();
 }
 
 bool promptUserAbortToImproveEnvironmentSerial() {
     LOG_INFO("COVERAGE", "[USER] > Abort to improve environment? (y/n): ");
-    char c = readCharFromUser();
+    char c = readCharFromUserSerial();
     return c == 'y' || c == 'Y';
 }
 
@@ -191,13 +193,13 @@ bool promptUserAbortToImproveEnvironmentSerial() {
 
 bool promptUserRetryValidationSerial() {
     LOG_INFO("PREDICT", "[USER] > Retry validation? (y/n): ");
-    char c = readCharFromUser();
+    char c = readCharFromUserSerial();
     return c == 'y' || c == 'Y' ;
 }
 
 bool promptUserRescanAfterInvalidationSerial() {
     LOG_INFO("VALIDATE", "[USER] > Rescan after failed validation? (y/n): ");
-    char c = readCharFromUser();
+    char c = readCharFromUserSerial();
     return c == 'y' || c == 'Y';
 }
 
@@ -207,7 +209,7 @@ bool promptUserRescanAfterInvalidationSerial() {
 
 bool promptUserApprovePredictionSerial() {
     LOG_INFO("PREDICT", "[USER] > Approve predicted label? (y/n): ");
-    char c = readCharFromUser();
+    char c = readCharFromUserSerial();
     return c == 'y' || c == 'Y';
 }
 
@@ -217,7 +219,7 @@ Label promptUserChooseBetweenPredictionsSerial(Label left, Label right) {
     LOG_INFO("PREDICT", "  2 -  (%s)", labels[right].c_str());
     LOG_INFO("PREDICT", "  X - Both predictions are invalid");
 
-    int sel = readIntFromUser();
+    int sel = readIntFromUserSerial();
     if (sel == 1) return left;
     if (sel == 2) return right;
     return LABELS_COUNT;
@@ -230,7 +232,7 @@ Label promptUserChooseBetweenTriplePredictionsSerial(Label first, Label second, 
     LOG_INFO("PREDICT", "  3 - (%s)", labels[third].c_str());
     LOG_INFO("PREDICT", "  X - None of these");
 
-    char choice = readCharFromUser();
+    char choice = readCharFromUserSerial();
     switch (choice) {
         case '1': return first;
         case '2': return second;
@@ -241,20 +243,28 @@ Label promptUserChooseBetweenTriplePredictionsSerial(Label first, Label second, 
 
 bool promptUserRetryPredictionSerial() {
     LOG_INFO("PREDICT", "[USER] > Retry prediction? (y/n): ");
-    char c = readCharFromUser();
+    char c = readCharFromUserSerial();
     return c == 'y' || c == 'Y';
 }
 
 bool promptUserForClearingDataAfterManyPredectionFailureSerial() {
     LOG_INFO("PREDICT", "[USER] > Delete data for all labels after many failures? (y/n): ");
-    char c = readCharFromUser();
+    char c = readCharFromUserSerial();
     return c == 'y' || c == 'Y'; 
 }
 
 // ======================== UTILS ========================
 
 char readCharFromUserSerial() {
-    char input[8];
-    fgets(input, sizeof(input), stdin);
-    return input[0];
+    int c = -1;
+    while (c == -1) {
+        c = getchar();
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+    return (char)c;
+}
+
+int readIntFromUserSerial() {
+    char c = readCharFromUserSerial();
+    return (c - '0');
 }
