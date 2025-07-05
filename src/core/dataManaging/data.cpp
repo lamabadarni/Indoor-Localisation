@@ -12,6 +12,7 @@ static bool _readLineFromFile(FILE* file, std::string& outLine);
 static bool _fromCSVStaticRssiToVector(std::string &line);
 static bool _fromCSVDynamicRssiToVector(std::string& line);
 static bool _fromCSVTofToVector(std::string &line);
+static bool _fileExists(const std::string& filePath);
 
 //-----------------------------------------------------------------------------
 // Public APIs
@@ -287,6 +288,8 @@ bool createCSV(void) {
             LOG_ERROR("DATA" , "Invalid scanner mode");
     }
 
+    if (_fileExists(filePath)) return true;
+
     for (int i = 0 ; i < numOfCols ; i++) {
         header += colHeader + std::to_string(i) + ",";
     }
@@ -296,7 +299,7 @@ bool createCSV(void) {
     FILE *f = fopen(filePath.c_str(), "w");
 
     if (!f) {
-        LOG_ERROR("DATA", "Failed to create CSV.");
+        LOG_ERROR("DATA", ("Failed to create " + filePath).c_str());
         return false;
     }
 
@@ -451,4 +454,15 @@ static bool _deleteDirectory(const char* path) {
     rmdir(path);
 
     return true;
+}
+
+static bool fileExists(const std::string& filePath) {
+    FILE* isFileExist = fopen(filePath.c_str(), "r");
+
+    if (!isFileExist) return false;
+    else {
+        fclose(isFileExist);
+
+        return true;
+    }
 }
