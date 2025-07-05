@@ -40,7 +40,7 @@ bool loadDataset(void);
  *        or recreates empty directories if they already exist.
  * @return true if the storage was formatted successfully, false otherwise.
  */
-bool formatStorage(void);
+bool formatStorage(bool format);
 
 /**
  * @brief Resets the CSV files for RSSI and TOF data and prints the column headers.

@@ -13,6 +13,7 @@ static bool _fromCSVStaticRssiToVector(std::string &line);
 static bool _fromCSVDynamicRssiToVector(std::string& line);
 static bool _fromCSVTofToVector(std::string &line);
 static bool _fileExists(const std::string& filePath);
+static bool _directoryExists(const char* path);
 
 //-----------------------------------------------------------------------------
 // Public APIs
@@ -22,7 +23,7 @@ bool initDataBackup(bool initSD) {
     LOG_INFO("DATA", "START");
     if (initSD) {
         if(initSDCard()) {
-            formatStorage();
+            formatStorage(false);
             logFile = fopen(getLogFilePath().c_str(), "w");
 
             if (!logFile) {
@@ -245,21 +246,27 @@ bool loadDataset(void) {
     return ok;
 }
 
-bool formatStorage(void) {
+bool formatStorage(bool format) {
     // Use the corrected getBaseDir() function to get the full path
     std::string baseDir = getBaseDir();
 
-    // 1) Recursively delete anything under baseDir
-    _deleteDirectory(baseDir.c_str());
-
-    // 2) Make a fresh directory
-    if (mkdir(baseDir.c_str(), 0777) != 0) {
-        LOG_ERROR("DATA", "Failed to mkdir: %s (errno: %d = %s)",
-              baseDir.c_str(), errno, strerror(errno));
-        return false;
+    if (format) {
+        // 1) Recursively delete anything under baseDir
+        _deleteDirectory(baseDir.c_str());
     }
 
-    LOG_DEBUG("DATA", "Created directory: %s", baseDir.c_str());
+    if (!directoryExists(baseDir.c_str())){
+    // 2) Make a fresh directory
+        if (mkdir(baseDir.c_str(), 0777) != 0) {
+            LOG_ERROR("DATA", "Failed to mkdir: %s (errno: %d = %s)",
+                baseDir.c_str(), errno, strerror(errno));
+            return false;
+        }
+
+        LOG_DEBUG("DATA", "Created directory: %s", baseDir.c_str());
+    }
+
+    LOG_DEBUG("DATA", "Directory %s already exists", baseDir.c_str());
 
     return createCSV();
 }
@@ -465,4 +472,13 @@ static bool fileExists(const std::string& filePath) {
 
         return true;
     }
+}
+
+static bool _directoryExists(const char* path) {
+    DIR* dir = opendir(path);
+    if (dir) {
+        closedir(dir);
+        return true;  // Directory exists
+    }
+    return false;      // Directory does not exist
 }
