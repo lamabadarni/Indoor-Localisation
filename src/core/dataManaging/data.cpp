@@ -8,7 +8,6 @@
 static std::vector<std::string> splittedString;
 static void _splitBySeparator(const std::string &data, char separator);
 static bool _deleteDirectory(const char* path);
-static bool _createFileWithHeader(const std::string& filePath, const std::string& header);
 static bool _readLineFromFile(FILE* file, std::string& outLine);
 static bool _fromCSVStaticRssiToVector(std::string &line);
 static bool _fromCSVDynamicRssiToVector(std::string& line);
@@ -19,7 +18,17 @@ static bool _fromCSVTofToVector(std::string &line);
 //-----------------------------------------------------------------------------
 
 bool initDataBackup() {
-    return initSDCard();
+    if (initSDCard()) {
+        logFile = fopen(getLogFilePath(), "w");
+
+        if (!f) {
+            return false;
+        }
+
+        return true;
+    }
+
+    return false;
 }
 void saveData(const StaticRSSIData &scanData) {
     staticRSSIDataSet.push_back(scanData);
@@ -279,7 +288,17 @@ bool createCSV(void) {
 
     header += "Label\n";
 
-    return _createFileWithHeader(filePath, header);
+    FILE *f = fopen(filePath.c_str(), "w");
+
+    if (!f) {
+        LOG_ERROR("DATA", "Failed to create CSV.");
+        return false;
+    }
+
+    fprintf(f, header.c_str());
+    fclose(f);
+
+    return return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -388,19 +407,6 @@ static bool _readLineFromFile(FILE* file, std::string& outLine) {
     }
 
     return !outLine.empty();
-}
-
-static bool _createFileWithHeader(const std::string& filePath, const std::string& header) {
-    FILE *f = fopen(filePath.c_str(), "w");
-
-    if (!f) {
-        LOG_ERROR("DATA", "Failed to create TOF CSV.");
-        return false;
-    }
-
-    fprintf(f, header.c_str());
-
-    return false;
 }
 
 static void _splitBySeparator(const std::string &data, char separator) {

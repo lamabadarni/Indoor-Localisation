@@ -203,6 +203,7 @@ extern double  tofAccuracy[LABELS_COUNT];
 extern double  staticRSSIAccuracy[LABELS_COUNT];
 extern double  dynamicRSSIAccuracy[LABELS_COUNT];
 extern bool    validForPredection[LABELS_COUNT];
+extern FILE*   logFile;
 
 extern std::vector<StaticRSSIData>  staticRSSIDataSet;
 extern std::vector<DynamicRSSIData> dynamicRSSIDataSet;
@@ -223,8 +224,6 @@ extern const UI            systemUI;
 // ====================== Utility Functions ======================
 
 int applyEMA(int prevRSSI, int newRSSI);
-
-char readCharFromUserSerial();
 
 int readIntFromUser();
 

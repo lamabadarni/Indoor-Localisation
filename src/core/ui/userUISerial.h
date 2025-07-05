@@ -100,6 +100,6 @@ bool promptUserForClearingDataAfterManyPredectionFailureSerial();
 
 // ======================== UTILS ========================
 
-
+char readCharFromUserSerial();
 
 #endif 
