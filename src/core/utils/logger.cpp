@@ -22,7 +22,7 @@ void log_message_serial(const char* level, const char* tag, const char* format, 
     unsigned long timestamp = millis_since_boot();
     printf("%s[%s][%s][%lums] %s\033[0m\n", color, level, tag, timestamp, buffer);
     fflush(stdout);                        
-    vTaskDelay(pdMS_TO_TICKS(15));          
+    vTaskDelay(pdMS_TO_TICKS(100));          
     if (logFile) {
         fprintf(logFile, "[%s][%s][%lums] %s\n", level, tag, timestamp, buffer);
     }
