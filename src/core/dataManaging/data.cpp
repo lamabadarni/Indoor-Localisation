@@ -255,7 +255,7 @@ bool formatStorage(bool format) {
         _deleteDirectory(baseDir.c_str());
     }
 
-    if (!directoryExists(baseDir.c_str())){
+    if (!_directoryExists(baseDir.c_str())){
     // 2) Make a fresh directory
         if (mkdir(baseDir.c_str(), 0777) != 0) {
             LOG_ERROR("DATA", "Failed to mkdir: %s (errno: %d = %s)",
@@ -463,7 +463,7 @@ static bool _deleteDirectory(const char* path) {
     return true;
 }
 
-static bool fileExists(const std::string& filePath) {
+static bool _fileExists(const std::string& filePath) {
     FILE* isFileExist = fopen(filePath.c_str(), "r");
 
     if (!isFileExist) return false;
