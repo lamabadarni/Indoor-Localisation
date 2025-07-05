@@ -61,8 +61,8 @@
 #define PIN_BTN_SELECT  GPIO_NUM_11
 
 // I²C pins for the OLED
-#define OLED_I2C_SDA    GPIO_NUM_33
-#define OLED_I2C_SCL    GPIO_NUM_18
+#define OLED_I2C_SDA    GPIO_NUM_3
+#define OLED_I2C_SCL    GPIO_NUM_5
 
 // ====================== Enums ======================
 

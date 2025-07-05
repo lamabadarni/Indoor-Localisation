@@ -16,7 +16,6 @@
 #include "esp_wifi.h"
 #include "nvs_flash.h"
 
-
 static void initLogger() {
     esp_log_level_set("*", ESP_LOG_INFO);    // ESP-IDF default
     esp_vfs_dev_uart_use_driver(0); // Enable UART0 for stdin/stdout
