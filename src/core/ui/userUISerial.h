@@ -102,4 +102,6 @@ bool promptUserForClearingDataAfterManyPredectionFailureSerial();
 
 char readCharFromUserSerial();
 
+int readIntFromUserSerial();
+
 #endif 

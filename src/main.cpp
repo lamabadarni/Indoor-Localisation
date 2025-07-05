@@ -1,4 +1,3 @@
-
 #include "core/utils/platform.h"
 #include "core/utils/utilities.h"
 #include "core/utils/logger.h"
@@ -14,9 +13,14 @@
 #include "esp_event.h"
 #include "esp_log.h"
 
+#include "esp_vfs_dev.h"
+
+
 static void initLogger() {
-    // Set the global log level (applies to all tags unless overridden)
-    esp_log_level_set("*", ESP_LOG_INFO);
+    esp_log_level_set("*", ESP_LOG_INFO);    // ESP-IDF default
+    esp_vfs_dev_uart_use_driver(0); // Enable UART0 for stdin/stdout
+    setvbuf(stdin, NULL, _IONBF, 0); // Unbuffered stdin
+    SystemSetup::logLevel = LOG_LEVEL_INFO;  // Force your own log level system
 }
 
 static void handleSoftExit() {
@@ -27,8 +31,11 @@ static void handleSoftExit() {
 
 extern "C" void app_main() {
     initLogger();     // Replace Serial.begin() for ESP-IDF logging
-    initDataBackup();
-    delay_ms(10000);  // Optional startup delay
+    LOG_INFO("MAIN", "START");
+
+    bool initSD = true;
+
+    delay_ms(1000);  // Optional startup delay
 
     while (true) {
         
@@ -36,22 +43,28 @@ extern "C" void app_main() {
 
         runUserSystemSetup();  // Prompts user for system mode and settings
 
+        if(!initDataBackup(initSD)) {
+             LOG_ERROR("MAIN", "Failed to initialize SD card or log file.");
+        }
+
+        initSD = false;
+
         switch (SystemSetup::currentSystemMode) {
-        case MODE_SYSTEM_BOOT:
-            handleSystemBoot();
-            break;
-        case MODE_SCANNING_SESSION:
-            handleScanningSession();
-            break;
-        case MODE_PREDICTION_SESSION:
-            handlePredictionSession();
-            break;
-        case MODE_FULL_SESSION:
-            handleFullSession();
-            break;
-        default:
-            LOG_ERROR("MAIN", "Unknown system mode. Exiting.");
-            break;
+            case MODE_SYSTEM_BOOT:
+                handleSystemBoot();
+                break;
+            case MODE_SCANNING_SESSION:
+                handleScanningSession();
+                break;
+            case MODE_PREDICTION_SESSION:
+                handlePredictionSession();
+                break;
+            case MODE_FULL_SESSION:
+                handleFullSession();
+                break;
+            default:
+                LOG_ERROR("MAIN", "Unknown system mode. Exiting.");
+                break;
         }
   
         if(shouldAbort) break;
