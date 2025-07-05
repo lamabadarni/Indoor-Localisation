@@ -267,6 +267,22 @@ char readCharFromUserSerial() {
 }
 
 int readIntFromUserSerial() {
-    char c = readCharFromUserSerial();
-    return (c - '0');
+    int ret = 0;
+    char userInput = 0;
+
+    while (true) {
+        userInput = readCharFromUserSerial();
+
+        if (userInput == '\n') {
+            return ret;
+        }
+
+        if (userInput < '0' || userInput > '9') {
+            LOG_ERROR("UI", "only numbers are allowed!!!");
+            continue;
+        }
+
+        ret *= 10;
+        ret += userInput - '0'; 
+    }
 }
