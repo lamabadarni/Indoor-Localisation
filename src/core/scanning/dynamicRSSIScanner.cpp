@@ -4,9 +4,30 @@
 
 #define EXPECTED_NUM_NEAR_APS 30
 
+static bool isLikelySoftAP(uint8_t* bssid) {
+    // Examples of common SoftAP vendors (can be extended):
+    const uint8_t denylist[][3] = {
+        {0xDE, 0x2F, 0x36}, // Example from your hotspot
+        {0x24, 0x0A, 0xC4}, // Espressif (ESP32)
+        {0x7C, 0x9E, 0xBD}, // Samsung
+        {0xF8, 0x27, 0x93}, // Xiaomi
+        {0xAC, 0x37, 0x43}, // Huawei
+        // add more based on your testing
+    };
+
+    for (int i = 0; i < sizeof(denylist)/3; ++i) {
+        if (bssid[0] == denylist[i][0] &&
+            bssid[1] == denylist[i][1] &&
+            bssid[2] == denylist[i][2]) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void performDynamicRSSIScan() {
     resetDynamicRssiBuffer();
-    for (int scan = 0; scan < DYNAMIC_RSSI_SCAN_SAMPLE_PER_BATCH; scan++) {
+    for (int scan = 0; scan < DYNAMIC_RSSI_SCAN_BATCH_SIZE; scan++) {
         std::pair<DynamicRSSIData , DynamicMacData> scanData = createSingleDynamicRSSIScan();
         if(shouldAbort) {
             return;
@@ -15,7 +36,7 @@ void performDynamicRSSIScan() {
         SaveBufferedData::lastN++;
         saveData(scanData.second, scanData.first);
 
-        LOG_DEBUG("Dynamic RSSI", "Scan %d for label %s", scan + 1, labels[currentLabel]);
+        LOG_DEBUG("Dynamic RSSI", "Scan %d for label %s", scan + 1, labels[currentLabel].c_str());
     }
     
     doneCollectingData();
@@ -35,7 +56,7 @@ std::pair<DynamicRSSIData , DynamicMacData> createSingleDynamicRSSIScan() {
     }
 
     std::map<std::string, std::vector<int>> macToRssiMap;
-    //std::map<std::string, std::string> macToSsidMap;
+    std::map<std::string, std::string> macToSsidMap;
 
     /* ---------- 2. Batch-scan loop ---------- */
     for (int sample = 0; sample < DYNAMIC_RSSI_SCAN_SAMPLE_PER_BATCH; ++sample) {
@@ -67,13 +88,15 @@ std::pair<DynamicRSSIData , DynamicMacData> createSingleDynamicRSSIScan() {
         macRssiPairs.reserve(apCount);
 
         for (uint16_t i = 0; i < apCount; ++i) {
-            char macStr[18];
-            sprintf(macStr, "%02X:%02X:%02X:%02X:%02X:%02X",
+            if(!isLikelySoftAP(ap_records[i].bssid)) {
+                char macStr[18];
+                sprintf(macStr, "%02X:%02X:%02X:%02X:%02X:%02X",
                     ap_records[i].bssid[0], ap_records[i].bssid[1], ap_records[i].bssid[2],
                     ap_records[i].bssid[3], ap_records[i].bssid[4], ap_records[i].bssid[5]);
-            //std::string ssidStr(reinterpret_cast<const char*>(ap_records[i].ssid), 33);
-            macRssiPairs.emplace_back(std::string(macStr), ap_records[i].rssi);
-            //macToSsidMap[std::string(macStr)] = ssidStr;
+                std::string ssidStr(reinterpret_cast<const char*>(ap_records[i].ssid), 33);
+                macRssiPairs.emplace_back(std::string(macStr), ap_records[i].rssi);
+                macToSsidMap[std::string(macStr)] = ssidStr;
+            }
         }
 
         std::partial_sort(macRssiPairs.begin(),
@@ -100,13 +123,16 @@ std::pair<DynamicRSSIData , DynamicMacData> createSingleDynamicRSSIScan() {
         processed.emplace_back(mac, ema);
     }
 
-    for(auto &[mac, rssi] : processed) {
-        LOG_ERROR("SCAN" , "MAC address(%s) | RSSI(%s)" , mac.c_str() , rssi);
-    }
-
     std::sort(processed.begin(), processed.end(),
               [](auto &a, auto &b){ return a.second > b.second; });
+    while (processed.size() > NUMBER_OF_DYNAMIC_APS) processed.pop_back();
+    std::sort(processed.begin(), processed.end(),
+          [](auto &a, auto &b){ return a.first < b.first; });
 
+    for(auto &[mac, rssi] : processed) {
+        LOG_DEBUG("SCAN" , " MAC address( %s ) | SSID( %s ) | RSSI( %d )  " , mac.c_str() , macToSsidMap[mac].c_str() , rssi);
+    }
+    
     /* ---------- 4. Build return structs ---------- */
     DynamicMacData   macData   = {};
     DynamicRSSIData  scanData  = {};

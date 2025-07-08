@@ -2,6 +2,7 @@
 #include "core/scanning/scanningPhase.h"
 #include "core/dataManaging/data.h"
 #include "core/utils/utilities.h"
+#include "core/ui/userUISerial.h"
 
 static double _euclidean(const double* a, const double* b, int size);
 static void   _preparePointRSSI(double* toBeNormalised, int n);
@@ -29,7 +30,7 @@ void runPredictionPhase(void) {
         }
 
         LOG_INFO("PREDICT", "[PREDICT] >> Press Enter to start predicting...");
-        readCharFromUser();
+        readIntFromUserSerial();
 
         bool retry = true;
         int count  = 1;
@@ -113,6 +114,7 @@ Label predict() {
             break;
         }
         case DYNAMICRSSI: {
+            createSingleScan();
             label =  dynamicRSSIPredict();
             break;
         }
@@ -128,7 +130,7 @@ Label predict() {
                 break;
             }
             LOG_ERROR("PREDICT", " !! CONFLICT !! Static Anchors RSSI Predict and Dynamic APs RSSI Predict differ: Static RSSI Prediction %s | Dynamic RSSI Prediction %s",
-                        labels[staticLabel] , labels[dynamicLabel]);
+                        labels[staticLabel].c_str() , labels[dynamicLabel].c_str());
             if(SystemSetup::logLevel == LOG_LEVEL_DEBUG) {
                 Label user = promptUserChooseBetweenPredictions(staticLabel, dynamicLabel);
                 if( user == staticLabel )  {
@@ -148,7 +150,7 @@ Label predict() {
                 break;
             }
             LOG_ERROR("PREDICT", " !! CONFLICT !! Time of flight Predict and Dynamic APs RSSI Predict differ: Time of flight Prediction %s | Dynamic RSSI Prediction %s ", 
-                labels[tofLabel] , labels[dynamicLabel]);
+                labels[tofLabel].c_str() , labels[dynamicLabel].c_str());
             if(SystemSetup::logLevel == LOG_LEVEL_DEBUG) {
                 Label user = promptUserChooseBetweenPredictions(tofLabel, dynamicLabel);
                 if ( user == tofLabel ) {
@@ -168,7 +170,7 @@ Label predict() {
                 break;
             }
             LOG_ERROR("PREDICT", " !! CONFLICT !! Static Anchors RSSI Predict and Time of flight Predict Predict differ: Static RSSI Prediction %s | Time of flight Predict Prediction %s", 
-                labels[staticLabel] , labels[tofLabel]);
+                labels[staticLabel].c_str() , labels[tofLabel].c_str());
             if(SystemSetup::logLevel == LOG_LEVEL_DEBUG) {
                 Label user = promptUserChooseBetweenPredictions(staticLabel, tofLabel);
                 if ( user == staticLabel ) {
@@ -192,11 +194,11 @@ Label predict() {
             }
 
             LOG_ERROR("PREDICT", "!! TRIPLE CONFLICT !! Predictions differ:");
-            LOG_ERROR("PREDICT", "Static: %s | Dynamic: %s | ToF: %s", labels[staticLabel], labels[dynamicLabel], labels[tofLabel]);
+            LOG_ERROR("PREDICT", "Static: %s | Dynamic: %s | ToF: %s", labels[staticLabel].c_str(), labels[dynamicLabel].c_str(), labels[tofLabel].c_str());
 
             if(SystemSetup::logLevel == LOG_LEVEL_DEBUG) {
                 Label user = promptUserChooseBetweenTriplePredictions(staticLabel, dynamicLabel, tofLabel);
-                LOG_DEBUG("PREDICT", "User selected prediction: %s", labels[user]);
+                LOG_DEBUG("PREDICT", "User selected prediction: %s", labels[user].c_str());
                 label = user;
             }
             break;
@@ -207,7 +209,7 @@ Label predict() {
     }
 
     if(label != LABELS_COUNT) {
-        LOG_INFO("PREDICT", " Predicted label: %s", labels[label]);
+        LOG_INFO("PREDICT", " Predicted label: %s", labels[label].c_str());
         delay_ms(USER_PROMPTION_DELAY);
         bool approve = promptUserApprovePrediction();
         if(approve) {
@@ -240,17 +242,16 @@ static Label staticRSSIPredict() {
 }
 
 static int _macAddrCmp(uint8_t mac1[MAC_ADDRESS_SIZE], uint8_t mac2[MAC_ADDRESS_SIZE]) {
-    int cmp = 0;
+    char macStr1[18];
+    char macStr2[18];
+    sprintf(macStr1, "%02X:%02X:%02X:%02X:%02X:%02X",
+                    mac1[0], mac1[1], mac1[2],
+                    mac1[3], mac1[4], mac1[5]);
+    sprintf(macStr2, "%02X:%02X:%02X:%02X:%02X:%02X",
+                mac2[0], mac2[1], mac2[2],
+                mac2[3], mac2[4], mac2[5]);
 
-    for (int i = 0 ; i < MAC_ADDRESS_SIZE ; i++) {
-        cmp = mac1[i] - mac2[i];
-
-        if (cmp) {
-            return cmp;
-        }
-    }
-
-    return cmp;
+    return strcmp(macStr1, macStr2);
 }
 
 static double _dynamicRSSIeuclidean(double rssi1[NUMBER_OF_DYNAMIC_APS],
@@ -280,29 +281,35 @@ static double _dynamicRSSIeuclidean(double rssi1[NUMBER_OF_DYNAMIC_APS],
 
     sum += NUMBER_OF_DYNAMIC_APS - exactMatch;
 
-    return sqrt(sum);
+    return sqrt(abs(sum));
 }
 
 static Label dynamicRSSIPredict() {
     int sizeOfDataSet = dynamicRSSIDataSet.size();
     double normalisedInput[NUMBER_OF_DYNAMIC_APS];
     std::vector<double> distances(sizeOfDataSet, 0);
-    std::vector<Label> labels(sizeOfDataSet, LABELS_COUNT);
+    std::vector<Label> _labels(sizeOfDataSet, LABELS_COUNT);
 
-    memcpy(normalisedInput, accumulatedDynamicRSSIs, NUMBER_OF_DYNAMIC_APS);
+    memcpy(normalisedInput, accumulatedDynamicRSSIs, NUMBER_OF_DYNAMIC_APS*sizeof(double));
     _preparePointRSSI(normalisedInput, NUMBER_OF_DYNAMIC_APS);
 
     for (int i = 0 ; i < sizeOfDataSet ; i++) {
         double normalisedPoint[NUMBER_OF_DYNAMIC_APS];
 
-        memcpy(normalisedPoint, dynamicRSSIDataSet[i].RSSIs, NUMBER_OF_DYNAMIC_APS);
+        for (int j = 0 ; j < NUMBER_OF_DYNAMIC_APS ; j++) {
+            normalisedPoint[j] = (double)dynamicRSSIDataSet[i].RSSIs[j];
+        }
+
         _preparePointRSSI(normalisedPoint, NUMBER_OF_DYNAMIC_APS);
         distances[i] = _dynamicRSSIeuclidean(normalisedInput, normalisedPoint,
                        accumulatedMacAddresses, dynamicMacDataSet[i].macAddresses);
-        labels[i] = staticRSSIDataSet[i].label;
+        _labels[i] = dynamicRSSIDataSet[i].label;
+
     }
 
-    return _predict(distances, labels, K_RSSI);
+    LOG_DEBUG("PREDICTION", "Calculated norm...");
+
+    return _predict(distances, _labels, K_RSSI);
 }
 
 static Label tofPredict() {
@@ -337,7 +344,7 @@ static double _euclidean(const double* a, const double* b, int size) {
 
 static void _preparePointRSSI(double* toBeNormalised, int n) {
     for (int i = 0 ; i < n ; ++i) {
-        toBeNormalised[i] = ((double)(toBeNormalised[i] + 100)) / 100.0;
+        toBeNormalised[i] = ((double)(toBeNormalised[i] + 100.0)) / 100.0;
     }
 }
 

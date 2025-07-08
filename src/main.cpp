@@ -50,8 +50,7 @@ static void initWiFi() {
 
 extern "C" void app_main() {
     initLogger();     // Replace Serial.begin() for ESP-IDF logging
-    LOG_INFO("MAIN", "START");
-
+    LOG_INFO("MAIN", "START");    
     bool initSD = true;
 
     delay_ms(1000);  // Optional startup delay
@@ -64,7 +63,9 @@ extern "C" void app_main() {
 
         runUserSystemSetup();  // Prompts user for system mode and settings
 
-        if(!initDataBackup(initSD)) {
+        delay_ms(1000); 
+
+        if(SystemSetup::currentSystemMode != MODE_SYSTEM_BOOT && !initDataBackup(initSD)) {
              LOG_ERROR("MAIN", "Failed to initialize SD card or log file.");
         }
 

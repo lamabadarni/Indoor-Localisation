@@ -13,6 +13,7 @@
 #include "dynamicRSSIScanner.h"
 #include "core/validation/validationPhase.h"
 #include "core/systemBootModeHandlers/diagnostics.h"
+#include "core/ui/userUISerial.h"
 
 static bool dontAskAgain = false;
 
@@ -53,7 +54,7 @@ void runScanningPhase() {
 
         // Fresh scan path
         LOG_INFO("SCAN", "Press any key to start scanning...");
-        readCharFromUser();
+        readIntFromUserSerial();
 
         if (!startLabelScanningSession()) {
             LOG_INFO("SCAN", "Skipping label: %s due to repeated validation failure.", labels[currentLabel].c_str());
@@ -68,7 +69,7 @@ void runScanningPhase() {
         LOG_INFO("SCAN", "The following labels were skipped due to scan failure:");
         for (int i = 0; i < LABELS_COUNT; i++) {
             if(!validForPredection[i]) {
-            LOG_INFO("SCAN", " - %s | Accuracy: %.2f%%", labels[i].c_str(), getAccuracyForValidation());
+            LOG_INFO("SCAN", " - %s", labels[i].c_str());
             }
         }
     } else {
@@ -82,7 +83,6 @@ void runScanningPhase() {
 
 bool startLabelScanningSession() {
     int  retryCount = 0;
-    bool validScan = false;
 
     if (!dontAskAgain) {
         char input = promptUserRunCoverageDiagnostic();
@@ -98,7 +98,7 @@ bool startLabelScanningSession() {
         LOG_INFO("SCAN", "Validating data collected accuracy...");
         startLabelValidationSession();
 
-        if (validScan) {
+        if (validForPredection[currentLabel]) {
             LOG_INFO("SCAN", "Scan successful for label: %s", labels[currentLabel].c_str());
             break;
         }
@@ -107,11 +107,11 @@ bool startLabelScanningSession() {
         retryCount++;
     }
 
-    if (!validScan) {
+    if (!validForPredection[currentLabel]) {
         LOG_ERROR("SCAN", "Scan failed after max retries : %d for label: %s", MAX_RETRIES_FOR_RSSI, labels[currentLabel].c_str());
     }
 
-    return validScan;
+    return validForPredection[currentLabel];
 }
 
 // =======================================================
@@ -121,7 +121,7 @@ bool startLabelScanningSession() {
 void collectMeasurements() {
     LOG_INFO("SCAN", "Collecting measurements based on current scanner mode...");
 
-    switch (SystemSetup::currentSystemMode) {
+    switch (SystemSetup::currentSystemScannerMode) {
         case STATIC_RSSI:
             LOG_INFO("SCAN", "Mode: Static RSSI");
             performStaticRSSIScan();

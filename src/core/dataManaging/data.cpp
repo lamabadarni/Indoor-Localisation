@@ -23,17 +23,19 @@ bool initDataBackup(bool initSD) {
     LOG_INFO("DATA", "START");
     if (initSD) {
         if(initSDCard()) {
-            formatStorage(false);
+            if(SystemSetup::currentSystemMode != SystemMode::MODE_PREDICTION_SESSION) {
+                formatStorage(false);
+            }
             logFile = fopen(getLogFilePath().c_str(), "w");
 
             if (!logFile) {
+                LOG_ERROR("MAIN", "Failed to initialize log file.");
                 return false;
             }
 
             return true;
         }
     }
-
     return false;
 }
 void saveData(const StaticRSSIData &scanData) {
@@ -137,9 +139,9 @@ void doneCollectingData() {
     else if (SaveBufferedData::scanner == DYNAMIC_RSSI) {
         int datasetSize = dynamicRSSIDataSet.size();
 
-        for (int row = datasetSize ; row >= datasetSize - SaveBufferedData::lastN ; row--) {
+        for (int row = datasetSize - 1 ; row >= datasetSize - SaveBufferedData::lastN ; row--) {
             if (!saveDynamicRSSIScan(dynamicMacDataSet[row], dynamicRSSIDataSet[row])) {
-                LOG_ERROR("DATA", "Failed to write TOF row.");
+                LOG_ERROR("DATA", "Failed to write dynamic rssi row.");
             }
         }
     }
@@ -152,9 +154,8 @@ void doneCollectingData() {
 }
 bool loadDataset(void) {
     bool ok = true;
-    SystemScannerMode currentState = SystemSetup::currentSystemScannerMode;
-
-    if (currentState == STATIC_RSSI) {
+    
+    if (isStaticRSSIActiveForPrediction()) {
         FILE* f = fopen(getStaticRSSIFilePath().c_str(), "r");
         int validData = 0;
 
@@ -173,6 +174,7 @@ bool loadDataset(void) {
                 }
                 else {
                     validData++;
+                    DataLoaded::Static = true;
                 }
             }
 
@@ -183,7 +185,7 @@ bool loadDataset(void) {
             ok = false;
         }
     }
-    else if (currentState == TOF) {
+    else if (isTOFActiveForPrediction()) {
         FILE* f = fopen(getTOFFilePath().c_str(), "r");
         int validData = 0;
 
@@ -202,6 +204,7 @@ bool loadDataset(void) {
                 }
                 else {
                     validData++;
+                    DataLoaded::TOF = true;
                 }
             }
 
@@ -212,7 +215,7 @@ bool loadDataset(void) {
             ok = false;
         }
     }
-    else if (currentState == DYNAMIC_RSSI) {
+    else if (isDynamicRSSIActiveForPrediction()) {
         FILE* f = fopen(getDynamicRSSIFilePath().c_str(), "r");
         int validData = 0;
 
@@ -220,6 +223,9 @@ bool loadDataset(void) {
             LOG_INFO("DATA", "Loading RSSI dataset...");
 
             std::string line;
+
+            dynamicRSSIDataSet.reserve(512);
+            dynamicMacDataSet.reserve(512);
 
             // Read and discard the header line first
             _readLineFromFile(f, line);
@@ -231,7 +237,7 @@ bool loadDataset(void) {
                 }
                 else {
                     validData++;
-                    //Ward : modify DataLoaded
+                    DataLoaded::Dynamic = true;
                 }
             }
 
@@ -241,6 +247,7 @@ bool loadDataset(void) {
 
             ok = false;
         }
+
     }
 
     return ok;
@@ -292,7 +299,7 @@ bool createCSV(void) {
             filePath = getDynamicRSSIFilePath();
             break;
         default:
-            LOG_ERROR("DATA" , "Invalid scanner mode");
+            break;
     }
 
     if (_fileExists(filePath)) return true;
@@ -323,11 +330,12 @@ bool createCSV(void) {
 static bool _fromCSVStaticRssiToVector(std::string &line) {
     StaticRSSIData row;
 
+    _splitBySeparator(line, ',');
+
+
     if (splittedString.size() != NUMBER_OF_ANCHORS + 1) {
         return false;
     }
-
-    _splitBySeparator(line, ',');
 
     for (int i = 0; i < NUMBER_OF_ANCHORS; i++) {
         row.RSSIs[i] = std::stoi(splittedString[i]);
@@ -343,11 +351,11 @@ static bool _fromCSVStaticRssiToVector(std::string &line) {
 static bool _fromCSVTofToVector(std::string &line) {
     TOFData row;
 
+    _splitBySeparator(line, ',');
+
     if (splittedString.size() != NUMBER_OF_RESPONDERS + 1) {
         return false;
     }
-
-    _splitBySeparator(line, ',');
 
     for (int i = 0; i < NUMBER_OF_RESPONDERS; i++) {
         row.TOFs[i] = std::stod(splittedString[i]);
@@ -360,7 +368,7 @@ static bool _fromCSVTofToVector(std::string &line) {
     return true;
 }
 
-static bool __hexaCharToHexaInt(char c) {
+static uint8_t __hexaCharToHexaInt(char c) {
     if (c >= '0' && c <= '9') {
         return c - '0';          // '0' to '9' -> 0 to 9
     }
@@ -378,14 +386,20 @@ static bool _fromCSVDynamicRssiToVector(std::string& line) {
     DynamicMacData macAddrData;
     DynamicRSSIData rssiData;
 
+    _splitBySeparator(line, ',');
+
     if (splittedString.size() != NUMBER_OF_DYNAMIC_APS + 1) {
         return false;
     }
 
-    _splitBySeparator(line, ',');
-
     for (int i = 0 ; i < NUMBER_OF_DYNAMIC_APS ; i++) {
-        rssiData.RSSIs[i] = std::stoi(splittedString[i].substr(2 * MAC_ADDRESS_SIZE + 1));
+        size_t dashPos = splittedString[i].find('-');
+        if (dashPos != std::string::npos) {
+            rssiData.RSSIs[i] = std::stoi(splittedString[i].substr(dashPos + 1));
+        } else {
+            // Handle error: format not as expected
+            return false;
+        }
 
         for (int j = 0 ; j < MAC_ADDRESS_SIZE ; j++) {
             macAddrData.macAddresses[i][j] = 0;
@@ -394,7 +408,7 @@ static bool _fromCSVDynamicRssiToVector(std::string& line) {
                                               (__hexaCharToHexaInt(splittedString[i][3 * j]) << 4);
         }
     }
-
+    
     rssiData.label = static_cast<Label>(std::stoi(splittedString[NUMBER_OF_DYNAMIC_APS]));
     macAddrData.label = rssiData.label;
 

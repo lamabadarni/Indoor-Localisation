@@ -28,7 +28,7 @@
 
 // == Dynamic RSSI Scanner ==
 #define DYNAMIC_RSSI_SCAN_BATCH_SIZE       (15)
-#define DYNAMIC_RSSI_SCAN_SAMPLE_PER_BATCH (3)
+#define DYNAMIC_RSSI_SCAN_SAMPLE_PER_BATCH (5)
 #define NUMBER_OF_DYNAMIC_APS              (9)
 
 // == TOF Scanner ==
@@ -40,7 +40,7 @@
 #define NUMBER_OF_RESPONDERS               (4)
 
 // == Validation == 
-#define VALIDATION_MAX_ATTEMPTS            (5)
+#define VALIDATION_MAX_ATTEMPTS            (3)
 #define VALIDATION_PASS_THRESHOLD          (0.6)
 
 // == Predection ==
@@ -57,7 +57,7 @@
 
 // Hardware pins
 #define PIN_BTN_UP      GPIO_NUM_9
-#define PIN_BTN_DOWN    GPIO_NUM_12
+#define PIN_BTN_DOWN    GPIO_NUM_7
 #define PIN_BTN_SELECT  GPIO_NUM_11
 
 // I²C pins for the OLED
@@ -67,21 +67,18 @@
 // ====================== Enums ======================
 
 typedef enum  {
-    NEAR_ROOM_234 = 0,
+    ROOM_236 = 0,
     BETWEEN_ROOMS_234_236,
-    ROOM_236,
-    NEAR_ROOM_232,
+    BETWEEN_ROOM_232_236,
     ROOM_231,
     BETWEEN_ROOMS_231_236,
-    NEAR_BATHROOM,
-    NEAR_KITCHEN,
+    NEAR_KITCHEN_BATHROOM,
     KITCHEN,
-    NEAR_ROOM_230,
     MAIN_ENTRANCE,
     LOBBY,
     PRINTER,
-    OFFICES_HALL,
-    MAIN_EXIT,
+    OFFICES_HALL_1,
+    OFFICES_HALL_2,
     BALCONY_ENTRANCE,
     LABELS_COUNT
 } Label;
