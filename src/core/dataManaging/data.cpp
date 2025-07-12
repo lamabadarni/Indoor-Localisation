@@ -144,6 +144,9 @@ void doneCollectingData() {
                 LOG_ERROR("DATA", "Failed to write dynamic rssi row.");
             }
         }
+
+        dynamicRSSIDataSet.clear();
+        dynamicMacDataSet.clear();
     }
 
     LOG_INFO("DATA", "Flush complete");
@@ -217,40 +220,70 @@ bool loadDataset(void) {
     }
     else if (isDynamicRSSIActiveForPrediction()) {
         FILE* f = fopen(getDynamicRSSIFilePath().c_str(), "r");
-        int validData = 0;
 
         if (f) {
-            LOG_INFO("DATA", "Loading RSSI dataset...");
-
-            std::string line;
-
-            dynamicRSSIDataSet.reserve(512);
-            dynamicMacDataSet.reserve(512);
-
-            // Read and discard the header line first
-            _readLineFromFile(f, line);
-
-            // Now, loop through the rest of the file (the actual data)
-            while (_readLineFromFile(f, line)) {
-                if (!_fromCSVDynamicRssiToVector(line)) {
-                    LOG_ERROR("DATA", "Dynamic RSSI Data is not in the correct format");
-                }
-                else {
-                    validData++;
-                    DataLoaded::Dynamic = true;
-                }
-            }
-
-            fclose(f);
+            dynamicRSSIDataSet.reserve(128);
+            dynamicMacDataSet.reserve(128);
+            DataLoaded::Dynamic = true;
         } else {
             LOG_ERROR("DATA", "Could not open Dynamic RSSI file.");
 
             ok = false;
         }
-
     }
 
     return ok;
+}
+
+bool loadBatch(void) {
+    static FILE* f;
+    static int linesRead = 0;
+
+    LOG_DEBUG("DATA", "in loadBatch");
+
+    if (linesRead == 0) {
+        f = fopen(getDynamicRSSIFilePath().c_str(), "r");
+    }
+
+    if (f) {
+        LOG_INFO("DATA", "Loading RSSI dataset...");
+
+        std::string line;
+
+        // Read and discard the header line first
+        if (linesRead == 0) {
+            _readLineFromFile(f, line);
+            linesRead++;
+        }
+
+        // Now, loop through the rest of the file (the actual data)
+        for (int i = 0 ; i < 128 && _readLineFromFile(f, line) ; i++) {
+            if (!_fromCSVDynamicRssiToVector(line)) {
+                LOG_ERROR("DATA", "Dynamic RSSI Data is not in the correct format");
+            }
+            else {
+                linesRead++;
+            }
+        }
+
+        LOG_DEBUG("DATA", "line size: %u", line.size());
+
+        if (line.size() == 0) {
+            linesRead = 0;
+            fclose(f);
+            f = NULL;
+
+            return false;
+        }
+    }
+    else {
+        LOG_ERROR("DATA", "could not open %s", getDynamicRSSIFilePath().c_str());
+        return false;
+    }
+
+    LOG_DEBUG("DATA", "loaded batch");
+
+    return true;
 }
 
 bool formatStorage(bool format) {
@@ -419,13 +452,13 @@ static bool _fromCSVDynamicRssiToVector(std::string& line) {
 }
 
 static bool _readLineFromFile(FILE* file, std::string& outLine) {
-    outLine.clear();
+    char buffer[128];
 
     if (!file) {
         return false;
     }
 
-    char buffer[128];
+    outLine.clear();
 
     while (fgets(buffer, sizeof(buffer), file)) {
         outLine += buffer;
