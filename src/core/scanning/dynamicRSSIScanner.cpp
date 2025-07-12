@@ -4,15 +4,12 @@
 
 #define EXPECTED_NUM_NEAR_APS 30
 
-static bool isLikelySoftAP(uint8_t* bssid) {
+static bool notSoftAP(uint8_t* bssid) {
     // Examples of common SoftAP vendors (can be extended):
+    return true;
     const uint8_t denylist[][3] = {
-        {0xDE, 0x2F, 0x36}, // Example from your hotspot
-        {0x24, 0x0A, 0xC4}, // Espressif (ESP32)
-        {0x7C, 0x9E, 0xBD}, // Samsung
-        {0xF8, 0x27, 0x93}, // Xiaomi
-        {0xAC, 0x37, 0x43}, // Huawei
-        // add more based on your testing
+        {0x48, 0x4A, 0xE9}, 
+        {0xD0, 0x15, 0xA6}
     };
 
     for (int i = 0; i < sizeof(denylist)/3; ++i) {
@@ -88,7 +85,7 @@ std::pair<DynamicRSSIData , DynamicMacData> createSingleDynamicRSSIScan() {
         macRssiPairs.reserve(apCount);
 
         for (uint16_t i = 0; i < apCount; ++i) {
-            if(!isLikelySoftAP(ap_records[i].bssid)) {
+            if(notSoftAP(ap_records[i].bssid)) {
                 char macStr[18];
                 sprintf(macStr, "%02X:%02X:%02X:%02X:%02X:%02X",
                     ap_records[i].bssid[0], ap_records[i].bssid[1], ap_records[i].bssid[2],

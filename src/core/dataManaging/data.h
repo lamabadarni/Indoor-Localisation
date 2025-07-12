@@ -36,6 +36,11 @@ void deleteInvalidData(void);
 bool loadDataset(void);
 
 /**
+ * 
+ */
+bool loadBatch(void);
+
+/**
  * @brief Creates the RSSI/TOF directory according to the current system state if it does not exist,
  *        or recreates empty directories if they already exist.
  * @return true if the storage was formatted successfully, false otherwise.
