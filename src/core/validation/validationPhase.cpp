@@ -36,7 +36,7 @@ void runValidationPhase() {
 
         if (!validForPredection[currentLabel]) {
             delay_ms(USER_PROMPTION_DELAY);
-            LOG_ERROR("VALIDATE", "Predection failure at: %s", labels[currentLabel]);
+            LOG_ERROR("VALIDATE", "Predection failure at: %s", labels[currentLabel].c_str());
             bool rescanD = promptUserRescanAfterInvalidation();
             if(rescanD) {
                 LOG_INFO("VALIDATE", "Rescanning...");
@@ -58,7 +58,7 @@ void runValidationPhase() {
         currentLabel = (Label)i;
         const char* result = validForPredection[i] ? "VALIDATED" : "NOT VALIDATED";
 
-        LOG_INFO("VALIDATE", "Label %d - %s: %s, with accuracyL %.2f%%", i, labels[i], result, getAccuracyForValidation()*100);
+        LOG_INFO("VALIDATE", "Label %d - %s: %s" , labels[i].c_str() , result);
     }
 
     currentLabel = (Label)LABELS_COUNT;
@@ -81,17 +81,28 @@ void startLabelValidationSession() {
         Label predicted = predict();
 
         if(predicted == currentLabel) {
-            LOG_INFO("VALIDATION", "Data set validation session for : %s completed. Accuracy detected : %d", labels[currentLabel], getAccuracyForValidation());
+            LOG_INFO("VALIDATION", "Data set validation session for : %s completed. ", labels[currentLabel].c_str());
             validForPredection[currentLabel] = true;
+            SaveBufferedData::scanner = DYNAMIC_RSSI;
+            SaveBufferedData::lastN++;
+            DynamicRSSIData rssiScanData;
+            rssiScanData.label = predicted;
+            for(int i=0; i<NUMBER_OF_DYNAMIC_APS; i++) {
+                rssiScanData.RSSIs[i] = accumulatedDynamicRSSIs[i];
+            }
+            DynamicMacData macData;
+            macData.label = predicted;
+            memcpy(macData.macAddresses, accumulatedMacAddresses, sizeof(macData.macAddresses));
+            saveData(macData, rssiScanData);
             return;
         }
 
-        LOG_ERROR("VALIDATE", "Predicted location: %s - Expected location: %s", labels[predicted], labels[currentLabel]);
+        LOG_ERROR("VALIDATE", "Predicted location: %s - Expected location: %s", labels[predicted].c_str(), labels[currentLabel].c_str());
         delay_ms(DELAY_BETWEEN_PHASES);
 
 
         if(retryCount >= VALIDATION_MAX_ATTEMPTS) {
-            LOG_ERROR("VALIDATE", "Data set seems invalid for: %s", labels[predicted]);
+            LOG_ERROR("VALIDATE", "Data set seems invalid for: %s", labels[predicted].c_str());
             break;
         }
 
@@ -100,8 +111,6 @@ void startLabelValidationSession() {
         delay_ms(DELAY_BETWEEN_PHASES);
     }
 
-    DeleteBufferedData::scanner = SystemSetup::currentSystemScannerMode;
-    //WARD: how to know how much to delete??
     validForPredection[currentLabel] = false;
     return;
 }

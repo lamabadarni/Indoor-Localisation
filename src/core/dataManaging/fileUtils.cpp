@@ -1,10 +1,10 @@
 #include "fileUtils.h"
 
-static constexpr char STATIC_RSSI_FILENAME[]  = "static_rssi_data";
-static constexpr char DYNAMIC_RSSI_FILENAME[] = "dynamic_rssi_data";
-static constexpr char TOF_FILENAME[]          = "tof_data";
+static constexpr char STATIC_RSSI_FILENAME[]  = "static";
+static constexpr char DYNAMIC_RSSI_FILENAME[] = "dynamic";
+static constexpr char TOF_FILENAME[]          = "tof";
 static constexpr char ACCURACY_FILENAME[]     = "acc_data";
-static constexpr char LOG_FILENAME[]          = "indoor-localisation-log";
+static constexpr char LOG_FILENAME[]          = "logs";
 static constexpr char TMP_SUFFIX[]            = ".tmp";
 static constexpr char CSV_SUFFIX[]            = ".csv";
 static constexpr char TXT_SUFFIX[]            = ".txt";

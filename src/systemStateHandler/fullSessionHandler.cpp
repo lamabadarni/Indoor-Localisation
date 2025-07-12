@@ -8,10 +8,12 @@
 #include "../core/scanning/scanningPhase.h"
 #include "../core/validation/validationPhase.h"
 #include "../core/prediction/predictionPhase.h"
+#include "core/dataManaging/data.h"
 
 
 void handleFullSession() {
     LOG_INFO("SESSION", ">>> Starting FULL_SESSION...");
+    loadDataset();
     runScanningPhase();
     if(SystemSetup::enableValidationPhase) {
         runValidationPhase();

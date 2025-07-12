@@ -44,7 +44,7 @@ std::vector<StaticRSSIData>  staticRSSIDataSet  = {};
 std::vector<DynamicMacData>  dynamicMacDataSet  = {};
 std::vector<DynamicRSSIData> dynamicRSSIDataSet = {};
 std::vector<TOFData>         tofDataSet         = {};
-std::vector<std::string> log_buffer;
+std::vector<std::string>     log_buffer;
 
 double  accumulatedStaticRSSIs[NUMBER_OF_ANCHORS];
 double  accumulatedTOFs[NUMBER_OF_RESPONDERS];
@@ -77,21 +77,18 @@ const std::string tofSSIDs[NUMBER_OF_RESPONDERS] = {
 };
 
 const std::string labels[LABELS_COUNT] = {
-    "NEAR_ROOM_234",
-    "BETWEEN_ROOMS_234_236",
     "ROOM_236",
-    "NEAR_ROOM_232",
+    "BETWEEN_ROOMS_234_236",
+    "BETWEEN_ROOM_232_236",
     "ROOM_231",
     "BETWEEN_ROOMS_231_236",
-    "NEAR_BATHROOM",
-    "NEAR_KITCHEN",
+    "NEAR_KITCHEN_BATHROOM",
     "KITCHEN",
-    "NEAR_ROOM_230",
     "MAIN_ENTRANCE",
     "LOBBY",
     "PRINTER",
-    "OFFICES_HALL",
-    "MAIN_EXIT",
+    "OFFICES_HALL_1",
+    "OFFICES_HALL_2",
     "BALCONY_ENTRANCE"
 };
 
@@ -104,8 +101,8 @@ const std::string systemModes[MODES_NUM] = {
 
 const std::string systemScannerModes[SYSTEM_SCANNER_MODES_NUM] {
     "STATIC_RSSI",
-    "TOF",
-    "DYNAMIC"
+    "DYNAMIC_RSSI",
+    "TOF"
 };
 
 const std::string systemPredictionModes[SYSTEM_PREDICTION_NODES_NUM] {
@@ -127,13 +124,13 @@ const std::string systemBootModes[SYSTEM_BOOT_MODES_NUM] {
     "MODE_RESTORE_BACKUP_DATA_TEST"
 };
 
-const std::string   coverages[COVERAGE_STATES_NUM] {
+const std::string coverages[COVERAGE_STATES_NUM] {
     "GOOD COVERAGE",
     "WEAK COVERAGE",
-    "BAD COVERAGE",
+    "BAD COVERAGE"
 };
 
-const UI systemUI = UI::SERIAL;
+UI const systemUI = UI::SERIAL;
 
 // ====================== Utility Functions ======================
 

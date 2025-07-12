@@ -13,10 +13,10 @@
 static const char *TAG = "SDCARD";
 
 // Pin assignments for ESP32-S2
-#define PIN_NUM_MISO  GPIO_NUM_35//35 39
-#define PIN_NUM_MOSI  GPIO_NUM_33//33 35
-#define PIN_NUM_CLK   GPIO_NUM_37 //37
-#define PIN_NUM_CS    GPIO_NUM_18//12 5
+#define PIN_NUM_MISO  GPIO_NUM_35
+#define PIN_NUM_MOSI  GPIO_NUM_33
+#define PIN_NUM_CLK   GPIO_NUM_37
+#define PIN_NUM_CS    GPIO_NUM_18
 
 bool initSDCard(void)
 {
@@ -38,9 +38,9 @@ bool initSDCard(void)
     host.max_freq_khz = 10000;  // Lower frequency for stability
 
     spi_bus_config_t bus_cfg = {
-        .mosi_io_num = GPIO_NUM_35,
-        .miso_io_num = GPIO_NUM_39,
-        .sclk_io_num = GPIO_NUM_37,
+        .mosi_io_num = PIN_NUM_MOSI,
+        .miso_io_num = PIN_NUM_MISO,
+        .sclk_io_num = PIN_NUM_CLK,
         .quadwp_io_num = -1,
         .quadhd_io_num = -1,
         .max_transfer_sz = 4000,
@@ -53,7 +53,7 @@ bool initSDCard(void)
     }
 
     sdspi_device_config_t slot_config = SDSPI_DEVICE_CONFIG_DEFAULT();
-    slot_config.gpio_cs = GPIO_NUM_5;
+    slot_config.gpio_cs = PIN_NUM_CS;
     slot_config.host_id = static_cast<spi_host_device_t>(host.slot);
 
     LOG_INFO("SDCARD", "Mounting filesystem...");

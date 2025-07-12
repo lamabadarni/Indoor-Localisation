@@ -25,6 +25,13 @@ static void promptUserLoggerConfiguration() {
     } else if (choosen == 'd' || choosen == 'D') {
         SystemSetup::logLevel = LogLevel::LOG_LEVEL_DEBUG;
     }
+
+    if(SystemSetup::logLevel == LogLevel::LOG_LEVEL_DEBUG) {
+        LOG_INFO("SETUP", "[USER] ERROR, INFO, and DEBUG Log Level was choosen");
+    }
+    else if(SystemSetup::logLevel == LogLevel::LOG_LEVEL_INFO) {
+        LOG_INFO("SETUP", "[USER] ERROR and INFO Log Level was choosen");
+    }
 }
 
 static SystemMode promptUserSystemMode() {
@@ -48,6 +55,7 @@ static SystemBootMode promptUserSystemBootMode() {
 
     int sel = -1;
     while (sel < 1 || sel > SYSTEM_BOOT_MODES_NUM) sel = readIntFromUserSerial();
+    LOG_INFO("SETUP", "System Boot Mode : %s" , systemBootModes[sel-1].c_str());
     return static_cast<SystemBootMode>(sel - 1);
 }
 
@@ -77,33 +85,31 @@ static SystemPredictionMode promptUserSystemPredictionMode() {
 void runUserSystemSetupSerial() {
     promptUserLoggerConfiguration();
     SystemSetup::currentSystemMode = promptUserSystemMode();
+    LOG_INFO("SETUP", "[USER] System Mode : %s" , systemModes[SystemSetup::currentSystemMode].c_str());
 
     if (SystemSetup::currentSystemMode == MODE_SYSTEM_BOOT) {
         SystemSetup::currentSystemBootMode = promptUserSystemBootMode();
+        LOG_INFO("SETUP", "[USER] System Boot Mode : %s" , systemBootModes[SystemSetup::currentSystemBootMode].c_str());
         return;
     }
 
     if( SystemSetup::currentSystemMode == MODE_SCANNING_SESSION || 
         SystemSetup::currentSystemMode == MODE_FULL_SESSION ) {
             SystemSetup::currentSystemScannerMode = promptUserScannerMode();
-    }
-        if( SystemSetup::currentSystemMode == MODE_PREDICTION_SESSION || 
-        SystemSetup::currentSystemMode == MODE_FULL_SESSION ) {
-            SystemSetup::currentSystemPredictionMode = promptUserSystemPredictionMode();
+            LOG_INFO("SETUP", "[USER] System Scanner Mode : %s" , systemScannerModes[SystemSetup::currentSystemScannerMode].c_str());
     }
 
-    struct {
-        const char* prompt;
-        bool* flag;
-    } toggles[] = {
-        {"Enable validation phase? (y/n): ", &SystemSetup::enableValidationPhase},
-    };
+    if (SystemSetup::currentSystemMode == MODE_PREDICTION_SESSION ||
+        SystemSetup::currentSystemMode == MODE_FULL_SESSION) {
+            SystemSetup::currentSystemPredictionMode = promptUserPredictionMode();
+            LOG_INFO("SETUP", "[USER] System Prediction Mode : %s" , systemPredictionModes[SystemSetup::currentSystemPredictionMode].c_str());
 
-    for (auto& opt : toggles) {
-        LOG_INFO("SETUP", "[USER] > %s", opt.prompt);
-        char c = readCharFromUserSerial();
-        *opt.flag = (c == 'y' || c == 'Y');
     }
+
+    LOG_INFO("SETUP", "Enable validation phase? (y/n): ");
+    char c = readCharFromUserSerial();
+    if(c == 'y' || c == 'Y') SystemSetup::enableValidationPhase = true;
+    return;
 }
 
 void promptUserShowDebugLogsSerial() {
@@ -256,15 +262,36 @@ bool promptUserForClearingDataAfterManyPredectionFailureSerial() {
 // ======================== UTILS ========================
 
 char readCharFromUserSerial() {
-    int c = -1;
-    while (c == -1) {
+    int c;
+    while (true) {
         c = getchar();
-        vTaskDelay(pdMS_TO_TICKS(10));
+        if (c == '\r' || c == '\n') continue;
+        if (c == 'r' || c == 'R') continue; // skip reset chars
+        if (c == EOF) continue;
+        return (char)c;
     }
-    return (char)c;
 }
 
 int readIntFromUserSerial() {
-    char c = readCharFromUserSerial();
-    return (c - '0');
+    char buffer[16] = {0};
+    int idx = 0;
+    int c;
+
+    while (true) {
+        c = getchar();
+
+        if (c == '\r' || c == '\n') {
+            // Newline or carriage return -> end of input
+            break;
+        }
+
+        if (c >= '0' && c <= '9' && idx < 15) {
+            buffer[idx++] = (char)c;
+            putchar(c);  // Echo back the digit
+        }
+    }
+
+    buffer[idx] = '\0';  // Null-terminate the string
+    putchar('\n');       // Move to next line on terminal
+    return (idx > 0) ? atoi(buffer) : 0;
 }
