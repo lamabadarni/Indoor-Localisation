@@ -13,10 +13,10 @@
 static const char *TAG = "SDCARD";
 
 // Pin assignments for ESP32-S2
-#define PIN_NUM_MISO  GPIO_NUM_39
-#define PIN_NUM_MOSI  GPIO_NUM_35
-#define PIN_NUM_CLK   GPIO_NUM_37
-#define PIN_NUM_CS    GPIO_NUM_5
+#define PIN_NUM_MISO  GPIO_NUM_35//35 39
+#define PIN_NUM_MOSI  GPIO_NUM_33//33 35
+#define PIN_NUM_CLK   GPIO_NUM_37 //37
+#define PIN_NUM_CS    GPIO_NUM_18//12 5
 
 bool initSDCard(void)
 {

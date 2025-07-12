@@ -56,13 +56,13 @@
 #define MAX_LOG_LINES                      (7) // Adjust this value based on your display and font size
 
 // Hardware pins
-#define PIN_BTN_UP      GPIO_NUM_9
-#define PIN_BTN_DOWN    GPIO_NUM_12
-#define PIN_BTN_SELECT  GPIO_NUM_11
+#define PIN_BTN_UP      GPIO_NUM_7  //9
+#define PIN_BTN_DOWN    GPIO_NUM_9 //12
+#define PIN_BTN_SELECT  GPIO_NUM_11 //11
 
 // I²C pins for the OLED
-#define OLED_I2C_SDA    GPIO_NUM_33
-#define OLED_I2C_SCL    GPIO_NUM_18
+#define OLED_I2C_SDA    GPIO_NUM_3 //33
+#define OLED_I2C_SCL    GPIO_NUM_5 //18
 
 // ====================== Enums ======================
 
