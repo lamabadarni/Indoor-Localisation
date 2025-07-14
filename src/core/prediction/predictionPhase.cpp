@@ -7,7 +7,7 @@
 static double _euclidean(const double* a, const double* b, int size);
 static void   _preparePointRSSI(double* toBeNormalised, int n);
 static void   _preparePointTOF(double TOF[NUMBER_OF_RESPONDERS], double toBeNormalised[NUMBER_OF_RESPONDERS]);
-static Label  _predict(std::vector<double>& distances, std::vector<Label>& labels, int k);
+static Label  _predict(std::vector<std::pair<double, Label>>& distLabel, int k);
 static void  clearDataAfterPredectionFailure();
 static Label staticRSSIPredict();
 static Label dynamicRSSIPredict();
@@ -216,14 +216,13 @@ Label predict() {
             return label;
         }
     }
-    return label;
+    return LABELS_COUNT;
 }
 
 static Label staticRSSIPredict() {
     int sizeOfDataSet = staticRSSIDataSet.size();
     double normalisedInput[NUMBER_OF_ANCHORS];
-    std::vector<double> distances(sizeOfDataSet, 0);
-    std::vector<Label> labels(sizeOfDataSet, LABELS_COUNT);
+    std::vector<std::pair<double, Label>> distLabel(sizeOfDataSet, {NUMBER_OF_ANCHORS, LABELS_COUNT});
 
     memcpy(normalisedInput, accumulatedStaticRSSIs, NUMBER_OF_DYNAMIC_APS);
     _preparePointRSSI(normalisedInput, NUMBER_OF_DYNAMIC_APS);
@@ -231,14 +230,14 @@ static Label staticRSSIPredict() {
     for (int i = 0; i < sizeOfDataSet; ++i) {
         double normalisedPoint[NUMBER_OF_ANCHORS];
 
-        memcpy(normalisedPoint, staticRSSIDataSet[i].RSSIs, NUMBER_OF_DYNAMIC_APS);
-        _preparePointRSSI(normalisedPoint, NUMBER_OF_DYNAMIC_APS);
+        memcpy(normalisedPoint, staticRSSIDataSet[i].RSSIs, sizeof(normalisedPoint));
+        _preparePointRSSI(normalisedPoint, NUMBER_OF_ANCHORS);
 
-        distances[i] = _euclidean(normalisedPoint, normalisedInput, NUMBER_OF_ANCHORS);
-        labels[i] = staticRSSIDataSet[i].label;
+        distLabel[i].first = _euclidean(normalisedPoint, normalisedInput, NUMBER_OF_ANCHORS);
+        distLabel[i].second = staticRSSIDataSet[i].label;
     }
 
-    return _predict(distances, labels, K_RSSI);
+    return _predict(distLabel, K_RSSI);
 }
 
 static int _macAddrCmp(uint8_t mac1[MAC_ADDRESS_SIZE], uint8_t mac2[MAC_ADDRESS_SIZE]) {
@@ -285,49 +284,65 @@ static double _dynamicRSSIeuclidean(double rssi1[NUMBER_OF_DYNAMIC_APS],
 }
 
 static Label dynamicRSSIPredict() {
-    int sizeOfDataSet = dynamicRSSIDataSet.size();
     double normalisedInput[NUMBER_OF_DYNAMIC_APS];
-    std::vector<double> distances(sizeOfDataSet, 0);
-    std::vector<Label> _labels(sizeOfDataSet, LABELS_COUNT);
+    std::vector<std::pair<double, Label>> distLabel(128, {4, LABELS_COUNT});
 
     memcpy(normalisedInput, accumulatedDynamicRSSIs, NUMBER_OF_DYNAMIC_APS*sizeof(double));
     _preparePointRSSI(normalisedInput, NUMBER_OF_DYNAMIC_APS);
 
-    for (int i = 0 ; i < sizeOfDataSet ; i++) {
-        double normalisedPoint[NUMBER_OF_DYNAMIC_APS];
+    while (true) {
+        bool res = loadBatch();
+        int sizeOfDataSet = dynamicRSSIDataSet.size();
 
-        for (int j = 0 ; j < NUMBER_OF_DYNAMIC_APS ; j++) {
-            normalisedPoint[j] = (double)dynamicRSSIDataSet[i].RSSIs[j];
+        for (int i = sizeOfDataSet - 1 ; i >= 0 ; i--) {
+            double normalisedPoint[NUMBER_OF_DYNAMIC_APS];
+
+            for (int j = 0 ; j < NUMBER_OF_DYNAMIC_APS ; j++) {
+                normalisedPoint[j] = (double)dynamicRSSIDataSet[i].RSSIs[j];
+            }
+
+            _preparePointRSSI(normalisedPoint, NUMBER_OF_DYNAMIC_APS);
+
+            double distance = _dynamicRSSIeuclidean(normalisedInput, normalisedPoint,
+                                                    accumulatedMacAddresses,
+                                                    dynamicMacDataSet[i].macAddresses
+                                                );
+            if (distance < distLabel[i].first) {
+                distLabel[i].first = distance;
+                distLabel[i].second = dynamicRSSIDataSet[i].label;
+            }
         }
 
-        _preparePointRSSI(normalisedPoint, NUMBER_OF_DYNAMIC_APS);
-        distances[i] = _dynamicRSSIeuclidean(normalisedInput, normalisedPoint,
-                       accumulatedMacAddresses, dynamicMacDataSet[i].macAddresses);
-        _labels[i] = dynamicRSSIDataSet[i].label;
+        std::sort(distLabel.begin(), distLabel.end(),
+                  [](const std::pair<double, Label>& a, const std::pair<double, Label>& b) {
+                  return a.first < b.first;
+                });
+        dynamicRSSIDataSet.clear();
+        dynamicMacDataSet.clear();
 
+        if (!res) break;
     }
 
     LOG_DEBUG("PREDICTION", "Calculated norm...");
 
-    return _predict(distances, _labels, K_RSSI);
+    return _predict(distLabel, K_RSSI);
 }
 
 static Label tofPredict() {
     int sizeOfDataSet = tofDataSet.size();
     double normalisedInput[NUMBER_OF_RESPONDERS];
-    std::vector<double> distances(sizeOfDataSet, 0);
-    std::vector<Label> labels(sizeOfDataSet, LABELS_COUNT);
+    std::vector<std::pair<double, Label>> distLabel(sizeOfDataSet, {4, LABELS_COUNT});
 
     _preparePointTOF(accumulatedTOFs, normalisedInput);
 
     for (int i = 0; i < sizeOfDataSet; ++i) {
         double normalisedPoint[NUMBER_OF_RESPONDERS];
         _preparePointTOF(tofDataSet[i].TOFs, normalisedPoint);
-        distances[i] = _euclidean(normalisedPoint, normalisedInput, NUMBER_OF_RESPONDERS);
-        labels[i] = tofDataSet[i].label;
+        distLabel[i].first = _euclidean(normalisedPoint, normalisedInput, NUMBER_OF_RESPONDERS);
+        distLabel[i].second = tofDataSet[i].label;
     }
 
-    return _predict(distances, labels, K_TOF);
+    return _predict(distLabel, K_TOF);
 }
 
 static void clearDataAfterPredectionFailure() {
@@ -354,31 +369,20 @@ static void _preparePointTOF(double TOF[NUMBER_OF_RESPONDERS], double toBeNormal
     }
 }
 
-static Label _predict(std::vector<double>& distances, std::vector<Label>& labels, int k) {
-    int sizeOfDataSet = distances.size();
-
-    for (int i = 0; i < k; ++i) {
-        for (int j = 0; j < sizeOfDataSet - i - 1; ++j) {
-            if (distances[j] < distances[j + 1]) {
-                std::swap(distances[j], distances[j + 1]);
-                std::swap(labels[j], labels[j + 1]);
-            }
-        }
-    }
-
+static Label _predict(std::vector<std::pair<double, Label>>& distLabel, int k) {
     int closestLabel[LABELS_COUNT] = {0};
-    for (int i = 0; i < k; ++i) {
-        closestLabel[labels[sizeOfDataSet - i - 1]]++;
-    }
-
-    int maxVotes = 0;
     Label labelWithMaxVotes = (Label)0;
 
-    for (int i = 0; i < LABELS_COUNT; ++i) {
-        if (closestLabel[i] > maxVotes) {
-            maxVotes = closestLabel[i];
-            labelWithMaxVotes = (Label)i;
-        }
+    std::sort(distLabel.begin(), distLabel.end(),
+              [](const std::pair<double, Label>& a, const std::pair<double, Label>& b) {
+              return a.first < b.first;
+            });
+
+    for (int i = 0; i < k; ++i) {
+        closestLabel[distLabel[i].second]++;
+        labelWithMaxVotes = closestLabel[distLabel[i].second] > closestLabel[labelWithMaxVotes] ?
+                            distLabel[i].second :
+                            labelWithMaxVotes;
     }
 
     return labelWithMaxVotes;
