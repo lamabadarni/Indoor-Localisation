@@ -47,8 +47,14 @@ static void initWiFi() {
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));   // or WIFI_MODE_APSTA
     ESP_ERROR_CHECK(esp_wifi_start());                   // driver is now up
 }
+extern "C" {
+    void display_init_helper(void);
+}
+
 
 extern "C" void app_main() {
+    ////////////// this for displaying on the screeen dont use the regular oneee ////////
+        display_init_helper(); 
     initLogger();     // Replace Serial.begin() for ESP-IDF logging
     LOG_INFO("MAIN", "START");    
     bool initSD = true;
