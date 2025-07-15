@@ -118,7 +118,7 @@ TOFData createSingleTOFScan() {
              LOG_ERROR("TOF", "TOF scan timeout, aborting current scanning session");
         } 
         else {
-            LOG_ERROR("TOF", "TOF scan completed after: %l", duration-start);
+            LOG_INFO("TOF", "TOF scan completed after: %ul", (duration-start));
         }
     }
 
