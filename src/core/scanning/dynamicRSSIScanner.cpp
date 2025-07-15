@@ -43,7 +43,7 @@ std::pair<DynamicRSSIData , DynamicMacData> createSingleDynamicRSSIScan() {
 
      /* ---------- 0. Sanity-check Wi-Fi state ---------- */
 
-    LOG_INFO("SCAN", "Start new scan");
+    LOG_DEBUG("SCAN", "Start new scan");
 
     wifi_mode_t mode;
     if (esp_wifi_get_mode(&mode) != ESP_OK || (mode != WIFI_MODE_STA && mode != WIFI_MODE_APSTA)) {

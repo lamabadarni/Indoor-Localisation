@@ -51,10 +51,25 @@ extern "C" {
     void display_init_helper(void);
 }
 
+static void printStartupBanner() {
+    LOG_INFO("MAIN", "  ╔══════════════════════════════════════════════════════╗\n");
+    LOG_INFO("MAIN", "  ║                                                      ║\n");
+    LOG_INFO("MAIN", "  ║     📍  Indoor Localization System - ESP32-S2        ║\n");
+    LOG_INFO("MAIN", "  ║                                                      ║\n");
+    LOG_INFO("MAIN", "  ║     ┌────────┐   ┌────────┐   ┌────────┐              ║\n");
+    LOG_INFO("MAIN", "  ║     │ Anchor │―▶ │ Signal │―▶ │  Scan  │              ║\n");
+    LOG_INFO("MAIN", "  ║     └────────┘   └────────┘   └────────┘              ║\n");
+    LOG_INFO("MAIN", "  ║         ▲             ▲             ▲                ║\n");
+    LOG_INFO("MAIN", "  ║       [RSSI]       [TOF]        [LABELING]            ║\n");
+    LOG_INFO("MAIN", "  ║                                                      ║\n");
+    LOG_INFO("MAIN", "  ║      🗺️  Mapping, Prediction, Validation...           ║\n");
+    LOG_INFO("MAIN", "  ║                                                      ║\n");
+    LOG_INFO("MAIN", "  ╚══════════════════════════════════════════════════════╝\n");
+}
 
 extern "C" void app_main() {
     initLogger();     // Replace Serial.begin() for ESP-IDF logging
-    LOG_INFO("MAIN", "START");    
+    printStartupBanner();
     bool initSD = true;
 
     delay_ms(1000);  // Optional startup delay
@@ -92,8 +107,6 @@ extern "C" void app_main() {
                 LOG_ERROR("MAIN", "Unknown system mode. Exiting.");
                 break;
         }
-  
-        if(shouldAbort) break;
 
         char again = promptUserRunAnotherSession();
         if (!again) {

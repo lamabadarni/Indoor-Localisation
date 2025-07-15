@@ -14,6 +14,10 @@ void log_message_serial(const char* level, const char* tag, const char* format, 
     else if (strcmp(level, "DEBUG") == 0)
         color = "\033[1;34m";  // Blue
 
+    if (strcmp(tag, "USER") == 0) {
+        color = "\033[1;35m";
+    }
+
     char buffer[256];
     va_list args;
     va_start(args, format);
@@ -25,6 +29,7 @@ void log_message_serial(const char* level, const char* tag, const char* format, 
     vTaskDelay(pdMS_TO_TICKS(100));          
     if (logFile) {
         fprintf(logFile, "[%s][%s][%lums] %s\n", level, tag, timestamp, buffer);
+        fflush(logFile);
     }
 }
 

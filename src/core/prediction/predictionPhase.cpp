@@ -6,6 +6,8 @@
 
 #define K_DYNAMIC_RSSI (12)
 
+static Label prev = LABELS_COUNT;
+
 static double _euclidean(const double* a, const double* b, int size);
 static void   _preparePointRSSI(double* toBeNormalised, int n);
 static void   _preparePointTOF(double TOF[NUMBER_OF_RESPONDERS], double toBeNormalised[NUMBER_OF_RESPONDERS]);
@@ -22,59 +24,26 @@ void runPredictionPhase(void) {
     int invalidLabels = 0;
 
     while ( !shouldAbort ) {
-        if(invalidLabels >= PREDICTION_MAX_LABEL_FAILURE) {
-            LOG_INFO("PREDICT", "Encountered failure at %d different labels", PREDICTION_MAX_LABEL_FAILURE);
-            bool clearData = promptUserForClearingDataAfterManyPredectionFailure();
-            if(clearData) {
-                clearDataAfterPredectionFailure();
-            }
-            break;
-        }
 
         LOG_INFO("PREDICT", "[PREDICT] >> Press Enter to start predicting...");
         readIntFromUserSerial();
 
-        bool retry = true;
-        int count  = 1;
+        bool retry  = true;
 
         while(retry) {
-
             bool success = startLabelPredectionSession();
-
-            if(success) {
-                 LOG_INFO("PREDICT", "Prediction Label Success :)");
-                break;
-            }
-            else {
-
-                if(count > PREDICTION_MAX_RETRIES) {
-                    LOG_INFO("PREDICT", "Predection failed %d times", count);
-                    LOG_INFO("PREDICT", "Move to another label to check overall data validity ...");
-                    invalidLabels++;
-                    break;
-                }
-                else {
-                    LOG_INFO("PREDICT", "Data seems to be not valid ...");
-                    LOG_INFO("PREDICT", "[ADVICE] Make sure anchor placement didn't changes since last data collection");
-                    LOG_INFO("PREDICT", "[ADVICE] Make sure responders placement didn't changes since last data collection");
-                }
-            }
-
             delay_ms(USER_PROMPTION_DELAY);
-
             retry = promptUserRetryPrediction();
-
             if(retry) {
-                LOG_INFO("PREDICT", "Retrying label predection after failure ...");
-                count++;
+                LOG_INFO("PREDICT", "Retrying label predection ...");
             }
             else {
                 retry = false;
             }
         }
-
         promptUserProceedToNextLabel();
         delay_ms(USER_PROMPTION_DELAY);
+        prev = LABELS_COUNT;
     }
 
     LOG_INFO("PREDICT", "Aborting predection phase");
@@ -86,10 +55,11 @@ bool startLabelPredectionSession() {
 
     Label predictLabel = predict();
 
-    if((int)predictLabel == LABELS_COUNT) {
-       LOG_INFO("PREDICT", "Prediction failed ..,");
-       return false;
-    }
+    while (predictLabel == prev) {
+        predictLabel = predict();
+    } 
+
+    prev = predictLabel;
 
     return true;
 }
@@ -129,16 +99,12 @@ Label predict() {
         LOG_ERROR("PREDICT", "should not be here");
             break;
     }
-
     if(label != LABELS_COUNT) {
         LOG_INFO("PREDICT", " Predicted label: %s", labels[label].c_str());
         delay_ms(USER_PROMPTION_DELAY);
-        bool approve = promptUserApprovePrediction();
-        if(approve) {
-            return label;
-        }
+        return label;
     }
-    return LABELS_COUNT;
+    return label;
 }
 
 static Label staticRSSIPredict() {

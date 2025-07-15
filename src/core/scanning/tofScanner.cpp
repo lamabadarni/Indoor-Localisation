@@ -80,6 +80,9 @@ void performTOFScan() {
 
 TOFData createSingleTOFScan() {
 
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    ESP_ERROR_CHECK(esp_wifi_start());
+
     if(!registered && !inProcess) {
         esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_FTM_REPORT, &tofReportHandler, NULL);
         registered = true;
@@ -89,10 +92,11 @@ TOFData createSingleTOFScan() {
     for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
         wifi_ftm_initiator_cfg_t cfg = {
             .frm_count = 16,
-            .burst_period = 2
+            .burst_period = 2,
         };
 
-        cfg.channel = 0; // Wi-fi channel to use for FTM - 0 since it's unknown
+        cfg.channel = 1;
+        memcpy(cfg.resp_mac , responderMacs[0], sizeof(cfg.resp_mac));
 
         scanComplete = false;
         accumulatedTOFs[i] = TOF_DEFAULT_DISTANCE_CM;
@@ -100,7 +104,7 @@ TOFData createSingleTOFScan() {
         esp_err_t err = esp_wifi_ftm_initiate_session(&cfg);
 
         if (err != ESP_OK) {
-            LOG_ERROR("TOF", "Failed to initiate session for responder: %s", tofSSIDs[i]);
+            LOG_ERROR("TOF", "Failed to initiate session for responder: %s", tofSSIDs[i].c_str());
             continue;
         }
 

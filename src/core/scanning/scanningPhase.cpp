@@ -156,7 +156,7 @@ void createSingleScan() {
             break;
 
         case DYNAMIC_RSSI:
-            LOG_INFO("SCAN", "Mode: Dynamic RSSI");
+            LOG_DEBUG("SCAN", "Mode: Dynamic RSSI");
             createSingleDynamicRSSIScan();
             break;
 

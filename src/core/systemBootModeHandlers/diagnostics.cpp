@@ -67,12 +67,12 @@ void performDynamicScanCoverage() {
 // ================= TOF =================
 
 Coverage scanTOFForCoverage() {
-    performTOFScan();
+    createSingleTOFScan();
 
     int respondersSeen = 0;
     double sum = 0;
     for (int i = 0; i < NUMBER_OF_RESPONDERS; ++i) {
-        if (accumulatedTOFs[i] > 0) {
+        if (accumulatedTOFs[i] != TOF_DEFAULT_DISTANCE_CM) {
             respondersSeen++;
             sum += accumulatedTOFs[i];
         }
@@ -88,6 +88,9 @@ Coverage scanTOFForCoverage() {
 
 void performTOFScanCoverage() {
     LOG_INFO("COVERAGE", "Performing TOF diagnostic scan...");
+    sscanf(responderMacStr.c_str(), "%hhX:%hhX:%hhX:%hhX:%hhX:%hhX",
+               &responderMacs[0][0], &responderMacs[0][1], &responderMacs[0][2],
+               &responderMacs[0][3], &responderMacs[0][4], &responderMacs[0][5]);
     Coverage cov = scanTOFForCoverage();
     LOG_INFO("COVERAGE", "TOF Coverage: %s", coverages[cov].c_str());
 }

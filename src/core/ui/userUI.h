@@ -25,7 +25,6 @@ bool promptUserRescanAfterInvalidation();
 bool promptUserRetryValidation();
 
 // ======================== PREDICTION FLOW ========================
-bool promptUserApprovePrediction();
 Label promptUserChooseBetweenPredictions(Label left, Label right);
 Label promptUserChooseBetweenTriplePredictions(Label first, Label second, Label third);
 bool promptUserRetryPrediction();
