@@ -20,7 +20,6 @@ void promptUserShowDebugLogs() {
 }
 
 bool promptUserRunAnotherSession() {
-   // if(systemUI == OLED)  
     if(systemUI == SERIAL) return promptUserRunAnotherSessionSerial();
     return false;
 }
@@ -79,12 +78,6 @@ bool promptUserRetryValidation() {
 }
 
 // ======================== PREDICTION FLOW ========================
-
-bool promptUserApprovePrediction() {
-    // if(systemUI == OLED)  return promptUserApprovePredictionOLED();
-    if(systemUI == SERIAL) return promptUserApprovePredictionSerial();
-    return false;
-}
 
 Label promptUserChooseBetweenPredictions(Label left, Label right) {
     // if(systemUI == OLED)  return promptUserChooseBetweenPredictionsOLED(left, right);

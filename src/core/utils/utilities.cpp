@@ -36,9 +36,6 @@ Label  currentLabel = LABELS_COUNT;
 bool   shouldAbort  = false;
 
 bool   validForPredection[LABELS_COUNT]  = {0};
-double tofAccuracy[LABELS_COUNT]         = {0};
-double staticRSSIAccuracy[LABELS_COUNT]  = {0};
-double dynamicRSSIAccuracy[LABELS_COUNT] = {0};
 
 std::vector<StaticRSSIData>  staticRSSIDataSet  = {};
 std::vector<DynamicMacData>  dynamicMacDataSet  = {};
@@ -57,6 +54,8 @@ FILE* logFile = NULL;
 
 // ======================  CONST Globals    ======================
 
+const std::string responderMacStr = "48:27:E2:5E:2A:81";
+
 const std::string anchorSSIDs[NUMBER_OF_ANCHORS] = {
     "234/236",
     "236",
@@ -70,10 +69,7 @@ const std::string anchorSSIDs[NUMBER_OF_ANCHORS] = {
 };
 
 const std::string tofSSIDs[NUMBER_OF_RESPONDERS] = {
-    "RESP1",
-    "RESP2",
-    "RESP3",
-    "RESP4"
+    "MyAP"
 };
 
 const std::string labels[LABELS_COUNT] = {
@@ -115,9 +111,7 @@ const std::string systemBootModes[SYSTEM_BOOT_MODES_NUM] {
     "MODE_TOF_DIAGNOSTIC",
     "MODE_ANCHORS_RSSI_DIAGNOSTIC",
     "MODE_APS_RSSI_DIAGNOSTIC",
-    "MODE_COLLECT_TOF_RESPONDERS_MAC",
-    "MODE_INITIATOR_RESPONDER_TEST",
-    "MODE_RESTORE_BACKUP_DATA_TEST"
+    "MODE_INIT_RESPONDER",
 };
 
 const std::string coverages[COVERAGE_STATES_NUM] {

@@ -37,7 +37,7 @@
 #define TOF_MAX_VALID_CM                   (500.0)  // Adjustable max valid TOF reading
 #define TOF_DEFAULT_DISTANCE_CM            (1500.0)
 #define TOF_SCAN_DELAY_MS                  (20)
-#define NUMBER_OF_RESPONDERS               (4)
+#define NUMBER_OF_RESPONDERS               (1)
 
 // == Validation == 
 #define VALIDATION_MAX_ATTEMPTS            (3)
@@ -50,7 +50,6 @@
 #define MIN_VALID_DATA_SET_SIZE            (K_RSSI * 10) 
 #define MIN_DATA_PER_LABEL_SIZE            (K_RSSI * 3) 
 #define PREDICTION_MAX_RETRIES             (2)
-#define PREDICTION_MAX_LABEL_FAILURE       (5)
 #define PREDICTION_SAMPLES                 (3)
 #define PREDICTION_SAMPLES_THRESHOLD       (2)
 #define MAX_LOG_LINES                      (7) // Adjust this value based on your display and font size
@@ -95,9 +94,7 @@ typedef enum {
     MODE_TOF_DIAGNOSTIC = 0,
     MODE_ANCHORS_RSSI_DIAGNOSTIC,
     MODE_APS_RSSI_DIAGNOSTIC,
-    MODE_COLLECT_TOF_RESPONDERS_MAC,
-    MODE_INITIATOR_RESPONDER_TEST,
-    MODE_RESTORE_BACKUP_DATA_TEST,
+    MODE_INIT_RESPONDER,
     SYSTEM_BOOT_MODES_NUM
 } SystemBootMode;
 
@@ -117,7 +114,6 @@ typedef enum {
 
 typedef enum {
     LOG_LEVEL_ERROR = 0,
-    LOG_LEVEL_WARN,
     LOG_LEVEL_INFO,
     LOG_LEVEL_DEBUG
 } LogLevel;
@@ -213,6 +209,7 @@ extern const std::string   systemPredictionModes[SYSTEM_PREDICTION_NODES_NUM];
 extern const std::string   systemBootModes[SYSTEM_BOOT_MODES_NUM];
 extern const std::string   coverages[COVERAGE_STATES_NUM];
 extern const UI            systemUI;
+extern const std::string   responderMacStr;
 
 // ====================== Utility Functions ======================
 
